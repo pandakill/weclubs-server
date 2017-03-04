@@ -18,6 +18,10 @@ public class WCCommentBean implements Serializable {
     private int status;
     private int isDel;
 
+    private WCStudentBean studentBean;
+    private WCClubActivityBean clubActivityBean;
+    private WCClubMissionBean clubMissionBean;
+
     public long getId() {
         return id;
     }
@@ -82,6 +86,30 @@ public class WCCommentBean implements Serializable {
         this.isDel = isDel;
     }
 
+    public WCStudentBean getStudentBean() {
+        return studentBean;
+    }
+
+    public void setStudentBean(WCStudentBean studentBean) {
+        this.studentBean = studentBean;
+    }
+
+    public WCClubActivityBean getClubActivityBean() {
+        return clubActivityBean;
+    }
+
+    public void setClubActivityBean(WCClubActivityBean clubActivityBean) {
+        this.clubActivityBean = clubActivityBean;
+    }
+
+    public WCClubMissionBean getClubMissionBean() {
+        return clubMissionBean;
+    }
+
+    public void setClubMissionBean(WCClubMissionBean clubMissionBean) {
+        this.clubMissionBean = clubMissionBean;
+    }
+
     @Override
     public String toString() {
         return "WCCommentBean{" +
@@ -93,6 +121,9 @@ public class WCCommentBean implements Serializable {
                 ", sourceId=" + sourceId +
                 ", status=" + status +
                 ", isDel=" + isDel +
+                ", studentBean=" + studentBean +
+                ", clubActivityBean=" + clubActivityBean +
+                ", clubMissionBean=" + clubMissionBean +
                 '}';
     }
 }

@@ -15,6 +15,8 @@ public class WCClubHonorBean implements Serializable {
     private String getDate;
     private int isDel;
 
+    private WCClubBean clubBean;
+
     public long getId() {
         return id;
     }
@@ -55,14 +57,23 @@ public class WCClubHonorBean implements Serializable {
         this.isDel = isDel;
     }
 
+    public WCClubBean getClubBean() {
+        return clubBean;
+    }
+
+    public void setClubBean(WCClubBean clubBean) {
+        this.clubBean = clubBean;
+    }
+
     @Override
     public String toString() {
-        return "WCClubHonor{" +
+        return "WCClubHonorBean{" +
                 "id=" + id +
                 ", clubId=" + clubId +
                 ", content='" + content + '\'' +
                 ", getDate='" + getDate + '\'' +
                 ", isDel=" + isDel +
+                ", clubBean=" + clubBean +
                 '}';
     }
 }

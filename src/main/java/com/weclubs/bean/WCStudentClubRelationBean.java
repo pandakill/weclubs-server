@@ -15,6 +15,9 @@ public class WCStudentClubRelationBean implements Serializable {
     private int isEnter;
     private int isFollow;
 
+    private WCStudentBean studentBean;
+    private WCClubBean clubBean;
+
     public long getId() {
         return id;
     }
@@ -55,6 +58,22 @@ public class WCStudentClubRelationBean implements Serializable {
         this.isFollow = isFollow;
     }
 
+    public WCStudentBean getStudentBean() {
+        return studentBean;
+    }
+
+    public void setStudentBean(WCStudentBean studentBean) {
+        this.studentBean = studentBean;
+    }
+
+    public WCClubBean getClubBean() {
+        return clubBean;
+    }
+
+    public void setClubBean(WCClubBean clubBean) {
+        this.clubBean = clubBean;
+    }
+
     @Override
     public String toString() {
         return "WCStudentClubRelationBean{" +
@@ -63,6 +82,8 @@ public class WCStudentClubRelationBean implements Serializable {
                 ", clubId=" + clubId +
                 ", isEnter=" + isEnter +
                 ", isFollow=" + isFollow +
+                ", studentBean=" + studentBean +
+                ", clubBean=" + clubBean +
                 '}';
     }
 }

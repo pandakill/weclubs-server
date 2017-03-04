@@ -20,6 +20,8 @@ public class WCVoteBean implements Serializable {
     private int isTermination;
     private int isDel;
 
+    private WCClubBean clubBean;
+
     public long getId() {
         return id;
     }
@@ -100,6 +102,14 @@ public class WCVoteBean implements Serializable {
         this.isDel = isDel;
     }
 
+    public WCClubBean getClubBean() {
+        return clubBean;
+    }
+
+    public void setClubBean(WCClubBean clubBean) {
+        this.clubBean = clubBean;
+    }
+
     @Override
     public String toString() {
         return "WCVoteBean{" +
@@ -113,6 +123,7 @@ public class WCVoteBean implements Serializable {
                 ", isPublic=" + isPublic +
                 ", isTermination=" + isTermination +
                 ", isDel=" + isDel +
+                ", clubBean=" + clubBean +
                 '}';
     }
 }

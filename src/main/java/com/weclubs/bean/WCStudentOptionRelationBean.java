@@ -15,6 +15,9 @@ public class WCStudentOptionRelationBean implements Serializable {
     private String voteOptionIds;
     private int status;
 
+    private WCStudentBean studentBean;
+    private WCVoteBean voteBean;
+
     public long getId() {
         return id;
     }
@@ -55,6 +58,22 @@ public class WCStudentOptionRelationBean implements Serializable {
         this.status = status;
     }
 
+    public WCStudentBean getStudentBean() {
+        return studentBean;
+    }
+
+    public void setStudentBean(WCStudentBean studentBean) {
+        this.studentBean = studentBean;
+    }
+
+    public WCVoteBean getVoteBean() {
+        return voteBean;
+    }
+
+    public void setVoteBean(WCVoteBean voteBean) {
+        this.voteBean = voteBean;
+    }
+
     @Override
     public String toString() {
         return "WCStudentOptionRelationBean{" +
@@ -63,6 +82,8 @@ public class WCStudentOptionRelationBean implements Serializable {
                 ", voteId=" + voteId +
                 ", voteOptionIds='" + voteOptionIds + '\'' +
                 ", status=" + status +
+                ", studentBean=" + studentBean +
+                ", voteBean=" + voteBean +
                 '}';
     }
 }

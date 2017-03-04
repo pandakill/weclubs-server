@@ -19,6 +19,8 @@ public class WCClubBean implements Serializable {
     private long checkCount;
     private int isDel;
 
+    private WCSchoolBean schoolBean;
+
     public long getId() {
         return id;
     }
@@ -91,6 +93,14 @@ public class WCClubBean implements Serializable {
         this.isDel = isDel;
     }
 
+    public WCSchoolBean getSchoolBean() {
+        return schoolBean;
+    }
+
+    public void setSchoolBean(WCSchoolBean schoolBean) {
+        this.schoolBean = schoolBean;
+    }
+
     @Override
     public String toString() {
         return "WCClubBean{" +
@@ -103,6 +113,7 @@ public class WCClubBean implements Serializable {
                 ", status=" + status +
                 ", checkCount=" + checkCount +
                 ", isDel=" + isDel +
+                ", schoolBean=" + schoolBean +
                 '}';
     }
 }

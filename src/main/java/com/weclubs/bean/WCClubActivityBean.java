@@ -23,6 +23,8 @@ public class WCClubActivityBean implements Serializable {
     private int checkCount;
     private int isDel;
 
+    private WCClubBean clubBean;
+
     public long getId() {
         return id;
     }
@@ -127,6 +129,14 @@ public class WCClubActivityBean implements Serializable {
         this.isDel = isDel;
     }
 
+    public WCClubBean getClubBean() {
+        return clubBean;
+    }
+
+    public void setClubBean(WCClubBean clubBean) {
+        this.clubBean = clubBean;
+    }
+
     @Override
     public String toString() {
         return "WCClubActivityBean{" +
@@ -143,6 +153,7 @@ public class WCClubActivityBean implements Serializable {
                 ", recordPicUrl='" + recordPicUrl + '\'' +
                 ", checkCount=" + checkCount +
                 ", isDel=" + isDel +
+                ", clubBean=" + clubBean +
                 '}';
     }
 }

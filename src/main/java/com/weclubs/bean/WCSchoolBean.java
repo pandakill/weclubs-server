@@ -14,6 +14,8 @@ public class WCSchoolBean implements Serializable {
     private long parentId;
     private int isDel;
 
+    private WCSchoolBean parentSchoolBean;
+
     public long getId() {
         return id;
     }
@@ -46,6 +48,14 @@ public class WCSchoolBean implements Serializable {
         this.isDel = isDel;
     }
 
+    public WCSchoolBean getParentSchoolBean() {
+        return parentSchoolBean;
+    }
+
+    public void setParentSchoolBean(WCSchoolBean parentSchoolBean) {
+        this.parentSchoolBean = parentSchoolBean;
+    }
+
     @Override
     public String toString() {
         return "WCSchoolBean{" +
@@ -53,6 +63,7 @@ public class WCSchoolBean implements Serializable {
                 ", name='" + name + '\'' +
                 ", parentId=" + parentId +
                 ", isDel=" + isDel +
+                ", parentSchoolBean=" + parentSchoolBean +
                 '}';
     }
 }

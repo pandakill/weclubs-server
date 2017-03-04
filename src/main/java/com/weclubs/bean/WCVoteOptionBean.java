@@ -14,6 +14,8 @@ public class WCVoteOptionBean implements Serializable {
     private String content;
     private int isDel;
 
+    private WCVoteBean voteBean;
+
     public long getId() {
         return id;
     }
@@ -46,6 +48,14 @@ public class WCVoteOptionBean implements Serializable {
         this.isDel = isDel;
     }
 
+    public WCVoteBean getVoteBean() {
+        return voteBean;
+    }
+
+    public void setVoteBean(WCVoteBean voteBean) {
+        this.voteBean = voteBean;
+    }
+
     @Override
     public String toString() {
         return "WCVoteOptionBean{" +
@@ -53,6 +63,7 @@ public class WCVoteOptionBean implements Serializable {
                 ", voteId=" + voteId +
                 ", content='" + content + '\'' +
                 ", isDel=" + isDel +
+                ", voteBean=" + voteBean +
                 '}';
     }
 }

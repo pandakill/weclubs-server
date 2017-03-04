@@ -21,6 +21,8 @@ public class WCStudentBean implements Serializable {
     private int status;
     private int isDel;
 
+    private WCSchoolBean schoolBean;
+
     public long getId() {
         return id;
     }
@@ -109,6 +111,14 @@ public class WCStudentBean implements Serializable {
         this.isDel = isDel;
     }
 
+    public WCSchoolBean getSchoolBean() {
+        return schoolBean;
+    }
+
+    public void setSchoolBean(WCSchoolBean schoolBean) {
+        this.schoolBean = schoolBean;
+    }
+
     @Override
     public String toString() {
         return "WCStudentBean{" +
@@ -123,6 +133,7 @@ public class WCStudentBean implements Serializable {
                 ", graduateYear=" + graduateYear +
                 ", status=" + status +
                 ", isDel=" + isDel +
+                ", schoolBean=" + schoolBean +
                 '}';
     }
 }

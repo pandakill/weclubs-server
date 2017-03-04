@@ -18,6 +18,9 @@ public class WCClubMissionBean implements Serializable {
     private String deadline;
     private int isDel;
 
+    private WCClubBean clubBean;
+    private WCClubMissionBean parentMissionBean;
+
     public long getId() {
         return id;
     }
@@ -82,6 +85,22 @@ public class WCClubMissionBean implements Serializable {
         this.isDel = isDel;
     }
 
+    public WCClubBean getClubBean() {
+        return clubBean;
+    }
+
+    public void setClubBean(WCClubBean clubBean) {
+        this.clubBean = clubBean;
+    }
+
+    public WCClubMissionBean getParentMissionBean() {
+        return parentMissionBean;
+    }
+
+    public void setParentMissionBean(WCClubMissionBean parentMissionBean) {
+        this.parentMissionBean = parentMissionBean;
+    }
+
     @Override
     public String toString() {
         return "WCClubMissionBean{" +
@@ -93,6 +112,8 @@ public class WCClubMissionBean implements Serializable {
                 ", address='" + address + '\'' +
                 ", deadline='" + deadline + '\'' +
                 ", isDel=" + isDel +
+                ", clubBean=" + clubBean +
+                ", parentMissionBean=" + parentMissionBean +
                 '}';
     }
 }

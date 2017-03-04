@@ -20,6 +20,9 @@ public class WCStudentMissionRelationBean implements Serializable {
     private String signDate;
     private int isDel;
 
+    private WCStudentBean studentBean;
+    private WCClubMissionBean clubMissionBean;
+
     public long getId() {
         return id;
     }
@@ -100,6 +103,22 @@ public class WCStudentMissionRelationBean implements Serializable {
         this.isDel = isDel;
     }
 
+    public WCStudentBean getStudentBean() {
+        return studentBean;
+    }
+
+    public void setStudentBean(WCStudentBean studentBean) {
+        this.studentBean = studentBean;
+    }
+
+    public WCClubMissionBean getClubMissionBean() {
+        return clubMissionBean;
+    }
+
+    public void setClubMissionBean(WCClubMissionBean clubMissionBean) {
+        this.clubMissionBean = clubMissionBean;
+    }
+
     @Override
     public String toString() {
         return "WCStudentMissionRelationBean{" +
@@ -113,6 +132,8 @@ public class WCStudentMissionRelationBean implements Serializable {
                 ", createDate='" + createDate + '\'' +
                 ", signDate='" + signDate + '\'' +
                 ", isDel=" + isDel +
+                ", studentBean=" + studentBean +
+                ", clubMissionBean=" + clubMissionBean +
                 '}';
     }
 }
