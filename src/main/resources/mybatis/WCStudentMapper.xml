@@ -90,7 +90,6 @@
          `REAL_NAME` = #{real_name}, `PASSWORD` = #{password}, `AVATAR_URL` = #{avatarUrl},
          `BIRTHDAY` = #{birthday}, `QRCORD_URL` = #{qrcordUrl}, `CLASS_NAME` = #{className},
          `GRADUATE_YEAR` = #{graduateYear}, `STATUS` = #{status}, `IS_DEL` = #{isDel}
-        `GENDER` = #{gender}, `attribute` = #{attribute}
         WHERE `ID` = #{id};
     </update>
 </mapper>
