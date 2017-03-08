@@ -17,6 +17,7 @@ public class WCStudentBean implements Serializable {
     private String password;
     private String avatarUrl;
     private String birthday;
+    private String qrcordUrl;
     private String className;
     private int graduateYear;
     private int status;
@@ -88,6 +89,14 @@ public class WCStudentBean implements Serializable {
         this.birthday = birthday;
     }
 
+    public String getQrcordUrl() {
+        return qrcordUrl;
+    }
+
+    public void setQrcordUrl(String qrcordUrl) {
+        this.qrcordUrl = qrcordUrl;
+    }
+
     public String getClassName() {
         return className;
     }
@@ -139,6 +148,7 @@ public class WCStudentBean implements Serializable {
                 ", password='" + password + '\'' +
                 ", avatarUrl='" + avatarUrl + '\'' +
                 ", birthday='" + birthday + '\'' +
+                ", qrcordUrl='" + qrcordUrl + '\'' +
                 ", className='" + className + '\'' +
                 ", graduateYear=" + graduateYear +
                 ", status=" + status +
