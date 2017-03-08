@@ -3,6 +3,8 @@ package com.weclubs.mapper;
 import com.weclubs.bean.WCClubHonorBean;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * t_club_honor 社团荣誉的映射接口
  *
@@ -15,4 +17,6 @@ public interface WCClubHonorMapper {
     void updateClubHonor(WCClubHonorBean clubHonorBean);
 
     void deleteClubHonorById(@Param("clubHonorId") long clubHonorId);
+
+    List<WCClubHonorBean> getClubHonorsByClubId(@Param("clubId") long clubId);
 }

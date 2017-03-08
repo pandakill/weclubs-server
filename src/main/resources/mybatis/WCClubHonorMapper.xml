@@ -31,4 +31,12 @@
         WHERE `Id` = #{clubHonorId};
     </update>
 
+    <!-- 根据社团 id 获取当前社团的荣誉墙 -->
+    <select id="getClubHonorsByClubId" resultMap="clubHonorMap" resultType="List">
+        SELECT *
+        FROM `T_CLUB_HONOR`
+        WHERE `CLUB_ID` = #{clubId}
+        AND `IS_DEL` = 0;
+    </select>
+
 </mapper>
