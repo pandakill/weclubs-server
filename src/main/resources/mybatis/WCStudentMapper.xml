@@ -71,7 +71,7 @@
     </select>
 
     <!-- 根据 studentId 获取学生信息 -->
-    <select id="getStudentById" resultMap="studentWithSchoolMap" resultType="List">
+    <select id="getStudentById" resultMap="studentWithSchoolMap" resultType="com.weclubs.bean.WCClubBean">
         SELECT *
         FROM `T_STUDENT`
         WHENEVER `ID` = #{studentId};
