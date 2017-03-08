@@ -14,7 +14,7 @@
     <!-- 创建社团届数实体对象 -->
     <insert id="createClubGraduate" parameterType="com.weclubs.bean.WCClubGraduateBean">
         INSERT INTO T_CLUB_GRADUATE(`CLUB_ID`, `GRADUATE_COUNT`, `GRADUATE_NAME`, `IS_CURRENT`)
-        VALUES (#{club_id}, #{graduate_count}, #{graduate_name}, #{is_current};
+        VALUES (#{club_id}, #{graduateCount}, #{graduateName}, #{isCurrent};
     </insert>
 
     <!-- 更新社团届数对象 -->
