@@ -26,7 +26,7 @@ public class WCTestAPI {
     @Autowired
     private WCIClubService mClubService;
 
-    @RequestMapping(value = "/getClubsBySchoolId", method = RequestMethod.POST)
+    @RequestMapping(value = "/getClubsBySchoolId", method = RequestMethod.GET)
     public WCResultData getClubsBySchoolId() {
 
         log.info("getClubsBySchoolId：获取 schoolId = 1 的学校所有社团");
@@ -41,7 +41,7 @@ public class WCTestAPI {
         return WCResultData.getSuccessData(result);
     }
 
-    @RequestMapping(value = "getClubDetailById", method = RequestMethod.POST)
+    @RequestMapping(value = "getClubDetailById", method = RequestMethod.GET)
     public WCResultData getClubDetailById () {
 
         log.info("getClubDetailById：获取 clubId = 1 的社团详情");

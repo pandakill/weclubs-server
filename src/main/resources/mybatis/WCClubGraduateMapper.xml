@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.weclubs.mapper.WCClubGraduateMapper">
+
+    <!-- 社团届数实体映射 map -->
+    <resultMap id="clubGraduateMap" type="com.weclubs.bean.WCClubGraduateBean">
+        <id property="id" column="id" />
+        <result property="clubId" column="club_id" />
+        <result property="graduateCount" column="graduate_count" />
+        <result property="graduateName" column="graduate_name" />
+        <result property="isCurrent" column="is_current" />
+    </resultMap>
+
+    <!-- 创建社团届数实体对象 -->
+    <insert id="createClubGraduate" parameterType="com.weclubs.bean.WCClubGraduateBean">
+        INSERT INTO T_CLUB_GRADUATE(`CLUB_ID`, `GRADUATE_COUNT`, `GRADUATE_NAME`, `IS_CURRENT`)
+        VALUES (#{club_id}, #{graduate_count}, #{graduate_name}, #{is_current};
+    </insert>
+
+    <!-- 更新社团届数对象 -->
+    <update id="updateClubGraduate" parameterType="com.weclubs.bean.WCClubGraduateBean">
+        UPDATE `T_CLUB_GRADUATE`
+        SET `GRADUATE_COUNT` = #{graduateCount}, `GRADUATE_NAME` = #{graduateName},
+         `IS_CURRENT` = #{isCurrent}
+        WHERE `Id` = #{clubGraduateId};
+    </update>
+
+    <!-- 根据 id 删除社团届数实体对象 -->
+    <delete id="deleteClubGraduateById">
+        DELETE FROM `T_CLUB_GRADUATE`
+        WHERE `id` = #{clubGraduateId};
+    </delete>
+
+    <!-- 根据社团 id 查找社团届数实体对象列表 -->
+    <select id="getClubGraduatesByClubId" resultMap="clubGraduateMap" resultType="List">
+        SELECT * FROM `T_CLUB_GRADUATE`
+        WHERE `CLUB_ID` = #{clubId};
+    </select>
+
+    <!-- 根据社团届数 id 查找届数实体对象 -->
+    <select id="getClubGraduateByClubGraduateId" resultMap="clubGraduateMap">
+        SELECT * FROM `T_CLUB_GRADUATE`
+        WHERE `ID` = #{clubGraduateId};
+    </select>
+
+    <!-- 根据社团 id 查找社团当前届数实体对象 -->
+    <select id="getCurrentClubGraduateByClubId" resultMap="clubGraduateMap">
+        SELECT * FROM `T_CLUB_GRADUATE`
+        WHERE `CLUB_ID` = #{clubId}
+        AND `IS_CURRENT` = 1;
+    </select>
+
+</mapper>

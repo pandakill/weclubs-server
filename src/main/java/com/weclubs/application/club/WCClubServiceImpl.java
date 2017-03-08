@@ -27,7 +27,8 @@ public class WCClubServiceImpl implements WCIClubService {
             log.error("getClubInfoById：查找社团失败，clubId");
             return null;
         }
-        return null;
+
+        return mClubMapper.getClubById(clubId);
     }
 
     public void createClub(WCClubBean clubBean) {
