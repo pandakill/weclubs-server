@@ -16,9 +16,9 @@ import java.util.Arrays;
  * Created by fangzanpan on 2017/2/6.
  */
 @Service("tokenService")
-public class PDTokenServiceImpl implements PDITokenService {
+public class WCTokenServiceImpl implements WCITokenService {
 
-    private Logger logger = Logger.getLogger(PDTokenServiceImpl.class);
+    private Logger logger = Logger.getLogger(WCTokenServiceImpl.class);
 
     private static final long TOKEN_AVAILABLE_TIME = 7 * 24 * 60 * 60 * 1000;
 

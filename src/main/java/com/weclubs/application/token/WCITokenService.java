@@ -8,7 +8,7 @@ import com.weclubs.bean.WCTokenBean;
  *
  * Created by fangzanpan on 2017/2/6.
  */
-public interface PDITokenService {
+public interface WCITokenService {
 
     WCTokenBean findTokenByUserIdAndCaller(long userId, String caller);
 
