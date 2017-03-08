@@ -17,6 +17,7 @@ public class WCClubBean implements Serializable {
     private int isAuth;
     private int status;
     private long checkCount;
+    private int level;
     private int isDel;
 
     private WCSchoolBean schoolBean;
@@ -85,6 +86,14 @@ public class WCClubBean implements Serializable {
         this.checkCount = checkCount;
     }
 
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
     public int getIsDel() {
         return isDel;
     }
@@ -112,6 +121,7 @@ public class WCClubBean implements Serializable {
                 ", isAuth=" + isAuth +
                 ", status=" + status +
                 ", checkCount=" + checkCount +
+                ", level=" + level +
                 ", isDel=" + isDel +
                 ", schoolBean=" + schoolBean +
                 '}';

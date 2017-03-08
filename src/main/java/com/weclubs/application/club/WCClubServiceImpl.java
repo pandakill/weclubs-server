@@ -22,6 +22,11 @@ public class WCClubServiceImpl implements WCIClubService {
     private WCClubMapper mClubMapper;
 
     public WCClubBean getClubInfoById(long clubId) {
+
+        if (clubId <= 0) {
+            log.error("getClubInfoById：查找社团失败，clubId");
+            return null;
+        }
         return null;
     }
 
