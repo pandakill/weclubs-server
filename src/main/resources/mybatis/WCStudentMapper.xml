@@ -57,17 +57,21 @@
     <!-- 查找当前届社团的所有学生 -->
     <select id="getStudentsByCurrentClub" resultMap="studentWithSchoolMap" resultType="List">
         SELECT *
-        FROM `T_STUDENT` student, `T_CLUB_GRADUATE` club_graduate
-        WHERE `student.CLUB_ID` = `club_graduate.CLUB_ID`
-        AND `club_graduate.IS_CURRENT` = 1;
+        FROM `T_STUDENT` student, `T_STUDENT_CLUB_GRADUATE_RELATION` student_club_graduate, `T_CLUB` club,
+        `T_CLUB_GRADUATE` club_graduate
+        WHERE club.`ID` = #{clubId}
+        AND club.`ID` = club_graduate.`CLUB_ID`
+        AND student.`ID` = student_club_graduate.`STUDENT_ID`
+        AND student_club_graduate.`GRADUATE_ID` = club_graduate.`ID`
+        AND club_graduate.`IS_CURRENT` = 1;
     </select>
 
     <!-- 根据 graduateId 查找某一届社团的所有学生 -->
     <select id="getStudentsByClubGraduate" resultMap="studentWithSchoolMao" resultType="List">
         SELECT *
-        FROM `T_STUDENT` student, `T_CLUB_GRADUATE` club_graduate
-        WHERE `student.CLUB_ID` = `club_graduate.CLUB_ID`
-        AND `club_graduate.ID` = #{graduateId};
+        FROM `T_STUDENT` student, `T_CLUB_GRADUATE` club_graduate, `T_CLUB` club
+        WHERE club_graduate.`CLUB_ID` = club.`ID`
+        AND club_graduate.`ID` = #{graduateId};
     </select>
 
     <!-- 根据 studentId 获取学生信息 -->
