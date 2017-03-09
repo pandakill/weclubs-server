@@ -70,6 +70,7 @@ Temporary Items
 .apdisk
 ### Java template
 *.class
+/target
 
 # BlueJ files
 *.ctxt
