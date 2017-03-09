@@ -1,6 +1,7 @@
 package com.weclubs.api;
 
 import com.weclubs.application.club.WCIClubService;
+import com.weclubs.application.notification.WCINotificationService;
 import com.weclubs.application.security.WCISecurityService;
 import com.weclubs.bean.WCClubBean;
 import com.weclubs.model.WCRequestModel;
@@ -32,6 +33,8 @@ public class WCTestAPI {
     private WCISecurityService mSecurityService;
     @Autowired
     private WCIClubService mClubService;
+    @Autowired
+    private WCINotificationService mNotificationService;
 
     @RequestMapping(value = "/getClubsBySchoolId", method = RequestMethod.GET)
     public WCResultData getClubsBySchoolId() {
@@ -88,6 +91,36 @@ public class WCTestAPI {
 
             return WCResultData.getSuccessData(result);
 
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return WCResultData.getHttpStatusData(WCHttpStatus.FAIL_REQUEST_UNVALID_PARAMS, null);
+        }
+    }
+
+    @RequestMapping(value = "/getNotificationsByClubId")
+    public WCResultData getNotificationsByClubId(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus chekSecurity = mSecurityService.checkRequestParams(requestModel);
+        if (chekSecurity != WCHttpStatus.SUCCESS) {
+            log.error("getNotificationByClubId：请求参数违法");
+            return WCResultData.getHttpStatusData(chekSecurity, null);
+        }
+
+        HashMap<String, Object> requestParams = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+
+        if (requestParams == null) {
+            log.error("getNotificationByClubId：请求参数为空");
+            return WCResultData.getHttpStatusData(WCHttpStatus.FAIL_REQUEST_UNVALID_PARAMS, null);
+        }
+
+        try {
+
+            long studentId = Long.parseLong((String) requestParams.get("student_id"));
+
+            HashMap<String, Object> result = new HashMap<String, Object>();
+            result.put("notification", mNotificationService.getNotificationsByStudentId(studentId));
+
+            return WCResultData.getSuccessData(result);
         } catch (NumberFormatException e) {
             e.printStackTrace();
             return WCResultData.getHttpStatusData(WCHttpStatus.FAIL_REQUEST_UNVALID_PARAMS, null);
