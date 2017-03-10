@@ -21,6 +21,8 @@ public class WCClubActivityBean implements Serializable {
     private String recordComment;
     private String recordPicUrl;
     private int checkCount;
+    private long sponsorId;
+    private String createDate;
     private int isDel;
 
     private WCClubBean clubBean;
@@ -121,6 +123,22 @@ public class WCClubActivityBean implements Serializable {
         this.checkCount = checkCount;
     }
 
+    public long getSponsorId() {
+        return sponsorId;
+    }
+
+    public void setSponsorId(long sponsorId) {
+        this.sponsorId = sponsorId;
+    }
+
+    public String getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(String createDate) {
+        this.createDate = createDate;
+    }
+
     public int getIsDel() {
         return isDel;
     }
@@ -152,6 +170,8 @@ public class WCClubActivityBean implements Serializable {
                 ", recordComment='" + recordComment + '\'' +
                 ", recordPicUrl='" + recordPicUrl + '\'' +
                 ", checkCount=" + checkCount +
+                ", sponsorId=" + sponsorId +
+                ", createDate='" + createDate + '\'' +
                 ", isDel=" + isDel +
                 ", clubBean=" + clubBean +
                 '}';

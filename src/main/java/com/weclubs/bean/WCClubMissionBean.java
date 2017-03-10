@@ -16,6 +16,8 @@ public class WCClubMissionBean implements Serializable {
     private long parentId;
     private String address;
     private String deadline;
+    private long sponsorId;
+    private String createDate;
     private int isDel;
 
     private WCClubBean clubBean;
@@ -77,6 +79,22 @@ public class WCClubMissionBean implements Serializable {
         this.deadline = deadline;
     }
 
+    public long getSponsorId() {
+        return sponsorId;
+    }
+
+    public void setSponsorId(long sponsorId) {
+        this.sponsorId = sponsorId;
+    }
+
+    public String getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(String createDate) {
+        this.createDate = createDate;
+    }
+
     public int getIsDel() {
         return isDel;
     }
@@ -111,6 +129,8 @@ public class WCClubMissionBean implements Serializable {
                 ", parentId=" + parentId +
                 ", address='" + address + '\'' +
                 ", deadline='" + deadline + '\'' +
+                ", sponsorId=" + sponsorId +
+                ", createDate='" + createDate + '\'' +
                 ", isDel=" + isDel +
                 ", clubBean=" + clubBean +
                 ", parentMissionBean=" + parentMissionBean +
