@@ -8,6 +8,8 @@
         <result property="clubId" column="club_id" />
         <result property="graduateCount" column="graduate_count" />
         <result property="graduateName" column="graduate_name" />
+        <result property="departments" column="departments" />
+        <result property="jobs" column="jobs" />
         <result property="isCurrent" column="is_current" />
     </resultMap>
 
