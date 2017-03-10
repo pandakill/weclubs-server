@@ -21,4 +21,10 @@ public interface WCClubDepartmentMapper {
     WCClubDepartmentBean getClubDepartmentById(@Param("clubDepartmentId") long clubDepartmentId);
 
     List<WCClubDepartmentBean> getClubDepartmentBySuggest();
+
+    WCClubDepartmentBean getClubDepartmentByName(@Param("departmentName") String departmentName);
+
+    void setCurrentClubDepartments(@Param("clubId") long clubId, @Param("departments") String departments);
+
+    String getCurrentClubDepartmentsByClubId(@Param("clubId") long clubId);
 }

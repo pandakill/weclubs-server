@@ -21,4 +21,10 @@ public interface WCClubJobMapper {
     WCClubJobBean getClubJobById(@Param("clubJobId") long clubJobId);
 
     List<WCClubJobBean> getClubJobBySuggest();
+
+    WCClubJobBean getClubJobByJobName(@Param("jobName") String jobName);
+
+    void setCurrentClubJobs(@Param("clubId") long clubId, @Param("jobs") String jobs);
+
+    String getCurrentClubJobs(@Param("clubId") long clubId);
 }

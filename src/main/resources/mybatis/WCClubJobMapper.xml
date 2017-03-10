@@ -43,4 +43,27 @@
         AND `IS_DEL` = 0;
     </select>
 
+    <!-- 根据 jobName 获取社团职位详情 -->
+    <select id="getClubJobByJobName" resultMap="clubJobMap" resultType="com.weclubs.bean.WCClubJobBean">
+        SELECT *
+        FROM `T_CLUB_JOB`
+        WHERE `NAME` = #{jobName};
+    </select>
+
+    <!-- 根据社团 id 设置当前届的社团的职位 -->
+    <update id="setCurrentClubJobs">
+        UPDATE `T_CLUB_GRADUATE`
+        SET `JOBS` = #{jobs}
+        WHERE `CLUB_ID` = #{clubId}
+        AND `IS_CURRENT` = 1;
+    </update>
+
+    <!-- 根据社团 id 获取当前届社团的职位表 -->
+    <select id="getCurrentClubJobs" resultType="String">
+        SELECT `JOBS`
+        FROM `T_CLUB_GRADUATE`
+        WHERE `CLUB_ID` = #{clubId}
+        AND `IS_CURRENT` = 1;
+    </select>
+
 </mapper>

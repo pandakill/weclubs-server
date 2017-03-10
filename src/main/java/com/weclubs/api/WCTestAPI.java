@@ -1,20 +1,23 @@
 package com.weclubs.api;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.weclubs.application.club.WCIClubService;
+import com.weclubs.application.club_responsibility.WCIClubResponsibilityService;
 import com.weclubs.application.notification.WCINotificationService;
 import com.weclubs.application.security.WCISecurityService;
+import com.weclubs.bean.WCClubAuthorityBean;
 import com.weclubs.bean.WCClubBean;
+import com.weclubs.bean.WCClubJobBean;
 import com.weclubs.model.WCRequestModel;
 import com.weclubs.model.WCResultData;
 import com.weclubs.util.WCHttpStatus;
 import com.weclubs.util.WCRequestParamsUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -35,6 +38,8 @@ public class WCTestAPI {
     private WCIClubService mClubService;
     @Autowired
     private WCINotificationService mNotificationService;
+    @Autowired
+    private WCIClubResponsibilityService mResponsibilityService;
 
     @RequestMapping(value = "/getClubsBySchoolId", method = RequestMethod.GET)
     public WCResultData getClubsBySchoolId() {
@@ -125,5 +130,91 @@ public class WCTestAPI {
             e.printStackTrace();
             return WCResultData.getHttpStatusData(WCHttpStatus.FAIL_REQUEST_UNVALID_PARAMS, null);
         }
+    }
+
+    @RequestMapping(value = "/setJobsByClubId")
+    public String setJobsByClubId() {
+
+        List<WCClubJobBean> jobs = new ArrayList<WCClubJobBean>();
+
+
+        WCClubAuthorityBean auth1 = new WCClubAuthorityBean();
+        auth1.setId(1);
+        WCClubAuthorityBean auth2 = new WCClubAuthorityBean();
+        auth2.setId(2);
+        WCClubAuthorityBean auth3 = new WCClubAuthorityBean();
+        auth3.setId(3);
+        WCClubAuthorityBean auth4 = new WCClubAuthorityBean();
+        auth4.setId(4);
+
+        WCClubJobBean job1 = new WCClubJobBean();
+        job1.setId(1);
+        List<WCClubAuthorityBean> list1 = new ArrayList<WCClubAuthorityBean>();
+        list1.add(auth1);
+        list1.add(auth2);
+        job1.setAuthorities(list1);
+        jobs.add(job1);
+
+        WCClubJobBean job2 = new WCClubJobBean();
+        job2.setId(2);
+        List<WCClubAuthorityBean> list2 = new ArrayList<WCClubAuthorityBean>();
+        list2.add(auth1);
+        list2.add(auth3);
+        list2.add(auth4);
+//        job2.setAuthorities(list2);
+        jobs.add(job2);
+
+        WCClubJobBean job3 = new WCClubJobBean();
+        job3.setId(3);
+        List<WCClubAuthorityBean> list3 = new ArrayList<WCClubAuthorityBean>();
+        list3.add(auth1);
+        list3.add(auth3);
+        list3.add(auth4);
+        job3.setAuthorities(list3);
+        jobs.add(job3);
+
+        String jobStr = "";
+
+        if (jobs.size() > 0) {
+            JSONArray jobArray = new JSONArray();
+
+            for (WCClubJobBean job : jobs) {
+                JSONObject jsonObject = new JSONObject();
+
+                String authority = "";
+
+                List<WCClubAuthorityBean> authorities = job.getAuthorities();
+                if (authorities != null && authorities.size() > 0) {
+                    for (int j = 0; j < authorities.size(); j++) {
+                        authority += authorities.get(j).getId();
+
+                        if (j != (authorities.size() - 1)) {
+                            authority += ",";
+                        }
+                    }
+                }
+
+                jsonObject.put(job.getId() + "", authority);
+                jobArray.add(jsonObject);
+            }
+
+            jobStr = jobArray.toJSONString();
+        }
+
+        log.info("setJobsByClubId：jobStr = " + jobStr);
+
+        return jobStr;
+
+    }
+
+    @RequestMapping(value = "/getClubJobByClubId")
+    public WCResultData getClubJobByClubId(@RequestParam(value = "club_id") long clubId) {
+
+        List<WCClubJobBean> jobs = mResponsibilityService.getJobsByClubId(clubId);
+        HashMap<String, Object> result = new HashMap<String, Object>();
+        result.put("club_id", clubId);
+        result.put("jobs", jobs);
+
+        return WCResultData.getSuccessData(result);
     }
 }

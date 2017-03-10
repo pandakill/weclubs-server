@@ -7,7 +7,7 @@
         <id property="id" column="id" />
         <result property="name" column="name" />
         <result property="attribute" column="attribute" />
-        <result property="idDel" column="is_del" />
+        <result property="isDel" column="is_del" />
     </resultMap>
 
     <!-- 创建社团权限 -->

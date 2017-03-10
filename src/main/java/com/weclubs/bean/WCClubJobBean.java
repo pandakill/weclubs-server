@@ -1,5 +1,7 @@
 package com.weclubs.bean;
 
+import java.util.List;
+
 /**
  * 社团职位实体，对应 t_club_job 表
  *
@@ -11,6 +13,8 @@ public class WCClubJobBean {
     private String name;
     private int isSuggest;
     private int isDel;
+
+    List<WCClubAuthorityBean> authorities;
 
     public long getId() {
         return id;
@@ -44,13 +48,22 @@ public class WCClubJobBean {
         this.isDel = isDel;
     }
 
+    public List<WCClubAuthorityBean> getAuthorities() {
+        return authorities;
+    }
+
+    public void setAuthorities(List<WCClubAuthorityBean> authorities) {
+        this.authorities = authorities;
+    }
+
     @Override
     public String toString() {
-        return "WCClubDepartmentBean{" +
+        return "WCClubJobBean{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", isSuggest=" + isSuggest +
                 ", isDel=" + isDel +
+                ", authorities=" + (authorities == null ? "null" : authorities.toString()) +
                 '}';
     }
 }
