@@ -126,11 +126,14 @@
     <!-- 根据社团 clubId 获取该社团的所有未确认并且未删除的通知 -->
     <select id="getUnConfirmNotificationByClubId" resultMap="notificationMap" resultType="List">
         SELECT *
-        FROM `T_CLUB_MISSION` club_mission, `T_CLUB` club
+        FROM `T_CLUB_MISSION` club_mission, `T_CLUB` club,
+         `T_STUDENT_MISSION_RELATION` student_mission
         WHERE club_mission.`CLUB_ID` = club.`ID`
         AND club_mission.`IS_DEl` = 0
         AND club_mission.`TYPE` = 0
-        AND club.`STATUS` = 0
+        AND student_mission.`STATUS` = 0
+        AND student_mission.`MISSION_ID` = club_mission.`ID`
+        AND student_mission.`IS_DEL` = 0
         AND club.`ID` = #{clubId};
     </select>
 
