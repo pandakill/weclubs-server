@@ -81,7 +81,7 @@
         UPDATE `T_STUDENT`
         SET `SCHOOL_ID` = #{schoolId}, `NAME` = #{name}, `INTRODUCTION` = #{introduction},
          `AVATAR_URL` = #{avatarUrl}, `IS_AUTH` = #{isAuth}, `LEVEL` = #{level},
-         `STATUS` = #{status}, `CHECK_COUNT` = #{checkCount
+         `STATUS` = #{status}, `CHECK_COUNT` = #{checkCount}
         WHERE `ID` = #{id};
     </update>
 </mapper>
