@@ -13,6 +13,8 @@ public class WCStudentClubGraduateRelationBean implements Serializable {
     private long graduateId;
     private long studentId;
     private int status;
+    private long departmentId;
+    private long jobId;
     private int isDel;
 
     private WCClubGraduateBean clubGraduateBean;
@@ -50,6 +52,22 @@ public class WCStudentClubGraduateRelationBean implements Serializable {
         this.status = status;
     }
 
+    public long getDepartmentId() {
+        return departmentId;
+    }
+
+    public void setDepartmentId(long departmentId) {
+        this.departmentId = departmentId;
+    }
+
+    public long getJobId() {
+        return jobId;
+    }
+
+    public void setJobId(long jobId) {
+        this.jobId = jobId;
+    }
+
     public int getIsDel() {
         return isDel;
     }
@@ -81,6 +99,8 @@ public class WCStudentClubGraduateRelationBean implements Serializable {
                 ", graduateId=" + graduateId +
                 ", studentId=" + studentId +
                 ", status=" + status +
+                ", departmentId=" + departmentId +
+                ", jobId=" + jobId +
                 ", isDel=" + isDel +
                 ", clubGraduateBean=" + clubGraduateBean +
                 ", studentBean=" + studentBean +

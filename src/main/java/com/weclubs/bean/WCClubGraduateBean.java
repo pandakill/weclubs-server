@@ -13,6 +13,8 @@ public class WCClubGraduateBean implements Serializable {
     private long clubId;
     private int graduateCount;
     private String graduateName;
+    private String departments;
+    private String jobs;
     private int isCurrent;
 
     private WCClubBean clubBean;
@@ -49,6 +51,22 @@ public class WCClubGraduateBean implements Serializable {
         this.graduateName = graduateName;
     }
 
+    public String getDepartments() {
+        return departments;
+    }
+
+    public void setDepartments(String departments) {
+        this.departments = departments;
+    }
+
+    public String getJobs() {
+        return jobs;
+    }
+
+    public void setJobs(String jobs) {
+        this.jobs = jobs;
+    }
+
     public int getIsCurrent() {
         return isCurrent;
     }
@@ -72,6 +90,8 @@ public class WCClubGraduateBean implements Serializable {
                 ", clubId=" + clubId +
                 ", graduateCount=" + graduateCount +
                 ", graduateName='" + graduateName + '\'' +
+                ", departments='" + departments + '\'' +
+                ", jobs='" + jobs + '\'' +
                 ", isCurrent=" + isCurrent +
                 ", clubBean=" + clubBean +
                 '}';
