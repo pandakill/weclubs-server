@@ -5,7 +5,7 @@ package com.weclubs.bean;
  *
  * Created by fangzanpan on 2017/3/10.
  */
-public class WCClubAuthoryBean {
+public class WCClubAuthorityBean {
 
     private long id;
     private String name;
@@ -46,7 +46,7 @@ public class WCClubAuthoryBean {
 
     @Override
     public String toString() {
-        return "WCClubAuthoryBean{" +
+        return "WCClubAuthorityBean{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", attribute='" + attribute + '\'' +
