@@ -13,6 +13,7 @@ public class WCClubBean implements Serializable {
     private long schoolId;
     private String name;
     private String introduction;
+    private String slogan;
     private String avatarUrl;
     private int isAuth;
     private int status;
@@ -52,6 +53,14 @@ public class WCClubBean implements Serializable {
 
     public void setIntroduction(String introduction) {
         this.introduction = introduction;
+    }
+
+    public String getSlogan() {
+        return slogan;
+    }
+
+    public void setSlogan(String slogan) {
+        this.slogan = slogan;
     }
 
     public String getAvatarUrl() {
@@ -117,6 +126,7 @@ public class WCClubBean implements Serializable {
                 ", schoolId=" + schoolId +
                 ", name='" + name + '\'' +
                 ", introduction='" + introduction + '\'' +
+                ", slogan='" + slogan + '\'' +
                 ", avatarUrl='" + avatarUrl + '\'' +
                 ", isAuth=" + isAuth +
                 ", status=" + status +
