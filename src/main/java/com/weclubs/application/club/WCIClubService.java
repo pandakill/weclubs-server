@@ -1,6 +1,7 @@
 package com.weclubs.application.club;
 
 import com.weclubs.bean.WCClubBean;
+import com.weclubs.bean.WCClubHonorBean;
 
 import java.util.List;
 
@@ -20,4 +21,6 @@ public interface WCIClubService {
     List<WCClubBean> getClubsBySchoolId(long schoolId);
 
     List<WCClubBean> getClubsByStudentId(long studentId);
+
+    List<WCClubHonorBean> getClubHonorByClubId(long clubId);
 }

@@ -1,6 +1,8 @@
 package com.weclubs.application.club;
 
 import com.weclubs.bean.WCClubBean;
+import com.weclubs.bean.WCClubHonorBean;
+import com.weclubs.mapper.WCClubHonorMapper;
 import com.weclubs.mapper.WCClubMapper;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,8 @@ public class WCClubServiceImpl implements WCIClubService {
 
     @Autowired
     private WCClubMapper mClubMapper;
+    @Autowired
+    private WCClubHonorMapper mClubHonorMapper;
 
     public WCClubBean getClubInfoById(long clubId) {
 
@@ -73,5 +77,15 @@ public class WCClubServiceImpl implements WCIClubService {
         }
 
         return mClubMapper.getClubsByStudentId(studentId);
+    }
+
+    public List<WCClubHonorBean> getClubHonorByClubId(long clubId) {
+
+        if (clubId <= 0) {
+            log.error("getClubHonorByClubId：clubId 不能小于等于 0。");
+            return null;
+        }
+
+        return mClubHonorMapper.getClubHonorsByClubId(clubId);
     }
 }
