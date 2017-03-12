@@ -12,6 +12,7 @@ public enum WCHttpStatus {
     FAIL_REQUEST(3000, "请求失败"),
     FAIL_REQUEST_UNVALID_PARAMS(3001, "参数违法"),
     FAIL_REQUEST_NULL_PARAMS(3002, "请求参数为空"),
+    FAIL_REQUEST_UNVAILID_SIGN(3003, "签名违法"),
     FAIL_USER_TOKEN_UNVALID(3010, "token失效"),
     FAIL_USER_PSW_UNVALID(3011, "密码错误"),
     FAIL_USER_UNPERMISSION(3012, "用户没有改权限"),
