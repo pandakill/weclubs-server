@@ -6,6 +6,7 @@ import com.weclubs.mapper.WCClubHonorMapper;
 import com.weclubs.mapper.WCClubMapper;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -79,6 +80,7 @@ public class WCClubServiceImpl implements WCIClubService {
         return mClubMapper.getClubsByStudentId(studentId);
     }
 
+    @Cacheable(value = "getClubHonorByClubId")
     public List<WCClubHonorBean> getClubHonorByClubId(long clubId) {
 
         if (clubId <= 0) {
@@ -87,5 +89,10 @@ public class WCClubServiceImpl implements WCIClubService {
         }
 
         return mClubHonorMapper.getClubHonorsByClubId(clubId);
+    }
+
+    @Cacheable(value = "getCacheTest")
+    public String getCacheTest() {
+        return "spring-boot-test";
     }
 }

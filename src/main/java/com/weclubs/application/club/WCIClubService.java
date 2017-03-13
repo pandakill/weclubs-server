@@ -23,4 +23,6 @@ public interface WCIClubService {
     List<WCClubBean> getClubsByStudentId(long studentId);
 
     List<WCClubHonorBean> getClubHonorByClubId(long clubId);
+
+    String getCacheTest();
 }

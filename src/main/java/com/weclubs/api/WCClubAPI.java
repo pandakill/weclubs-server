@@ -76,6 +76,8 @@ public class WCClubAPI {
             List<WCClubHonorBean> honors = mClubService.getClubHonorByClubId(clubId);
             result.put("club_honor", getClubHonorList(honors));
 
+            result.put("cache_test", mClubService.getCacheTest());
+
             return WCResultData.getSuccessData(result);
 
         } catch (NumberFormatException e) {
