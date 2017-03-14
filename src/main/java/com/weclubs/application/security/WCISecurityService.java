@@ -64,4 +64,12 @@ public interface WCISecurityService {
      * @return 如果合法，返回 {@link WCHttpStatus} 中的SUCCESS
      */
     WCHttpStatus checkTokenAvailable(WCRequestModel requestModel);
+
+    /**
+     * 判断 caller 是否合法
+     *
+     * @param caller    请求参数中的 caller 值
+     * @return 如果合法，返回 {@link WCHttpStatus} 中的SUCCESS
+     */
+    WCHttpStatus checkCallerAvailable(String caller);
 }

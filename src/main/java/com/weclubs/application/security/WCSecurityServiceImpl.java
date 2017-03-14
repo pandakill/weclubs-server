@@ -67,16 +67,24 @@ public class WCSecurityServiceImpl implements WCISecurityService {
     }
 
     public WCHttpStatus checkRequestParams(WCRequestModel requestModel) {
-        if (checkRequestID(WCRequestParamsUtil.getRequestId(requestModel)) != WCHttpStatus.SUCCESS) {
+        WCHttpStatus check = WCHttpStatus.SUCCESS;
+        check = checkRequestID(WCRequestParamsUtil.getRequestId(requestModel));
+        if (check != WCHttpStatus.SUCCESS) {
             return checkRequestID(WCRequestParamsUtil.getRequestId(requestModel));
-        } else if (checkDataAvailable((HashMap<String, Object>) WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class),
-                WCRequestParamsUtil.getSign(requestModel))
-                != WCHttpStatus.SUCCESS) {
-            return checkDataAvailable((HashMap<String, Object>) WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class),
-                    WCRequestParamsUtil.getSign(requestModel));
+        } else {
+            check = checkCallerAvailable(WCRequestParamsUtil.getClientCaller(requestModel));
+            if (check != WCHttpStatus.SUCCESS) {
+                return check;
+            } else {
+                check = checkDataAvailable((HashMap<String, Object>) WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class),
+                        WCRequestParamsUtil.getSign(requestModel));
+                if (check != WCHttpStatus.SUCCESS) {
+                    return check;
+                } else {
+                    return WCHttpStatus.SUCCESS;
+                }
+            }
         }
-
-        return WCHttpStatus.SUCCESS;
     }
 
     public WCHttpStatus checkTokenAvailable(WCRequestModel requestModel) {
@@ -84,6 +92,23 @@ public class WCSecurityServiceImpl implements WCISecurityService {
         String caller = WCRequestParamsUtil.getClientCaller(requestModel);
         String token = WCRequestParamsUtil.getToken(requestModel);
         return checkTokenAvailable(userId, caller, token);
+    }
+
+    public WCHttpStatus checkCallerAvailable(String caller) {
+        String[] callers = new String[]{"android_v1", "ios", "chrome_test"};
+
+        boolean available = false;
+        for (String s : callers) {
+            if (s.equals(caller)) {
+                available = true;
+                break;
+            }
+        }
+        if (available) {
+            return WCHttpStatus.SUCCESS;
+        } else {
+            return WCHttpStatus.FAIL_REQUEST_UNVAILID_CALLER;
+        }
     }
 
     /**
