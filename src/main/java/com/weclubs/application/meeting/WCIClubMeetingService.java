@@ -1,6 +1,7 @@
 package com.weclubs.application.meeting;
 
 import com.weclubs.bean.WCClubMissionBean;
+import com.weclubs.bean.WCStudentMissionRelationBean;
 
 import java.util.List;
 
@@ -25,7 +26,7 @@ public interface WCIClubMeetingService {
 
     List<WCClubMissionBean> getMeetingsByClubId(long clubId);
 
-    List<WCClubMissionBean> getMeetingsByStudentId(long studentId);
+    List<WCStudentMissionRelationBean> getMeetingsByStudentId(long studentId);
 
-    List<WCClubMissionBean> getUnConfirmMeetingByClubId(long studentId);
+    List<WCStudentMissionRelationBean> getUnConfirmMeetingByClubId(long studentId);
 }

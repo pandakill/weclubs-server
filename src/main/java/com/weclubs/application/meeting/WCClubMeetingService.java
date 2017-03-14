@@ -1,6 +1,7 @@
 package com.weclubs.application.meeting;
 
 import com.weclubs.bean.WCClubMissionBean;
+import com.weclubs.bean.WCStudentMissionRelationBean;
 import com.weclubs.mapper.WCMeetingMapper;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,7 +110,7 @@ public class WCClubMeetingService implements WCIClubMeetingService {
         return mMeetingMapper.getMeetingsByClubId(clubId);
     }
 
-    public List<WCClubMissionBean> getMeetingsByStudentId(long studentId) {
+    public List<WCStudentMissionRelationBean> getMeetingsByStudentId(long studentId) {
 
         if (studentId <= 0) {
             log.error("getMeetingsByStudentId：查找学生所有会议失败，studentId不能小于等于0。");
@@ -119,7 +120,7 @@ public class WCClubMeetingService implements WCIClubMeetingService {
         return mMeetingMapper.getMeetingsByStudentId(studentId);
     }
 
-    public List<WCClubMissionBean> getUnConfirmMeetingByClubId(long studentId) {
+    public List<WCStudentMissionRelationBean> getUnConfirmMeetingByClubId(long studentId) {
 
         if (studentId <= 0) {
             log.error("getUnConfirmMeetingByClubId：查找学生所有未确认会议失败，studentId不能小于等于0。");

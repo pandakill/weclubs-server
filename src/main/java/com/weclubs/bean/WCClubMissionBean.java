@@ -23,6 +23,8 @@ public class WCClubMissionBean implements Serializable {
     private WCClubBean clubBean;
     private WCClubMissionBean parentMissionBean;
 
+    private WCStudentBean sponsorStudentBean;
+
     public long getId() {
         return id;
     }
@@ -119,6 +121,14 @@ public class WCClubMissionBean implements Serializable {
         this.parentMissionBean = parentMissionBean;
     }
 
+    public WCStudentBean getSponsorStudentBean() {
+        return sponsorStudentBean;
+    }
+
+    public void setSponsorStudentBean(WCStudentBean sponsorStudentBean) {
+        this.sponsorStudentBean = sponsorStudentBean;
+    }
+
     @Override
     public String toString() {
         return "WCClubMissionBean{" +
@@ -134,6 +144,7 @@ public class WCClubMissionBean implements Serializable {
                 ", isDel=" + isDel +
                 ", clubBean=" + clubBean +
                 ", parentMissionBean=" + parentMissionBean +
+                ", sponsorStudentBean=" + sponsorStudentBean +
                 '}';
     }
 }
