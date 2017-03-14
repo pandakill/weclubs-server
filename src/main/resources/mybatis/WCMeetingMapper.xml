@@ -41,7 +41,7 @@
         <result property="isDel" column="is_del" />
 
         <association property="clubMissionBean" javaType="com.weclubs.bean.WCClubMissionBean">
-            <id property="id" column="id" />
+            <id property="id" column="mission_id" />
             <result property="clubId" column="club_id" />
             <result property="attribution" column="attribution" />
             <result property="type" column="get_date" />
@@ -53,7 +53,7 @@
             <result property="isDel" column="is_del" />
 
             <association property="sponsorStudentBean" javaType="com.weclubs.bean.WCStudentBean">
-                <id property="id" column="id" />
+                <id property="id" column="sponsor_id" />
                 <result property="schoolId" column="school_id" />
                 <result property="mobile" column="mobile" />
                 <result property="nickName" column="nick_name" />
@@ -122,11 +122,12 @@
     <!-- 根据 studentId 获取该学生的所有未删除的通知 -->
     <select id="getMeetingsByStudentId" resultMap="studentMeetingMap" resultType="List">
         SELECT *
-        FROM `T_CLUB_MISSION` club_mission, `T_STUDENT_MISSION_RELATION` student_mission
+        FROM `T_CLUB_MISSION` club_mission, `T_STUDENT_MISSION_RELATION` student_mission, `T_STUDENT` student
         WHERE club_mission.`ID` = student_mission.`MISSION_ID`
         AND club_mission.`IS_DEL` = 0
         AND student_mission.`IS_DEL` = 0
         AND club_mission.`TYPE` = 2
+        AND student.`ID` = club_mission.`SPONSOR_ID`
         AND student_mission.`STUDENT_ID` = #{studentId};
     </select>
 
@@ -158,19 +159,20 @@
     <!-- 根据 studentId 获取该学生的所有未确认并且未删除的通知 -->
     <select id="getUnConfirmMeetingsByStudentId" resultMap="studentMeetingMap" resultType="List">
         SELECT *
-        FROM `T_CLUB_MISSION` club_mission, `T_STUDENT_MISSION_RELATION` student_mission
+        FROM `T_CLUB_MISSION` club_mission, `T_STUDENT_MISSION_RELATION` student_mission, `T_STUDENT` student
         WHERE club_mission.`ID` = student_mission.`MISSION_ID`
         AND club_mission.`IS_DEL` = 0
         AND student_mission.`IS_DEL` = 0
         AND club_mission.`TYPE` = 2
         AND club_mission.`STATUS` = 0
         AND student_mission.`IS_SIGN` = 0
+        AND student.`ID` = club_mission.`SPONSOR_ID`
         AND student_mission.`STUDENT_ID` = #{studentId};
     </select>
 
     <!-- 根据 schoolId 获取该校的所有未确认并且未删除的通知 -->
     <select id="getUnConfirmMeetingsBySchoolId" resultMap="meetingMap" resultType="List">
-        SELECT *如
+        SELECT *
         FROM `T_CLUB_MISSION` club_mission, `T_SCHOOL` school, `T_CLUB` club,
          `T_STUDENT_MISSION_RELATION` student_mission
         WHERE club_mission.`CLUB_ID` = club.`ID`

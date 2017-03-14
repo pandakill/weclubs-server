@@ -76,8 +76,9 @@ public class WCClubMeetingAPI {
 
                     WCStudentBean studentBean = studentMeetingRelation.getClubMissionBean().getSponsorStudentBean();
                     if (studentBean != null) {
+                        log.info("getMeetingByStudentId：" + studentBean.toString());
                         meetHash.put("sponsor_id", studentBean.getId());
-                        meetHash.put("sponsor_name", studentBean.getRealName());
+                        meetHash.put("sponsor_name", studentBean.getNickName());
                         meetHash.put("sponsor_avatar", studentBean.getAvatarUrl());
                     }
 
