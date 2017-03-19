@@ -2,6 +2,7 @@ package com.weclubs.api;
 
 import com.weclubs.application.meeting.WCIClubMeetingService;
 import com.weclubs.application.security.WCISecurityService;
+import com.weclubs.bean.WCClubMissionBean;
 import com.weclubs.bean.WCStudentBean;
 import com.weclubs.bean.WCStudentMissionRelationBean;
 import com.weclubs.model.WCRequestModel;
@@ -94,5 +95,35 @@ public class WCClubMeetingAPI {
             return WCResultData.getHttpStatusData(WCHttpStatus.FAIL_REQUEST_UNVALID_PARAMS, null);
         }
 
+    }
+
+    @RequestMapping(value = "/get_meeting_detail")
+    public WCResultData getMeetingDetail(WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            log.error("getMissionByStudentId：请求参数违法");
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+//        check = mSecurityService.checkTokenAvailable(requestModel);
+//        if (check != WCHttpStatus.SUCCESS) {
+//            log.error("getMissionByStudentId：token失效");
+//            return WCResultData.getHttpStatusData(check, null);
+//        }
+
+        try {
+            HashMap<String, Object> requestParams = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+            long meetingId = Long.getLong((String) requestParams.get("meeting_id"));
+
+            WCClubMissionBean clubMissionBean = mClubMeetingService.getMeetingDetailById(meetingId);
+//            List<WCStudentMissionRelationBean> studentRelations = mClubMeetingService.
+
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+
+        HashMap<String, Object> result = new HashMap<String, Object>();
+        return WCResultData.getSuccessData(result);
     }
 }

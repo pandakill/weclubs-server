@@ -103,6 +103,18 @@
         AND student_mission.`STUDENT_ID` = #{studentId};
     </select>
 
+    <!-- 根据 studentId 获取该学生的所有未确认且未删除的任务 -->
+    <select id="getUnConfirmClubMissionsByStudentId" resultMap="studentMissionMap" resultType="List">
+        SELECT *
+        FROM `T_CLUB_MISSION` club_mission, `T_STUDENT_MISSION_RELATION` student_mission
+        WHERE club_mission.`ID` = student_mission.`MISSION_ID`
+        AND club_mission.`IS_DEL` = 0
+        AND student_mission.`IS_DEL` = 0
+        AND club_mission.`TYPE` = 1
+        AND student_mission.`STATUS` = 0
+        AND student_mission.`STUDENT_ID` = #{studentId};
+    </select>
+
     <!-- 根据 schoolId 获取该校的所有未删除的任务 -->
     <select id="getClubMissionsBySchoolId" resultMap="clubMissionMap" resultType="List">
         SELECT *
@@ -113,5 +125,13 @@
         AND club_mission.`TYPE` = 1
         AND school.`ID` = #{schoolId};
     </select>
+
+    <!-- 根据 id 删除社团任务实体对象，实际是将 is_del 设置为 1 -->
+    <update id="changeClubMissionStatus">
+        UPDATE `T_CLUB_MISSION`
+        SET `STATUS` = #{status}
+        WHERE `Id` = #{clubMissionId}
+        AND club_mission.`TYPE` = 1;
+    </update>
 
 </mapper>
