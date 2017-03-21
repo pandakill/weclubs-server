@@ -113,12 +113,14 @@ public class WCUserAPI {
         }
 
         WCStudentBean student = mUserService.getUserInfoByMobile(mobile);
-        if (student == null || student.getStatus() == 0) {
+        if (student == null || student.getIsDel() == 1) {
+            log.error(student == null ? "找不到该用户" : "该用户被删除");
             check = WCHttpStatus.FAIL_USER_UNKNOWK;
             check.msg = "用户名或密码错误，请重新输入";
             return WCResultData.getHttpStatusData(check, null);
         } else {
             if (!password.equals(student.getPassword())) {
+                log.error("用户密码输入错误");
                 check = WCHttpStatus.FAIL_REQUEST;
                 check.msg = "用户名或密码错误，请重新输入";
                 return WCResultData.getHttpStatusData(check, null);

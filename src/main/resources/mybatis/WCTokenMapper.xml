@@ -27,7 +27,7 @@
     <!-- 创建 token 实体对象 -->
     <insert id="createToken" parameterType="com.weclubs.bean.WCTokenBean">
         INSERT INTO T_TOKEN(`UID`, `TOKEN`, `CALLER`, `CREATE_DATE`)
-        VALUES (#{uId}, #{token}, #{caller}, #{createDate};
+        VALUES (#{uId}, #{token}, #{caller}, #{createDate});
     </insert>
 
     <!-- 更新 token 对象 -->
