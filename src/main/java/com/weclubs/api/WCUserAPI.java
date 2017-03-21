@@ -135,6 +135,41 @@ public class WCUserAPI {
         }
     }
 
+    @RequestMapping(value = "/get_user_info", method = RequestMethod.POST)
+    public WCResultData getUserInfo(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            log.error("getUserInfo：请求参数违法");
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap<String, Object> requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        if (requestData == null) {
+            log.error("getUserInfo：请求参数为空");
+            check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        check = mSecurityService.checkTokenAvailable(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            log.error("getUserInfo：token失效");
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        long userId = WCRequestParamsUtil.getUserId(requestModel);
+        WCStudentBean studentBean = mUserService.getUserInfoById(userId);
+
+        if (studentBean == null || studentBean.getIsDel() == 1) {
+            log.error("getUserInfo：用户不存在");
+            check = WCHttpStatus.FAIL_USER_UNKNOWK;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap<String, Object> result = getUserInfoByStudent(studentBean);
+        return WCResultData.getSuccessData(result);
+    }
+
     /**
      * 根据 student 实体获取得到 userInfo 的字典
      *
@@ -151,6 +186,9 @@ public class WCUserAPI {
         result.put("real_name", student.getRealName());
         result.put("avatar_url", student.getAvatarUrl());
         result.put("gender", 1);
+        result.put("class_name", student.getClassName());
+        result.put("graduate_year", student.getGraduateYear() + "级");
+        result.put("is_auth", student.getStatus() == WCStudentBean.STATUS.ALREADY_AUTH.status ? 1 : 0);
 
         result.put("school_id", student.getSchoolId());
         result.put("school_name", student.getSchoolBean() == null ? "" : student.getSchoolBean().getName());

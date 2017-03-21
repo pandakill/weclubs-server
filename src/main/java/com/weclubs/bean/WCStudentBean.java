@@ -9,6 +9,22 @@ import java.io.Serializable;
  */
 public class WCStudentBean implements Serializable {
 
+    public enum STATUS {
+
+        NOT_AUTH(0),    // 未认证状态
+        ALREADY_AUTH(1),    // 认证成功状态
+        ALREADY_GRADUATE(2),    // 已经毕业状态
+        FAIL_AUTH(3),   // 认证失败状态
+        FROZEN(4)   // 账号冻结状态
+        ;
+
+        public int status;
+
+        STATUS(int status) {
+            this.status = status;
+        }
+    }
+
     private long id;
     private long schoolId;
     private String mobile;

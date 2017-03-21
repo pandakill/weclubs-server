@@ -7,6 +7,7 @@ import com.weclubs.util.MD5;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
 
@@ -88,6 +89,11 @@ public class WCTokenServiceImpl implements WCITokenService {
 
         WCTokenBean tokenBean = findTokenByUserIdAndCaller(userId, caller);
         if (tokenBean == null) {
+            return false;
+        }
+
+        if (StringUtils.isEmpty(token)) {
+            logger.error("token为空");
             return false;
         }
 

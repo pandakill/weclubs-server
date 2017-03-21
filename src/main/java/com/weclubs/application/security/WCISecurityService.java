@@ -72,4 +72,6 @@ public interface WCISecurityService {
      * @return 如果合法，返回 {@link WCHttpStatus} 中的SUCCESS
      */
     WCHttpStatus checkCallerAvailable(String caller);
+
+
 }

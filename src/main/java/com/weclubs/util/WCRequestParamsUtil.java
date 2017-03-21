@@ -194,7 +194,15 @@ public class WCRequestParamsUtil {
     public static long getUserId(HashMap<String, Object> params) {
         try {
             HashMap<String, Object> dataInfo = (HashMap<String, Object>) params.get("data");
-            return Long.parseLong((String) dataInfo.get("user_id"));
+            long userId = 0;
+            if (dataInfo.get("user_id") instanceof String) {
+                userId = Long.parseLong((String) dataInfo.get("user_id"));
+            } else if (dataInfo.get("user_id") instanceof Integer) {
+                userId = Long.parseLong(String.valueOf(dataInfo.get("user_id")));
+            } else if (dataInfo.get("user_id") instanceof Long) {
+                userId = (Long) dataInfo.get("user_id");
+            }
+            return userId;
         } catch (Exception e) {
             e.printStackTrace();
             return 0;
@@ -205,7 +213,15 @@ public class WCRequestParamsUtil {
         try {
             if (requestModel.getData() instanceof HashMap) {
                 HashMap<String, Object> data = (HashMap<String, Object>) requestModel.getData();
-                return Long.parseLong((String) data.get("user_id"));
+                long userId = 0;
+                if (data.get("user_id") instanceof String) {
+                    userId = Long.parseLong((String) data.get("user_id"));
+                } else if (data.get("user_id") instanceof Integer) {
+                    userId = Long.parseLong(String.valueOf(data.get("user_id")));
+                } else if (data.get("user_id") instanceof Long) {
+                    userId = (Long) data.get("user_id");
+                }
+                return userId;
             }
         } catch (Exception e) {
             e.printStackTrace();
