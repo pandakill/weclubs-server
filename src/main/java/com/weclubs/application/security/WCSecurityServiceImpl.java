@@ -128,8 +128,9 @@ public class WCSecurityServiceImpl implements WCISecurityService {
                 sb.append(paramName).append(paramValues.get(paramName));
             }
             sb.append(secretKey);
+            log.info("sign = " + sb.toString());
             byte[] sha1Digest = getSHA1Digest(sb.toString());
-            return MD5.toHexString(sha1Digest);
+            return MD5.toHexString(sha1Digest).toLowerCase();
         } catch (IOException e) {
             log.error("sign：Sign 值签名错误");
             e.printStackTrace();

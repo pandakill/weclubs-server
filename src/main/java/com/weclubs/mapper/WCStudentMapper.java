@@ -49,6 +49,15 @@ public interface WCStudentMapper {
     WCStudentBean getStudentById(@Param("studentId") long studentId);
 
     /**
+     * 根据手机号码获取学生个人信息
+     *
+     * @param mobile    学生手机号码
+     *
+     * @return  该学生的实体类
+     */
+    WCStudentBean getStudentByMobile(@Param("mobile") String mobile);
+
+    /**
      * 创建一个新的学生实体
      *
      * @param studentBean 学生实体类

@@ -78,7 +78,14 @@
     <select id="getStudentById" resultMap="studentWithSchoolMap" resultType="com.weclubs.bean.WCClubBean">
         SELECT *
         FROM `T_STUDENT`
-        WHENEVER `ID` = #{studentId};
+        WHERE `ID` = #{studentId};
+    </select>
+
+    <!-- 根据学生手机号码获取学生信息 -->
+    <select id="getStudentByMobile" resultMap="studentWithSchoolMap" resultType="com.weclubs.bean.WCClubBean">
+        SELECT *
+        FROM `T_STUDENT`
+        WHERE `MOBILE` = #{mobile};
     </select>
 
     <!-- 根据手机号码创建一个学生账号 -->
