@@ -103,4 +103,11 @@
          `GRADUATE_YEAR` = #{graduateYear}, `STATUS` = #{status}, `IS_DEL` = #{isDel}
         WHERE `ID` = #{id};
     </update>
+
+    <!-- 更新学生密码 -->
+    <update id="updateStudentPassword">
+        UPDATE `T_STUDENT`
+        SET `PASSWORD` = #{password}
+        WHERE `ID` = #{studentId};
+    </update>
 </mapper>

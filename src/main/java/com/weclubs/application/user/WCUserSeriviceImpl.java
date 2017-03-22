@@ -1,5 +1,6 @@
 package com.weclubs.application.user;
 
+import com.weclubs.application.security.WCISecurityService;
 import com.weclubs.bean.WCStudentBean;
 import com.weclubs.mapper.WCStudentMapper;
 import org.apache.log4j.Logger;
@@ -19,6 +20,8 @@ public class WCUserSeriviceImpl implements WCIUserService {
 
     @Autowired
     private WCStudentMapper mStudentMapper;
+    @Autowired
+    private WCISecurityService mSecurityService;
 
     public WCStudentBean getUserInfoById(long userId) {
 
@@ -73,5 +76,22 @@ public class WCUserSeriviceImpl implements WCIUserService {
 
         log.info("创建完之后studentBean = " + studentBean.toString());
         return studentBean;
+    }
+
+    public void changePassword(long userId, String password) {
+
+        if (userId <= 0) {
+            log.error("changePassword：userId不能小于等于0");
+            return;
+        }
+
+        if (StringUtils.isEmpty(password)) {
+            log.error("changePassword：密码不能为空");
+            return;
+        }
+
+        String encodePsw = mSecurityService.encodePassword(userId, password);
+
+        mStudentMapper.updateStudentPaasword(userId, encodePsw);
     }
 }

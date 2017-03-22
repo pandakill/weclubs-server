@@ -1,6 +1,7 @@
 package com.weclubs.application.security;
 
 import com.weclubs.application.token.WCITokenService;
+import com.weclubs.bean.WCStudentBean;
 import com.weclubs.model.WCRequestModel;
 import com.weclubs.util.MD5;
 import com.weclubs.util.WCHttpStatus;
@@ -109,6 +110,20 @@ public class WCSecurityServiceImpl implements WCISecurityService {
         } else {
             return WCHttpStatus.FAIL_REQUEST_UNVAILID_CALLER;
         }
+    }
+
+    public WCHttpStatus checkPasswordAvailable(WCStudentBean studentBean, String password) {
+        String encodePsw = encodePassword(studentBean.getId(), password);
+        if (encodePsw.equals(studentBean.getPassword())) {
+            return WCHttpStatus.SUCCESS;
+        } else {
+            return WCHttpStatus.FAIL_REQUEST;
+        }
+    }
+
+    public String encodePassword(long userId, String password) {
+        String encodeBaseStr = password + "_userId=" +userId;
+        return MD5.md5(encodeBaseStr);
     }
 
     /**

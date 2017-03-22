@@ -72,4 +72,12 @@ public interface WCStudentMapper {
      * @param studentBean   学生实体类
      */
     void updateStudent(WCStudentBean studentBean);
+
+    /**
+     * 更新学生的密码
+     *
+     * @param studentId 学生id
+     * @param password  加密过的密码
+     */
+    void updateStudentPaasword(@Param("studentId") long studentId, String password);
 }

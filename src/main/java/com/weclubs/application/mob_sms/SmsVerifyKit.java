@@ -13,6 +13,9 @@ public class SmsVerifyKit {
 
     private Logger log = Logger.getLogger(SmsVerifyKit.class);
 
+    private final static String ANDROID_APP_KEY = "1c36d86921782";
+    private final static String IOS_APP_KEY = "";
+
     private String appkey;
     private String phone ;
     private String zone ;
@@ -31,6 +34,19 @@ public class SmsVerifyKit {
         this.phone = phone;
         this.zone = zone;
         this.code = code;
+    }
+
+    public SmsVerifyKit(String caller, String phone, String code) {
+        super();
+        this.phone = phone;
+        this.code = code;
+        this.zone = "86";
+
+        if (caller.contains("ios")) {
+            this.appkey = IOS_APP_KEY;
+        } else if (caller.contains("android")) {
+            this.appkey = ANDROID_APP_KEY;
+        }
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.weclubs.application.security;
 
+import com.weclubs.bean.WCStudentBean;
 import com.weclubs.model.WCRequestModel;
 import com.weclubs.util.WCHttpStatus;
 
@@ -73,5 +74,23 @@ public interface WCISecurityService {
      */
     WCHttpStatus checkCallerAvailable(String caller);
 
+    /**
+     * 检查登录名和密码是否正确
+     *
+     * @param studentBean    学生实体
+     * @param password  用户密码
+     * @return 如果合法，返回 {@link WCHttpStatus} 中的SUCCESS
+     */
+    WCHttpStatus checkPasswordAvailable(WCStudentBean studentBean, String password);
+
+    /**
+     * 根据客户端上传的的密码，以及用户 id 进行二次加密，该返回得到的即为数据库存储的密码字段
+     * 客户端上传的密码应该是： MD5(BASE64(password))
+     *
+     * @param userId    用户 id
+     * @param password  客户端上传的密码
+     * @return  二次加密后的密码
+     */
+    String encodePassword(long userId, String password);
 
 }

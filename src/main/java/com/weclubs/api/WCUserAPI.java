@@ -72,7 +72,7 @@ public class WCUserAPI {
 
         } else {
 
-            SmsVerifyKit smsVerifyKit = new SmsVerifyKit("1c36d86921782", mobile, "86", code);
+            SmsVerifyKit smsVerifyKit = new SmsVerifyKit(WCRequestParamsUtil.getClientCaller(requestModel), mobile, code);
             boolean verifySuccess = true;
             try {
                 SmsVerifyKit.STATUS verifyStatus = smsVerifyKit.go();
@@ -142,7 +142,8 @@ public class WCUserAPI {
             check.msg = "用户名或密码错误，请重新输入";
             return WCResultData.getHttpStatusData(check, null);
         } else {
-            if (!password.equals(student.getPassword())) {
+            check = mSecurityService.checkPasswordAvailable(student,  password);
+            if (check != WCHttpStatus.SUCCESS) {
                 log.error("用户密码输入错误");
                 check = WCHttpStatus.FAIL_REQUEST;
                 check.msg = "用户名或密码错误，请重新输入";
@@ -191,6 +192,58 @@ public class WCUserAPI {
 
         HashMap<String, Object> result = getUserInfoByStudent(studentBean);
         return WCResultData.getSuccessData(result);
+    }
+
+    @RequestMapping(value = "/change_password", method = RequestMethod.POST)
+    public WCResultData changePassword(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            log.error("changePassword：请求参数违法");
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap<String, Object> requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        if (requestData == null) {
+            log.error("changePassword：请求参数为空");
+            check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        check = mSecurityService.checkTokenAvailable(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            log.error("changePassword：token失效");
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        long userId = WCRequestParamsUtil.getUserId(requestModel);
+        String caller = WCRequestParamsUtil.getClientCaller(requestModel);
+        String mobile = (String) requestData.get("mobile");
+        String password = (String) requestData.get("password");
+        String code = (String) requestData.get("code");
+
+        SmsVerifyKit smsVerifyKit = new SmsVerifyKit(caller, mobile, code);
+        boolean checkCodeSuccess = true;
+        try {
+            SmsVerifyKit.STATUS smsCheckStatus = smsVerifyKit.go();
+            if (smsCheckStatus != SmsVerifyKit.STATUS.SUCCESS) {
+                log.error("changePassword：验证码结果 ： " + smsCheckStatus.toString());
+                checkCodeSuccess = false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            checkCodeSuccess = false;
+        }
+
+        if (!checkCodeSuccess) {
+            check = WCHttpStatus.FAIL_REQUEST;
+            check.msg = "验证码错误";
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        mUserService.changePassword(userId, password);
+
+        return WCResultData.getSuccessData(null);
     }
 
     /**
