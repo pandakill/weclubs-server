@@ -1,5 +1,6 @@
 package com.weclubs.api;
 
+import com.weclubs.application.mob_sms.SmsVerifyKit;
 import com.weclubs.application.security.WCISecurityService;
 import com.weclubs.application.token.WCITokenService;
 import com.weclubs.application.user.WCIUserService;
@@ -52,6 +53,7 @@ public class WCUserAPI {
         }
 
         String mobile = (String) requestData.get("mobile");
+        String code = (String) requestData.get("code");
 
         if (StringUtils.isEmpty(mobile)) {
             log.error("register：请求参数中的mobile参数为空");
@@ -69,6 +71,27 @@ public class WCUserAPI {
             return WCResultData.getHttpStatusData(check, null);
 
         } else {
+
+            SmsVerifyKit smsVerifyKit = new SmsVerifyKit("1c36d86921782", mobile, "86", code);
+            boolean verifySuccess = true;
+            try {
+                SmsVerifyKit.STATUS verifyStatus = smsVerifyKit.go();
+                if (verifyStatus != SmsVerifyKit.STATUS.SUCCESS) {
+                    verifySuccess = false;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                verifySuccess = false;
+            }
+
+            log.error("最终结果是：verifySuccess = " + verifySuccess);
+
+            if (!verifySuccess) {
+                check = WCHttpStatus.FAIL_REQUEST;
+                check.msg = "验证码错误";
+                return WCResultData.getHttpStatusData(check, null);
+            }
+
             WCStudentBean createStatus = mUserService.createUserByMobile(mobile);
             if (createStatus == null || createStatus.getId() == 0) {
                 check = WCHttpStatus.FAIL_CUSTOM_DAILOG;
