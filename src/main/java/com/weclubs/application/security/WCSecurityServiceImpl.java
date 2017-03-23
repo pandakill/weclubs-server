@@ -9,6 +9,7 @@ import com.weclubs.util.WCRequestParamsUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -90,8 +91,16 @@ public class WCSecurityServiceImpl implements WCISecurityService {
 
     public WCHttpStatus checkTokenAvailable(WCRequestModel requestModel) {
         long userId = WCRequestParamsUtil.getUserId(requestModel);
+        if (userId == -1) {
+            log.error("checkTokenAvailable：请求参数中没有携带 user_id");
+            return WCHttpStatus.FAIL_DONT_HAVE_USER_ID;
+        }
         String caller = WCRequestParamsUtil.getClientCaller(requestModel);
         String token = WCRequestParamsUtil.getToken(requestModel);
+        if (StringUtils.isEmpty(token)) {
+            log.error("checkTokenAvailable：请求参数中没有携带 token");
+            return WCHttpStatus.FAIL_DONT_HAVE_TOKEN;
+        }
         return checkTokenAvailable(userId, caller, token);
     }
 

@@ -2,6 +2,7 @@ package com.weclubs.application.club;
 
 import com.weclubs.bean.WCClubBean;
 import com.weclubs.bean.WCClubHonorBean;
+import com.weclubs.bean.WCStudentBean;
 import com.weclubs.mapper.WCClubHonorMapper;
 import com.weclubs.mapper.WCClubMapper;
 import org.apache.log4j.Logger;
@@ -94,5 +95,15 @@ public class WCClubServiceImpl implements WCIClubService {
     @Cacheable(value = "getCacheTest")
     public String getCacheTest() {
         return "spring-boot-test";
+    }
+
+    public List<WCStudentBean> getStudentsByCurrentGraduate(long clubId) {
+
+        if (clubId <= 0) {
+            log.error("getStudentsByCurrentGraduate：clubId 不能小于等于 0。");
+            return null;
+        }
+
+        return mClubMapper.getCurrentGraduateStudents(clubId);
     }
 }

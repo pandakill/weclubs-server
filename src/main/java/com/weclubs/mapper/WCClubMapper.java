@@ -1,6 +1,7 @@
 package com.weclubs.mapper;
 
 import com.weclubs.bean.WCClubBean;
+import com.weclubs.bean.WCStudentBean;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -52,4 +53,13 @@ public interface WCClubMapper {
      * @return  该生的社团实体列表
      */
     List<WCClubBean> getClubsByStudentId(@Param("studentId") long studentId);
+
+    /**
+     * 获取某个社团当前届的所有学生
+     *
+     * @param clubId    社团id
+     *
+     * @return  返回此社团当前届的所有学生
+     */
+    List<WCStudentBean> getCurrentGraduateStudents(@Param("clubId") long clubId);
 }

@@ -214,6 +214,9 @@ public class WCRequestParamsUtil {
             if (requestModel.getData() instanceof HashMap) {
                 HashMap<String, Object> data = (HashMap<String, Object>) requestModel.getData();
                 long userId = 0;
+                if (!data.containsKey("user_id")) {
+                    return -1;
+                }
                 if (data.get("user_id") instanceof String) {
                     userId = Long.parseLong((String) data.get("user_id"));
                 } else if (data.get("user_id") instanceof Integer) {
@@ -233,6 +236,9 @@ public class WCRequestParamsUtil {
     public static String getToken(HashMap<String, Object> params) {
         try {
             HashMap<String, Object> dataInfo = (HashMap<String, Object>) params.get("data");
+            if (!params.containsKey("token")) {
+                return null;
+            }
             return (String) dataInfo.get("token");
         } catch (Exception e) {
             e.printStackTrace();
