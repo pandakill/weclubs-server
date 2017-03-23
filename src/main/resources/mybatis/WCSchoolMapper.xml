@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.weclubs.mapper.WCSchoolMapper">
+
+    <resultMap id="schoolMap" type="com.weclubs.bean.WCSchoolBean">
+        <id property="schoolId" column="school_id" />
+        <result property="name" column="name" />
+        <result property="parentId" column="parent_id" />
+        <result property="isDel" column="is_del" />
+    </resultMap>
+
+    <insert id="createSchool" useGeneratedKeys="true" keyProperty="id" parameterType="String">
+        INSERT INTO t_school(`name`, `parent_id` `is_del`)
+        VALUES (#{name}, 0, 0);
+    </insert>
+
+    <insert id="createMajor" useGeneratedKeys="true" keyProperty="id" parameterType="String">
+        INSERT INTO t_school(`name`, `parent_id` `is_del`)
+        VALUES (#{name}, #{schoolId}, 0);
+    </insert>
+
+    <update id="updateSchool" parameterType="com.weclubs.bean.WCSchoolBean">
+        INSERT INTO t_school(`name`, `parent_id`)
+        VALUES (#{name}, #{parentId})
+        AND `parent_id` == 0
+        WHERE `school_id` = #{schoolId};
+    </update>
+
+    <update id="updateMajor" parameterType="com.weclubs.bean.WCSchoolBean">
+        INSERT INTO t_school(`name`, `parent_id`)
+        VALUES (#{name}, #{parentId})
+        AND `parent_id` != 0
+        WHERE `school_id` = #{schoolId};
+    </update>
+
+    <select id="getSchoolById" parameterType="long">
+        SELECT *
+        FROM `t_school`
+        WHERE `school_id` = #{schoolId}
+        AND `parent_id` = 0
+        AND `is_del` = 0;
+    </select>
+
+    <select id="getMajorById" parameterType="long">
+        SELECT *
+        FROM `t_school`
+        WHERE `school_id` = #{majorId}
+        AND `parent_id` != 0
+        AND `is_del` = 0;
+    </select>
+
+    <select id="getSchools">
+        SELECT *
+        FROM `t_school`
+        AND `parent_id` = 0
+        WHERE `is_del` = 0;
+    </select>
+
+    <select id="getMajorsBySchoolId">
+        SELECT *
+        FROM `t_school`
+        WHERE `parent_id` = #{schoolId}
+        AND `is_del` = 0;
+    </select>
+
+</mapper>
