@@ -47,7 +47,7 @@ public class WCUserAPI {
         }
 
         HashMap<String, Object> requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
-        if (requestData == null) {
+        if (requestData == null || requestData.size() == 0) {
             log.error("register：请求参数为空");
             return WCResultData.getHttpStatusData(WCHttpStatus.FAIL_REQUEST_NULL_PARAMS, null);
         }
@@ -116,7 +116,7 @@ public class WCUserAPI {
         }
 
         HashMap<String, Object> requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
-        if (requestData == null) {
+        if (requestData == null || requestData.size() == 0) {
             log.error("login：请求参数为空");
             return WCResultData.getHttpStatusData(WCHttpStatus.FAIL_REQUEST_NULL_PARAMS, null);
         }
@@ -169,7 +169,7 @@ public class WCUserAPI {
         }
 
         HashMap<String, Object> requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
-        if (requestData == null) {
+        if (requestData == null || requestData.size() == 0) {
             log.error("getUserInfo：请求参数为空");
             check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
             return WCResultData.getHttpStatusData(check, null);
@@ -204,7 +204,7 @@ public class WCUserAPI {
         }
 
         HashMap<String, Object> requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
-        if (requestData == null) {
+        if (requestData == null || requestData.size() == 0) {
             log.error("changePassword：请求参数为空");
             check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
             return WCResultData.getHttpStatusData(check, null);
@@ -244,6 +244,42 @@ public class WCUserAPI {
         mUserService.changePassword(userId, password);
 
         return WCResultData.getSuccessData(null);
+    }
+
+    @RequestMapping(value = "/update_school_info", method = RequestMethod.POST)
+    public WCResultData updateSchoolInfo(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            log.error("updateUserInfo：请求参数违法");
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap<String, Object> requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        if (requestData == null || requestData.size() == 0) {
+            log.error("updateUserInfo：请求参数为空");
+            check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        check = mSecurityService.checkTokenAvailable(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            log.error("updateUserInfo：token失效");
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        // TODO: 2017/3/23 需要等 schoolService 完成之后进行补充逻辑代码
+        long userId = WCRequestParamsUtil.getUserId(requestModel);
+        if (requestData.containsKey("school_id")) {
+            long schoolId = Long.parseLong((String) requestData.get("school_id"));
+            log.info("updateSchoolInfo：更新学校信息");
+        } else if (requestData.containsKey("major_id")) {
+            long majorId = Long.parseLong((String) requestData.get("major_id"));
+            log.info("updateSchoolInfo：更新专业信息");
+        }
+
+        HashMap<String, Object> result = new HashMap<String, Object>();
+        return WCResultData.getSuccessData(result);
     }
 
     /**
