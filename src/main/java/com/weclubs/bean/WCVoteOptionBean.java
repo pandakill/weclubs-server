@@ -9,19 +9,19 @@ import java.io.Serializable;
  */
 public class WCVoteOptionBean implements Serializable {
 
-    private long id;
+    private long voteOption;
     private long voteId;
     private String content;
     private int isDel;
 
     private WCVoteBean voteBean;
 
-    public long getId() {
-        return id;
+    public long getVoteOption() {
+        return voteOption;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setVoteOption(long voteOption) {
+        this.voteOption = voteOption;
     }
 
     public long getVoteId() {
@@ -59,7 +59,7 @@ public class WCVoteOptionBean implements Serializable {
     @Override
     public String toString() {
         return "WCVoteOptionBean{" +
-                "id=" + id +
+                "voteOption=" + voteOption +
                 ", voteId=" + voteId +
                 ", content='" + content + '\'' +
                 ", isDel=" + isDel +

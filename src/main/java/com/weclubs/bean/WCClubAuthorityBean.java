@@ -7,17 +7,17 @@ package com.weclubs.bean;
  */
 public class WCClubAuthorityBean {
 
-    private long id;
+    private long clubAuthorityId;
     private String name;
     private String attribute;
     private int isDel;
 
-    public long getId() {
-        return id;
+    public long getClubAuthorityId() {
+        return clubAuthorityId;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setClubAuthorityId(long clubAuthorityId) {
+        this.clubAuthorityId = clubAuthorityId;
     }
 
     public String getName() {
@@ -47,7 +47,7 @@ public class WCClubAuthorityBean {
     @Override
     public String toString() {
         return "WCClubAuthorityBean{" +
-                "id=" + id +
+                "clubAuthorityId=" + clubAuthorityId +
                 ", name='" + name + '\'' +
                 ", attribute='" + attribute + '\'' +
                 ", isDel=" + isDel +

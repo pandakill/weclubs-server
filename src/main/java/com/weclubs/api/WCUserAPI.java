@@ -93,14 +93,14 @@ public class WCUserAPI {
             }
 
             WCStudentBean createStatus = mUserService.createUserByMobile(mobile);
-            if (createStatus == null || createStatus.getId() == 0) {
+            if (createStatus == null || createStatus.getStudentId() == 0) {
                 check = WCHttpStatus.FAIL_CUSTOM_DAILOG;
                 check.msg = "未知错误";
                 return WCResultData.getHttpStatusData(check, null);
             }
 
             HashMap<String, Object> result = new HashMap<String, Object>();
-            result.put("user_id", createStatus.getId());
+            result.put("user_id", createStatus.getStudentId());
             result.put("mobile", createStatus.getMobile());
             return WCResultData.getSuccessData(result);
         }
@@ -149,7 +149,7 @@ public class WCUserAPI {
                 check.msg = "用户名或密码错误，请重新输入";
                 return WCResultData.getHttpStatusData(check, null);
             } else {
-                String token = mTokenService.createTokenByUserIdAndCaller(student.getId(), student.getPassword(), caller);
+                String token = mTokenService.createTokenByUserIdAndCaller(student.getStudentId(), student.getPassword(), caller);
 
                 HashMap<String, Object> result = getUserInfoByStudent(student);
                 result.put("token", token);
@@ -292,7 +292,7 @@ public class WCUserAPI {
     private HashMap<String, Object> getUserInfoByStudent(WCStudentBean student) {
 
         HashMap<String, Object> result = new HashMap<String, Object>();
-        result.put("user_id", student.getId());
+        result.put("user_id", student.getStudentId());
         result.put("mobile", student.getMobile());
         result.put("nick_name", student.getNickName());
         result.put("real_name", student.getRealName());

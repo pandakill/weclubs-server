@@ -37,7 +37,7 @@ public class WCClubMissionServiceImpl implements WCIClubMissionService {
             return;
         }
 
-        if (clubMissionBean.getId() <= 0) {
+        if (clubMissionBean.getMissionId() <= 0) {
             log.error("updateMission：更新任务详情失败，clubMissionBean.getId 不能小于等于0");
             return;
         }

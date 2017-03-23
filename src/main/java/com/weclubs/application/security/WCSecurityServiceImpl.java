@@ -113,7 +113,7 @@ public class WCSecurityServiceImpl implements WCISecurityService {
     }
 
     public WCHttpStatus checkPasswordAvailable(WCStudentBean studentBean, String password) {
-        String encodePsw = encodePassword(studentBean.getId(), password);
+        String encodePsw = encodePassword(studentBean.getStudentId(), password);
         if (encodePsw.equals(studentBean.getPassword())) {
             return WCHttpStatus.SUCCESS;
         } else {

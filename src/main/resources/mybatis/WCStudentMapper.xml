@@ -4,7 +4,7 @@
 
     <!-- 学生实体映射 map，不包含学校信息 -->
     <resultMap id="studentMap" type="com.weclubs.bean.WCStudentBean">
-        <id property="id" column="id" />
+        <id property="studentId" column="student_id" />
         <result property="schoolId" column="school_id" />
         <result property="mobile" column="mobile" />
         <result property="nickName" column="nick_name" />
@@ -20,7 +20,7 @@
 
     <!-- 学生实体映射 map，包含学校信息 -->
     <resultMap id="studentWithSchoolMap" type="com.weclubs.bean.WCStudentBean">
-        <id property="id" column="id" />
+        <id property="studentId" column="student_id" />
         <result property="schoolId" column="school_id" />
         <result property="mobile" column="mobile" />
         <result property="nickName" column="nick_name" />
@@ -34,13 +34,13 @@
         <result property="isDel" column="is_Del" />
 
         <association property="schoolBean" javaType="com.weclubs.bean.WCSchoolBean">
-            <id property="id" column="id" />
+            <id property="schoolId" column="school_idid" />
             <result property="name" column="name" />
             <result property="parentId" column="parent_id" />
             <result property="isDel" column="is_del" />
 
             <association property="parentSchoolBean" javaType="com.weclubs.bean.WCSchoolBean">
-                <id property="id" column="id" />
+                <id property="schoolId" column="school_id" />
                 <result property="name" column="name" />
                 <result property="parentId" column="parent_id" />
                 <result property="isDel" column="is_del" />
@@ -59,10 +59,10 @@
         SELECT *
         FROM `T_STUDENT` student, `T_STUDENT_CLUB_GRADUATE_RELATION` student_club_graduate, `T_CLUB` club,
         `T_CLUB_GRADUATE` club_graduate
-        WHERE club.`ID` = #{clubId}
-        AND club.`ID` = club_graduate.`CLUB_ID`
-        AND student.`ID` = student_club_graduate.`STUDENT_ID`
-        AND student_club_graduate.`GRADUATE_ID` = club_graduate.`ID`
+        WHERE club.`club_id` = #{clubId}
+        AND club.`club_id` = club_graduate.`CLUB_ID`
+        AND student.`student_id` = student_club_graduate.`STUDENT_ID`
+        AND student_club_graduate.`GRADUATE_ID` = club_graduate.`graduate_id`
         AND club_graduate.`IS_CURRENT` = 1;
     </select>
 
@@ -70,15 +70,15 @@
     <select id="getStudentsByClubGraduate" resultMap="studentWithSchoolMap" resultType="List">
         SELECT *
         FROM `T_STUDENT` student, `T_CLUB_GRADUATE` club_graduate, `T_CLUB` club
-        WHERE club_graduate.`CLUB_ID` = club.`ID`
-        AND club_graduate.`ID` = #{graduateId};
+        WHERE club_graduate.`CLUB_ID` = club.`club_id`
+        AND club_graduate.`graduate_id` = #{graduateId};
     </select>
 
     <!-- 根据 studentId 获取学生信息 -->
     <select id="getStudentById" resultMap="studentWithSchoolMap" resultType="com.weclubs.bean.WCClubBean">
         SELECT *
         FROM `T_STUDENT`
-        WHERE `ID` = #{studentId};
+        WHERE `student_id` = #{studentId};
     </select>
 
     <!-- 根据学生手机号码获取学生信息 -->
@@ -101,13 +101,13 @@
          `REAL_NAME` = #{real_name}, `PASSWORD` = #{password}, `AVATAR_URL` = #{avatarUrl},
          `BIRTHDAY` = #{birthday}, `QRCORD_URL` = #{qrcordUrl}, `CLASS_NAME` = #{className},
          `GRADUATE_YEAR` = #{graduateYear}, `STATUS` = #{status}, `IS_DEL` = #{isDel}
-        WHERE `ID` = #{id};
+        WHERE `student_id` = #{id};
     </update>
 
     <!-- 更新学生密码 -->
     <update id="updateStudentPassword">
         UPDATE `T_STUDENT`
         SET `PASSWORD` = #{password}
-        WHERE `ID` = #{studentId};
+        WHERE `student_id` = #{studentId};
     </update>
 </mapper>

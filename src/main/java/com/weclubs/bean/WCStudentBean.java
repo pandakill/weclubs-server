@@ -25,7 +25,7 @@ public class WCStudentBean implements Serializable {
         }
     }
 
-    private long id;
+    private long studentId;
     private long schoolId;
     private String mobile;
     private String nickName;
@@ -41,12 +41,12 @@ public class WCStudentBean implements Serializable {
 
     private WCSchoolBean schoolBean;
 
-    public long getId() {
-        return id;
+    public long getStudentId() {
+        return studentId;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setStudentId(long studentId) {
+        this.studentId = studentId;
     }
 
     public long getSchoolId() {
@@ -156,7 +156,7 @@ public class WCStudentBean implements Serializable {
     @Override
     public String toString() {
         return "WCStudentBean{" +
-                "id=" + id +
+                "studentId=" + studentId +
                 ", schoolId=" + schoolId +
                 ", mobile='" + mobile + '\'' +
                 ", nickName='" + nickName + '\'' +

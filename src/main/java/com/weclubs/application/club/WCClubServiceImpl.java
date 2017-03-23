@@ -53,7 +53,7 @@ public class WCClubServiceImpl implements WCIClubService {
             return;
         }
 
-        if (clubBean.getId() <= 0) {
+        if (clubBean.getClubId() <= 0) {
             log.error("updateClub：更新失败，club.id 不能为小于等于 0。");
         }
 

@@ -9,19 +9,19 @@ import java.io.Serializable;
  */
 public class WCSchoolBean implements Serializable {
 
-    private long id;
+    private long schoolId;
     private String name;
     private long parentId;
     private int isDel;
 
     private WCSchoolBean parentSchoolBean;
 
-    public long getId() {
-        return id;
+    public long getSchoolId() {
+        return schoolId;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setSchoolId(long schoolId) {
+        this.schoolId = schoolId;
     }
 
     public String getName() {
@@ -59,7 +59,7 @@ public class WCSchoolBean implements Serializable {
     @Override
     public String toString() {
         return "WCSchoolBean{" +
-                "id=" + id +
+                "schoolId=" + schoolId +
                 ", name='" + name + '\'' +
                 ", parentId=" + parentId +
                 ", isDel=" + isDel +

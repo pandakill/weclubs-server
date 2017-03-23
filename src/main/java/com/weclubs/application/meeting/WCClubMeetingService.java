@@ -39,7 +39,7 @@ public class WCClubMeetingService implements WCIClubMeetingService {
             return;
         }
 
-        if (clubMissionBean.getId() <= 0) {
+        if (clubMissionBean.getMissionId() <= 0) {
             log.error("updateMeeting：更新会议失败，meetingBean.getId不能小于等于0。");
             return;
         }

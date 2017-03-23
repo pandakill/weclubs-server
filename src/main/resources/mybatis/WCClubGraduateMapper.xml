@@ -4,7 +4,7 @@
 
     <!-- 社团届数实体映射 map -->
     <resultMap id="clubGraduateMap" type="com.weclubs.bean.WCClubGraduateBean">
-        <id property="id" column="id" />
+        <id property="clubGraduateId" column="club_graduate_id" />
         <result property="clubId" column="club_id" />
         <result property="graduateCount" column="graduate_count" />
         <result property="graduateName" column="graduate_name" />
@@ -24,13 +24,13 @@
         UPDATE `T_CLUB_GRADUATE`
         SET `GRADUATE_COUNT` = #{graduateCount}, `GRADUATE_NAME` = #{graduateName},
          `IS_CURRENT` = #{isCurrent}
-        WHERE `Id` = #{clubGraduateId};
+        WHERE `CLUB_GRADUATE_ID` = #{clubGraduateId};
     </update>
 
     <!-- 根据 id 删除社团届数实体对象 -->
     <delete id="deleteClubGraduateById">
         DELETE FROM `T_CLUB_GRADUATE`
-        WHERE `id` = #{clubGraduateId};
+        WHERE `CLUB_GRADUATE_ID` = #{clubGraduateId};
     </delete>
 
     <!-- 根据社团 id 查找社团届数实体对象列表 -->
@@ -42,7 +42,7 @@
     <!-- 根据社团届数 id 查找届数实体对象 -->
     <select id="getClubGraduateByClubGraduateId" resultMap="clubGraduateMap">
         SELECT * FROM `T_CLUB_GRADUATE`
-        WHERE `ID` = #{clubGraduateId};
+        WHERE `CLUB_GRADUATE_ID` = #{clubGraduateId};
     </select>
 
     <!-- 根据社团 id 查找社团当前届数实体对象 -->

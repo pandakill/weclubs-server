@@ -9,19 +9,19 @@ import java.util.List;
  */
 public class WCClubJobBean {
 
-    private long id;
+    private long jobId;
     private String name;
     private int isSuggest;
     private int isDel;
 
     List<WCClubAuthorityBean> authorities;
 
-    public long getId() {
-        return id;
+    public long getJobId() {
+        return jobId;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setJobId(long jobId) {
+        this.jobId = jobId;
     }
 
     public String getName() {
@@ -59,11 +59,11 @@ public class WCClubJobBean {
     @Override
     public String toString() {
         return "WCClubJobBean{" +
-                "id=" + id +
+                "jobId=" + jobId +
                 ", name='" + name + '\'' +
                 ", isSuggest=" + isSuggest +
                 ", isDel=" + isDel +
-                ", authorities=" + (authorities == null ? "null" : authorities.toString()) +
+                ", authorities=" + authorities +
                 '}';
     }
 }

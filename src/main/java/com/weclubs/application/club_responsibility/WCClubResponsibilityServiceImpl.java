@@ -100,7 +100,7 @@ public class WCClubResponsibilityServiceImpl implements WCIClubResponsibilitySer
 
         if (departments != null && departments.size() > 0) {
             for (int i = 0; i < departments.size(); i++) {
-                departmentsStr += departments.get(i).getId();
+                departmentsStr += departments.get(i).getDepartmentId();
 
                 if (i != (departments.size() - 1)) {
                     departmentsStr += ",";
@@ -140,7 +140,7 @@ public class WCClubResponsibilityServiceImpl implements WCIClubResponsibilitySer
                 List<WCClubAuthorityBean> authorities = job.getAuthorities();
                 if (authorities != null && authorities.size() > 0) {
                     for (int j = 0; j < authorities.size(); j++) {
-                        authority += authorities.get(j).getId();
+                        authority += authorities.get(j).getClubAuthorityId();
 
                         if (j != (authorities.size() - 1)) {
                             authority += ",";
@@ -148,7 +148,7 @@ public class WCClubResponsibilityServiceImpl implements WCIClubResponsibilitySer
                     }
                 }
 
-                jsonObject.put(job.getId() + "", authority);
+                jsonObject.put(job.getJobId() + "", authority);
                 jobArray.add(jsonObject);
             }
 

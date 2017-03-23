@@ -4,7 +4,7 @@
 
     <!-- 社团实体映射 map，不包含学校信息 -->
     <resultMap id="clubAuthorityMap" type="com.weclubs.bean.WCClubAuthorityBean">
-        <id property="id" column="id" />
+        <id property="clubAuthorityId" column="club_authority_id" />
         <result property="name" column="name" />
         <result property="attribute" column="attribute" />
         <result property="isDel" column="is_del" />
@@ -20,13 +20,13 @@
     <update id="deleteAuthority">
         UPDATE `T_CLUB_AUTHORITY`
         SET `IS_DEL` = 1
-        WHERE `ID` = #{authorityId};
+        WHERE `CLUB_AUTHORITY_ID` = #{authorityId};
     </update>
 
     <!-- 根据 id 获取指定的权限详情 -->
     <select id="getAuthorityById" resultMap="clubAuthorityMap" resultType="com.weclubs.bean.WCClubAuthorityBean">
         SELECT * FROM `T_CLUB_AUTHORITY`
-        WHERE `ID` = #{authorityId}
+        WHERE `CLUB_AUTHORITY_ID` = #{authorityId}
         AND `IS_DEL` = 0;
     </select>
 

@@ -139,16 +139,16 @@ public class WCTestAPI {
 
 
         WCClubAuthorityBean auth1 = new WCClubAuthorityBean();
-        auth1.setId(1);
+        auth1.setClubAuthorityId(1);
         WCClubAuthorityBean auth2 = new WCClubAuthorityBean();
-        auth2.setId(2);
+        auth2.setClubAuthorityId(2);
         WCClubAuthorityBean auth3 = new WCClubAuthorityBean();
-        auth3.setId(3);
+        auth3.setClubAuthorityId(3);
         WCClubAuthorityBean auth4 = new WCClubAuthorityBean();
-        auth4.setId(4);
+        auth4.setClubAuthorityId(4);
 
         WCClubJobBean job1 = new WCClubJobBean();
-        job1.setId(1);
+        job1.setJobId(1);
         List<WCClubAuthorityBean> list1 = new ArrayList<WCClubAuthorityBean>();
         list1.add(auth1);
         list1.add(auth2);
@@ -156,7 +156,7 @@ public class WCTestAPI {
         jobs.add(job1);
 
         WCClubJobBean job2 = new WCClubJobBean();
-        job2.setId(2);
+        job2.setJobId(2);
         List<WCClubAuthorityBean> list2 = new ArrayList<WCClubAuthorityBean>();
         list2.add(auth1);
         list2.add(auth3);
@@ -165,7 +165,7 @@ public class WCTestAPI {
         jobs.add(job2);
 
         WCClubJobBean job3 = new WCClubJobBean();
-        job3.setId(3);
+        job3.setJobId(3);
         List<WCClubAuthorityBean> list3 = new ArrayList<WCClubAuthorityBean>();
         list3.add(auth1);
         list3.add(auth3);
@@ -186,7 +186,7 @@ public class WCTestAPI {
                 List<WCClubAuthorityBean> authorities = job.getAuthorities();
                 if (authorities != null && authorities.size() > 0) {
                     for (int j = 0; j < authorities.size(); j++) {
-                        authority += authorities.get(j).getId();
+                        authority += authorities.get(j).getClubAuthorityId();
 
                         if (j != (authorities.size() - 1)) {
                             authority += ",";
@@ -194,7 +194,7 @@ public class WCTestAPI {
                     }
                 }
 
-                jsonObject.put(job.getId() + "", authority);
+                jsonObject.put(job.getJobId() + "", authority);
                 jobArray.add(jsonObject);
             }
 

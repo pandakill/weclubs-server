@@ -4,7 +4,7 @@
 
     <!-- 社团职位映射 map -->
     <resultMap id="clubJobMap" type="com.weclubs.bean.WCClubJobBean">
-        <id property="id" column="id" />
+        <id property="jobId" column="job_id" />
         <result property="name" column="name" />
         <result property="isSuggest" column="is_suggest" />
         <result property="isDel" column="is_del" />
@@ -19,21 +19,21 @@
     <!-- 根据 id 获取社团职位详情 -->
     <select id="getClubJobById" resultMap="clubJobMap">
         SELECT * FROM `T_CLUB_JOB`
-        WHERE `ID` = #{clubJobId};
+        WHERE `JOB_ID` = #{clubJobId};
     </select>
 
     <!-- 更新社团职位实体信息 -->
     <update id="updateClubJob" parameterType="com.weclubs.bean.WCClubJobBean">
         UPDATE `T_CLUB_JOB`
         SET `NAME` = #{name}, `IS_SUGGEST` = #{isSuggest}
-        WHERE `ID` = #{id};
+        WHERE `JOB_ID` = #{jobId};
     </update>
 
     <!-- 根据 id 删除社团职位 -->
     <update id="deleteClubJob">
         UPDATE `T_CLUB_JOB`
         SET `IS_DEL` = #{isDel}
-        WHERE `ID` = #{clubJobId};
+        WHERE `JOB_ID` = #{clubJobId};
     </update>
 
     <!-- 获取所有推荐的职位表 -->

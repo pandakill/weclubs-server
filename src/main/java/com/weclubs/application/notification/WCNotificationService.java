@@ -38,7 +38,7 @@ public class WCNotificationService implements WCINotificationService {
             return;
         }
 
-        if (clubMissionBean.getId() <= 0) {
+        if (clubMissionBean.getMissionId() <= 0) {
             log.error("updateNotification：更新通知失败，notificationBean.getId不能小于等于0。");
             return;
         }

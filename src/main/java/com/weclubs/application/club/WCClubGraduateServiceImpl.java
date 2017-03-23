@@ -24,8 +24,8 @@ public class WCClubGraduateServiceImpl implements WCIClubGraduateService {
             return;
         }
 
-        if (clubGraduateBean.getId() <= 0) {
-            log.error("createClubGraduate：创建社团届数失败，clubGraduate.clubId不能小于等于0。");
+        if (clubGraduateBean.getClubGraduateId() <= 0) {
+            log.error("createClubGraduate：创建社团届数失败，clubGraduate.clubGraduateId不能小于等于0。");
             return;
         }
 

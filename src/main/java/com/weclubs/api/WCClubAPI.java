@@ -145,7 +145,7 @@ public class WCClubAPI {
     }
 
     private HashMap<String, Object> getClubBaseInfo(WCClubBean clubBean, HashMap<String, Object> result) {
-        result.put("club_id", clubBean.getId());
+        result.put("club_id", clubBean.getClubId());
         result.put("club_name", clubBean.getName());
         result.put("avatar_url", clubBean.getAvatarUrl());
         return result;

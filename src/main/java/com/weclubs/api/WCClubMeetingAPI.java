@@ -62,7 +62,7 @@ public class WCClubMeetingAPI {
                 for (WCStudentMissionRelationBean studentMeetingRelation : studentMeetingRelations) {
 
                     HashMap<String, Object> meetHash = new HashMap<String, Object>();
-                    meetHash.put("meeting_id", studentMeetingRelation.getId());
+                    meetHash.put("meeting_id", studentMeetingRelation.getMissionId());
                     meetHash.put("meeting_name", studentMeetingRelation.getClubMissionBean().getAttribution());
                     meetHash.put("dead_line", studentMeetingRelation.getClubMissionBean().getDeadline());
                     meetHash.put("create_date", studentMeetingRelation.getClubMissionBean().getCreateDate());
@@ -78,7 +78,7 @@ public class WCClubMeetingAPI {
                     WCStudentBean studentBean = studentMeetingRelation.getClubMissionBean().getSponsorStudentBean();
                     if (studentBean != null) {
                         log.info("getMeetingByStudentId：" + studentBean.toString());
-                        meetHash.put("sponsor_id", studentBean.getId());
+                        meetHash.put("sponsor_id", studentBean.getStudentId());
                         meetHash.put("sponsor_name", studentBean.getNickName());
                         meetHash.put("sponsor_avatar", studentBean.getAvatarUrl());
                     }

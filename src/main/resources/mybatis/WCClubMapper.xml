@@ -17,7 +17,7 @@
 
     <!-- 社团实体映射 map，包含学校信息 -->
     <resultMap id="clubWithSchoolMap" type="com.weclubs.bean.WCClubBean">
-        <id property="id" column="id" />
+        <id property="clubId" column="club_id" />
         <result property="schoolId" column="school_id" />
         <result property="name" column="name" />
         <result property="introduction" column="introduction" />
@@ -28,13 +28,13 @@
         <result property="checkCount" column="check_count" />
 
         <association property="schoolBean" javaType="com.weclubs.bean.WCSchoolBean">
-            <id property="id" column="id" />
+            <id property="schoolId" column="school_id" />
             <result property="name" column="name" />
             <result property="parentId" column="parent_id" />
             <result property="isDel" column="is_del" />
 
             <association property="parentSchoolBean" javaType="com.weclubs.bean.WCSchoolBean">
-                <id property="id" column="id" />
+                <id property="schoolId" column="school_id" />
                 <result property="name" column="name" />
                 <result property="parentId" column="parent_id" />
                 <result property="isDel" column="is_del" />
@@ -45,14 +45,14 @@
     <!-- 根据社团 id 查找社团信息 -->
     <select id="getClubById" resultMap="clubWithSchoolMap">
         SELECT * FROM `T_CLUB`
-        WHERE `ID` = #{clubId};
+        WHERE `CLUB_ID` = #{clubId};
     </select>
 
     <!-- 查找审核通过的所有社团 -->
     <select id="getClubsBySchoolId" resultType="List" resultMap="clubMap">
         SELECT * FROM `T_CLUB` club, `T_SCHOOL` school
-        WHERE school.`ID` = #{schoolId}
-        AND club.`SCHOOL_ID` = school.`ID`
+        WHERE school.`SCHOOL_ID` = #{schoolId}
+        AND club.`SCHOOL_ID` = school.`school_id`
         AND club.`STATUS` = 1;
     </select>
 
@@ -61,9 +61,9 @@
         SELECT * FROM `T_CLUB` club, `T_STUDENT_CLUB_GRADUATE_RELATION` student_club,
         `T_CLUB_GRADUATE` club_graduate
         WHERE student_club.`STUDENT_ID` = #{studentId}
-        AND club_graduate.`club_id` = club.`id`
+        AND club_graduate.`club_id` = club.`club_id`
         AND club_graduate.`is_current` = 1
-        AND club_graduate.`id` = student_club.`graduate_id`
+        AND club_graduate.`graduate_id` = student_club.`graduate_id`
         AND student_club.`is_del` = 0
         AND club.`STATUS` = 1;
     </select>
@@ -82,6 +82,6 @@
         SET `SCHOOL_ID` = #{schoolId}, `NAME` = #{name}, `INTRODUCTION` = #{introduction},
          `AVATAR_URL` = #{avatarUrl}, `IS_AUTH` = #{isAuth}, `LEVEL` = #{level},
          `STATUS` = #{status}, `CHECK_COUNT` = #{checkCount}
-        WHERE `ID` = #{id};
+        WHERE `club_id` = #{clubId};
     </update>
 </mapper>

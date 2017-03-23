@@ -94,4 +94,8 @@ public class WCUserSeriviceImpl implements WCIUserService {
 
         mStudentMapper.updateStudentPaasword(userId, encodePsw);
     }
+
+    public void updateSchoolInfo(long userId, long schoolId) {
+        // TODO: 2017/3/23
+    }
 }
