@@ -211,6 +211,7 @@ public class WCClubAPI {
         }
 
         HashMap<String, Object> result = new HashMap<String, Object>();
+        result.put("sort_type", sortType);
         result.put("student", commonStudentSortByPinyin(studentsMap));
         return WCResultData.getSuccessData(result);
     }
