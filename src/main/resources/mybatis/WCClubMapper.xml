@@ -99,7 +99,7 @@
         WHERE student_club.`STUDENT_ID` = #{studentId}
         AND club_graduate.`club_id` = club.`club_id`
         AND club_graduate.`is_current` = 1
-        AND club_graduate.`graduate_id` = student_club.`graduate_id`
+        AND club_graduate.`club_graduate_id` = student_club.`graduate_id`
         AND student_club.`is_del` = 0
         AND club.`STATUS` = 1;
     </select>

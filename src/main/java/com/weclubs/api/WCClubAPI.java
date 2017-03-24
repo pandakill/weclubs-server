@@ -88,8 +88,6 @@ public class WCClubAPI {
             List<WCClubHonorBean> honors = mClubService.getClubHonorByClubId(clubId);
             result.put("club_honor", getClubHonorList(honors));
 
-            result.put("cache_test", mClubService.getCacheTest());
-
             return WCResultData.getSuccessData(result);
 
         } catch (NumberFormatException e) {
@@ -147,7 +145,7 @@ public class WCClubAPI {
             return WCResultData.getHttpStatusData(check, null);
         }
 
-        long studentId = Long.parseLong((String) requestParams.get("student_id"));
+        long studentId = WCRequestParamsUtil.getUserId(requestModel);
 
         List<WCClubBean> clubs = mClubService.getClubsByStudentId(studentId);
         ArrayList<HashMap<String, Object>> ownerClubs = new ArrayList<HashMap<String, Object>>();

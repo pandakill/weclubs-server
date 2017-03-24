@@ -62,7 +62,7 @@
         WHERE club.`club_id` = #{clubId}
         AND club.`club_id` = club_graduate.`CLUB_ID`
         AND student.`student_id` = student_club_graduate.`STUDENT_ID`
-        AND student_club_graduate.`GRADUATE_ID` = club_graduate.`graduate_id`
+        AND student_club_graduate.`graduate_id` = club_graduate.`club_graduate_id`
         AND club_graduate.`IS_CURRENT` = 1;
     </select>
 
@@ -71,7 +71,7 @@
         SELECT *
         FROM `T_STUDENT` student, `T_CLUB_GRADUATE` club_graduate, `T_CLUB` club
         WHERE club_graduate.`CLUB_ID` = club.`club_id`
-        AND club_graduate.`graduate_id` = #{graduateId};
+        AND club_graduate.`club_graduate_id` = #{graduateId};
     </select>
 
     <!-- 根据 studentId 获取学生信息 -->
