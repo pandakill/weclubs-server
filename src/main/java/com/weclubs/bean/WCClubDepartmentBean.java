@@ -8,7 +8,7 @@ package com.weclubs.bean;
 public class WCClubDepartmentBean {
 
     private long departmentId;
-    private String name;
+    private String departmentName;
     private int isSuggest;
     private int isDel;
 
@@ -20,12 +20,12 @@ public class WCClubDepartmentBean {
         this.departmentId = departmentId;
     }
 
-    public String getName() {
-        return name;
+    public String getDepartmentName() {
+        return departmentName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName;
     }
 
     public int getIsSuggest() {
@@ -48,7 +48,7 @@ public class WCClubDepartmentBean {
     public String toString() {
         return "WCClubDepartmentBean{" +
                 "departmentId=" + departmentId +
-                ", name='" + name + '\'' +
+                ", departmentName='" + departmentName + '\'' +
                 ", isSuggest=" + isSuggest +
                 ", isDel=" + isDel +
                 '}';

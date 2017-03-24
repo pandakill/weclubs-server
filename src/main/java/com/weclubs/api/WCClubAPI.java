@@ -4,7 +4,7 @@ import com.weclubs.application.club.WCIClubService;
 import com.weclubs.application.security.WCISecurityService;
 import com.weclubs.bean.WCClubBean;
 import com.weclubs.bean.WCClubHonorBean;
-import com.weclubs.bean.WCStudentBean;
+import com.weclubs.bean.WCClubStudentBean;
 import com.weclubs.model.WCRequestModel;
 import com.weclubs.model.WCResultData;
 import com.weclubs.util.WCHttpStatus;
@@ -171,10 +171,10 @@ public class WCClubAPI {
         long studentId = WCRequestParamsUtil.getRequestId(requestModel);
         long clubId = Long.parseLong((String) requestData.get("club_id"));
 
-        List<WCStudentBean> students = mClubService.getStudentsByCurrentGraduate(clubId);
+        List<WCClubStudentBean> students = mClubService.getStudentsByCurrentGraduate(clubId);
         ArrayList<HashMap<String, Object>> studentsMap = new ArrayList<HashMap<String, Object>>();
         if (students != null) {
-            for (WCStudentBean student : students) {
+            for (WCClubStudentBean student : students) {
                 studentsMap.add(getCommonStudent(student));
             }
         }
@@ -203,15 +203,16 @@ public class WCClubAPI {
         return result;
     }
 
-    private HashMap<String, Object> getCommonStudent(WCStudentBean studentBean) {
+    private HashMap<String, Object> getCommonStudent(WCClubStudentBean studentBean) {
         HashMap<String, Object> result = new HashMap<String, Object>();
         result.put("student_id", studentBean.getStudentId());
         result.put("name", !StringUtils.isEmpty(studentBean.getRealName()) ? studentBean.getRealName() : studentBean.getNickName());
-        result.put("department", "技术部");
-        result.put("job", "部长");
-        result.put("mobile", "12345098760");
+        result.put("department", studentBean.getDepartmentBean() != null ? studentBean.getDepartmentBean().getDepartmentName() : null);
+        result.put("job", studentBean.getJobBean() != null ? studentBean.getJobBean().getJobName() : null);
+        result.put("mobile", studentBean.getMobile());
         result.put("avatar_url", studentBean.getAvatarUrl());
-        result.put("major", "12级-多媒体应用");
+        result.put("major", studentBean.getGraduateYear() + "-"
+                + (studentBean.getSchoolBean() != null ? studentBean.getSchoolBean().getName() : null));
         return result;
     }
 }

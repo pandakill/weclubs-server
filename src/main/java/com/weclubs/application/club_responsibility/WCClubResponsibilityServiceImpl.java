@@ -45,15 +45,15 @@ public class WCClubResponsibilityServiceImpl implements WCIClubResponsibilitySer
             return;
         }
 
-        if (StringUtils.isEmpty(departmentBean.getName())) {
+        if (StringUtils.isEmpty(departmentBean.getDepartmentName())) {
             log.error("createDepartment：创建部门失败，department.getName不能为空。");
             return;
         }
 
-        WCClubDepartmentBean department = mDepartmentMapper.getClubDepartmentByName(departmentBean.getName());
+        WCClubDepartmentBean department = mDepartmentMapper.getClubDepartmentByName(departmentBean.getDepartmentName());
 
         if (department != null) {
-            log.error("createDepartment：创建部门失败，【" + department.getName() + "】在数据库中已经存在。");
+            log.error("createDepartment：创建部门失败，【" + department.getDepartmentName() + "】在数据库中已经存在。");
             return;
         }
 
@@ -67,15 +67,15 @@ public class WCClubResponsibilityServiceImpl implements WCIClubResponsibilitySer
             return;
         }
 
-        if (StringUtils.isEmpty(jobBean.getName())) {
+        if (StringUtils.isEmpty(jobBean.getJobName())) {
             log.error("createJob：创建职位失败，jobBean.getName不能为空。");
             return;
         }
 
-        WCClubJobBean job = mJobMapper.getClubJobByJobName(jobBean.getName());
+        WCClubJobBean job = mJobMapper.getClubJobByJobName(jobBean.getJobName());
 
         if (job != null) {
-            log.error("createJob：创建职位失败，【" + job.getName() + "】在数据库中已经存在。");
+            log.error("createJob：创建职位失败，【" + job.getJobName() + "】在数据库中已经存在。");
             return;
         }
 

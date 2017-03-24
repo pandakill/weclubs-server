@@ -10,7 +10,7 @@ import java.util.List;
 public class WCClubJobBean {
 
     private long jobId;
-    private String name;
+    private String jobName;
     private int isSuggest;
     private int isDel;
 
@@ -24,12 +24,12 @@ public class WCClubJobBean {
         this.jobId = jobId;
     }
 
-    public String getName() {
-        return name;
+    public String getJobName() {
+        return jobName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setJobName(String jobName) {
+        this.jobName = jobName;
     }
 
     public int getIsSuggest() {
@@ -60,7 +60,7 @@ public class WCClubJobBean {
     public String toString() {
         return "WCClubJobBean{" +
                 "jobId=" + jobId +
-                ", name='" + name + '\'' +
+                ", jobName='" + jobName + '\'' +
                 ", isSuggest=" + isSuggest +
                 ", isDel=" + isDel +
                 ", authorities=" + authorities +

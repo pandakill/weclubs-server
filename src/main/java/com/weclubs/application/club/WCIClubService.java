@@ -2,7 +2,7 @@ package com.weclubs.application.club;
 
 import com.weclubs.bean.WCClubBean;
 import com.weclubs.bean.WCClubHonorBean;
-import com.weclubs.bean.WCStudentBean;
+import com.weclubs.bean.WCClubStudentBean;
 
 import java.util.List;
 
@@ -27,5 +27,5 @@ public interface WCIClubService {
 
     String getCacheTest();
 
-    List<WCStudentBean> getStudentsByCurrentGraduate(long clubId);
+    List<WCClubStudentBean> getStudentsByCurrentGraduate(long clubId);
 }

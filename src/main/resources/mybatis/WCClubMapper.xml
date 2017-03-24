@@ -43,7 +43,7 @@
     </resultMap>
 
     <!-- 学生实体映射 map，包含学校信息 -->
-    <resultMap id="studentWithSchoolMap" type="com.weclubs.bean.WCStudentBean">
+    <resultMap id="clubStudentMap" type="com.weclubs.bean.WCClubStudentBean">
         <id property="studentId" column="student_id" />
         <result property="schoolId" column="school_id" />
         <result property="mobile" column="mobile" />
@@ -57,18 +57,24 @@
         <result property="status" column="status" />
         <result property="isDel" column="is_Del" />
 
+        <result property="departmentId" column="department_id" />
+        <result property="jobId" column="jobId" />
+
         <association property="schoolBean" javaType="com.weclubs.bean.WCSchoolBean">
-            <id property="schoolId" column="school_idid" />
+            <id property="schoolId" column="school_id" />
             <result property="name" column="name" />
             <result property="parentId" column="parent_id" />
             <result property="isDel" column="is_del" />
+        </association>
 
-            <association property="parentSchoolBean" javaType="com.weclubs.bean.WCSchoolBean">
-                <id property="schoolId" column="school_id" />
-                <result property="name" column="name" />
-                <result property="parentId" column="parent_id" />
-                <result property="isDel" column="is_del" />
-            </association>
+        <association property="departmentBean" javaType="com.weclubs.bean.WCClubDepartmentBean">
+            <id property="departmentId" column="department_id" />
+            <result property="departmentName" column="department_name" />
+        </association>
+
+        <association property="jobBean" javaType="com.weclubs.bean.WCClubJobBean">
+            <id property="jobId" column="job_id" />
+            <result property="jobName" column="job_name" />
         </association>
     </resultMap>
 
@@ -116,13 +122,21 @@
     </update>
 
     <!-- 根据社团 clubId 查找此社团当前届数的所有学生 -->
-    <select id="getCurrentGraduateStudents" resultType="studentWithSchoolMap">
+    <select id="getCurrentGraduateStudents" resultMap="clubStudentMap">
         SELECT *
-        FROM `t_student` student, `t_club_graduate` club_graduate, `t_student_club_graduate_relation` stu_clu_relation
+        FROM `t_student` student, `t_club_graduate` club_graduate,
+         `t_student_club_graduate_relation` stu_clu_relation, `t_club_department` department, `t_club_job` job,
+         `t_school` school
         WHERE stu_clu_relation.`student_id` = student.`student_id`
-        AND stu_clu_relation.`graduate_id` = club_graduate.`graduate_id`
+        AND stu_clu_relation.`graduate_id` = club_graduate.`club_graduate_id`
         AND club_graduate.`is_current` = 1
-        AND club_graduate.`club_id` = #{clubId};
+        AND club_graduate.`club_id` = #{clubId}
+        AND stu_clu_relation.`department_id` = department.`department_id`
+        AND stu_clu_relation.`job_id` = job.`job_id`
+        AND student.`school_id` = school.`school_id`
+        AND department.`is_del` = 0
+        AND job.`is_del` = 0
+        AND school.`is_del` = 0;
     </select>
 
 </mapper>
