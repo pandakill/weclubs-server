@@ -49,6 +49,11 @@ public class WCClubAPI {
             return WCResultData.getHttpStatusData(security, null);
         }
 
+        security = mSecurityService.checkTokenAvailable(requestModel);
+        if (security != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(security, null);
+        }
+
         try {
             HashMap<String, Object> requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
 
@@ -102,6 +107,11 @@ public class WCClubAPI {
             return WCResultData.getHttpStatusData(check, null);
         }
 
+        check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
         List<WCClubBean> suggestClubs = mClubService.getClubsBySchoolId(1);
         List<HashMap<String, Object>> resultSuggest = new ArrayList<HashMap<String, Object>>();
         for (WCClubBean suggestClub : suggestClubs) {
@@ -123,6 +133,11 @@ public class WCClubAPI {
         WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
         if (check != WCHttpStatus.SUCCESS) {
             log.error("getClubsByOwner：请求参数违法");
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        check = mSecurityService.checkTokenAvailable(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
             return WCResultData.getHttpStatusData(check, null);
         }
 
@@ -158,6 +173,11 @@ public class WCClubAPI {
         WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
         if (check != WCHttpStatus.SUCCESS) {
             log.error("getStudentsOfClubByCurrentGraduate：请求参数违法");
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        check = mSecurityService.checkTokenAvailable(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
             return WCResultData.getHttpStatusData(check, null);
         }
 
