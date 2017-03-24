@@ -20,4 +20,6 @@ public interface WCIUserService {
     void changePassword(long userId, String password);
 
     void updateSchoolInfo(long userId, long schoolId);
+
+    void updateMajorInfo(long userId, long majorId);
 }

@@ -268,14 +268,13 @@ public class WCUserAPI {
             return WCResultData.getHttpStatusData(check, null);
         }
 
-        // TODO: 2017/3/23 需要等 schoolService 完成之后进行补充逻辑代码
         long userId = WCRequestParamsUtil.getUserId(requestModel);
         if (requestData.containsKey("school_id")) {
             long schoolId = Long.parseLong((String) requestData.get("school_id"));
-            log.info("updateSchoolInfo：更新学校信息");
+            mUserService.updateSchoolInfo(userId, schoolId);
         } else if (requestData.containsKey("major_id")) {
             long majorId = Long.parseLong((String) requestData.get("major_id"));
-            log.info("updateSchoolInfo：更新专业信息");
+            mUserService.updateMajorInfo(userId, majorId);
         }
 
         HashMap<String, Object> result = new HashMap<String, Object>();

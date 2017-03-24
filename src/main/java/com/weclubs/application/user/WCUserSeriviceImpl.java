@@ -1,6 +1,8 @@
 package com.weclubs.application.user;
 
+import com.weclubs.application.school.WCISchoolService;
 import com.weclubs.application.security.WCISecurityService;
+import com.weclubs.bean.WCSchoolBean;
 import com.weclubs.bean.WCStudentBean;
 import com.weclubs.mapper.WCStudentMapper;
 import org.apache.log4j.Logger;
@@ -22,6 +24,8 @@ public class WCUserSeriviceImpl implements WCIUserService {
     private WCStudentMapper mStudentMapper;
     @Autowired
     private WCISecurityService mSecurityService;
+    @Autowired
+    private WCISchoolService mSchoolService;
 
     public WCStudentBean getUserInfoById(long userId) {
 
@@ -96,6 +100,51 @@ public class WCUserSeriviceImpl implements WCIUserService {
     }
 
     public void updateSchoolInfo(long userId, long schoolId) {
-        // TODO: 2017/3/23
+
+        if (userId <= 0) {
+            log.error("updateSchoolInfo：userId不能小于等于0");
+            return;
+        }
+
+        WCStudentBean studentBean = mStudentMapper.getStudentById(userId);
+        if (studentBean == null) {
+            log.error("updateSchoolInfo：找不到userId = " + userId + " 的学生");
+            return;
+        }
+
+        WCSchoolBean schoolBean = mSchoolService.getSchoolById(schoolId);
+        if (schoolBean == null || schoolBean.getParentId() > 0) {
+            log.error("updateSchoolInfo：找不到school或者schoolId不是学校");
+            return;
+        }
+
+        studentBean.setSchoolId(schoolId);
+
+        mStudentMapper.updateStudent(studentBean);
+    }
+
+    public void updateMajorInfo(long userId, long majorId) {
+
+
+        if (userId <= 0) {
+            log.error("updateMajorInfo：userId不能小于等于0");
+            return;
+        }
+
+        WCStudentBean studentBean = mStudentMapper.getStudentById(userId);
+        if (studentBean == null) {
+            log.error("updateMajorInfo：找不到userId = " + userId + " 的学生");
+            return;
+        }
+
+        WCSchoolBean majorBean = mSchoolService.getSchoolById(majorId);
+        if (majorBean == null || majorBean.getParentId() <= 0) {
+            log.error("updateMajorInfo：找不到major或者majorId不是院系");
+            return;
+        }
+
+        majorBean.setSchoolId(majorId);
+
+        mStudentMapper.updateStudent(studentBean);
     }
 }
