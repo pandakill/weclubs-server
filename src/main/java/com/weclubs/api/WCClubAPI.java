@@ -1,5 +1,6 @@
 package com.weclubs.api;
 
+import com.weclubs.application.club.WCClubServiceImpl;
 import com.weclubs.application.club.WCIClubService;
 import com.weclubs.application.security.WCISecurityService;
 import com.weclubs.bean.WCClubBean;
@@ -7,8 +8,10 @@ import com.weclubs.bean.WCClubHonorBean;
 import com.weclubs.bean.WCClubStudentBean;
 import com.weclubs.model.WCRequestModel;
 import com.weclubs.model.WCResultData;
+import com.weclubs.util.PinYinComparator;
 import com.weclubs.util.WCHttpStatus;
 import com.weclubs.util.WCRequestParamsUtil;
+import net.sourceforge.pinyin4j.PinyinHelper;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * 社团相关接口
@@ -171,7 +175,16 @@ public class WCClubAPI {
         long studentId = WCRequestParamsUtil.getRequestId(requestModel);
         long clubId = Long.parseLong((String) requestData.get("club_id"));
 
-        List<WCClubStudentBean> students = mClubService.getStudentsByCurrentGraduate(clubId);
+        int sortType = WCClubServiceImpl.SORT_BY_REAL_NAME; // 默认排序为按照真实姓名
+        if (requestData.containsKey("sort_type")) {
+            if (requestData.get("sort_type") instanceof Integer) {
+                sortType = (Integer) requestData.get("sort_type");
+            } else if (requestData.get("sort_type") instanceof String) {
+                sortType = Integer.parseInt((String) requestData.get("sort_type"));
+            }
+        }
+
+        List<WCClubStudentBean> students = mClubService.getStudentsByCurrentGraduate(clubId, sortType);
         ArrayList<HashMap<String, Object>> studentsMap = new ArrayList<HashMap<String, Object>>();
         if (students != null) {
             for (WCClubStudentBean student : students) {
@@ -179,9 +192,8 @@ public class WCClubAPI {
             }
         }
 
-
         HashMap<String, Object> result = new HashMap<String, Object>();
-        result.put("student", studentsMap);
+        result.put("student", commonStudentSortByPinyin(studentsMap));
         return WCResultData.getSuccessData(result);
     }
 
@@ -214,5 +226,41 @@ public class WCClubAPI {
         result.put("major", studentBean.getGraduateYear() + "-"
                 + (studentBean.getSchoolBean() != null ? studentBean.getSchoolBean().getName() : null));
         return result;
+    }
+
+    /**
+     * 根据真实姓名首字母进行排序
+     *
+     * @param studentsMap   学生的键值对列表
+     * @return  排序后的根据ABCD。。。排序的学生键值对
+     */
+    private HashMap<String, Object> commonStudentSortByPinyin(ArrayList<HashMap<String, Object>> studentsMap) {
+        String english = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String[] AZ = english.split("");
+        HashMap<String, Object> resultMap = new HashMap<String, Object>();
+        for (String s : AZ) {
+            resultMap.put(s, new ArrayList<HashMap<String, Object>>());
+        }
+        resultMap.put("*", new ArrayList<HashMap<String, Object>>());
+
+        PinYinComparator comparator = new PinYinComparator();
+        for (HashMap<String, Object> stringObjectHashMap : studentsMap) {
+            for (String s : AZ) {
+                String[] args = PinyinHelper.toGwoyeuRomatzyhStringArray(((String) stringObjectHashMap.get("name")).charAt(0));
+                if (args.length > 0) {
+                    log.info("s.toLowerCase() = " + s.toLowerCase(Locale.getDefault()) + "; args[0] = " + args[0]
+                            + "; char = " + ((String) stringObjectHashMap.get("name")).charAt(0));
+                    if (s.toLowerCase(Locale.getDefault()).equals(args[0].split("")[0])) {
+                        ((ArrayList<HashMap<String, Object>>) resultMap.get(s)).add(stringObjectHashMap);
+                        break;
+                    }
+                } else {
+                    ((ArrayList<HashMap<String, Object>>) resultMap.get("*")).add(stringObjectHashMap);
+                    break;
+                }
+            }
+        }
+
+        return resultMap;
     }
 }

@@ -62,4 +62,12 @@ public interface WCClubMapper {
      * @return  返回此社团当前届的所有学生
      */
     List<WCClubStudentBean> getCurrentGraduateStudents(@Param("clubId") long clubId);
+
+    /**
+     * 根据学生的姓名进行首字母拼音排序
+     *
+     * @param clubId    社团id
+     * @return  返回此社团当前届的所有学生
+     */
+    List<WCClubStudentBean> getCurrentGraduateStudentsBySortStuName(@Param("clubId") long clubId);
 }

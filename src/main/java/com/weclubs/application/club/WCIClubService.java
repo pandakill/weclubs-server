@@ -27,5 +27,5 @@ public interface WCIClubService {
 
     String getCacheTest();
 
-    List<WCClubStudentBean> getStudentsByCurrentGraduate(long clubId);
+    List<WCClubStudentBean> getStudentsByCurrentGraduate(long clubId, int sortType);
 }

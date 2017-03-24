@@ -20,6 +20,11 @@ import java.util.List;
 @Service(value = "clubService")
 public class WCClubServiceImpl implements WCIClubService {
 
+    public final static int SORT_BY_REAL_NAME = 0;
+    public final static int SORT_BY_GRADUATE = 1;
+    public final static int SORT_BY_DEPARTMENT = 2;
+    public final static int SORT_BY_JOB = 3;
+
     private Logger log = Logger.getLogger(WCClubServiceImpl.class);
 
     @Autowired
@@ -97,11 +102,15 @@ public class WCClubServiceImpl implements WCIClubService {
         return "spring-boot-test";
     }
 
-    public List<WCClubStudentBean> getStudentsByCurrentGraduate(long clubId) {
+    public List<WCClubStudentBean> getStudentsByCurrentGraduate(long clubId, int sortType) {
 
         if (clubId <= 0) {
             log.error("getStudentsByCurrentGraduate：clubId 不能小于等于 0。");
             return null;
+        }
+
+        if (sortType == SORT_BY_REAL_NAME) {    //根据学生真实姓名首字母排序
+            return mClubMapper.getCurrentGraduateStudentsBySortStuName(clubId);
         }
 
         return mClubMapper.getCurrentGraduateStudents(clubId);
