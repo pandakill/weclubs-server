@@ -8,6 +8,7 @@ import com.weclubs.application.security.WCISecurityService;
 import com.weclubs.bean.WCClubBean;
 import com.weclubs.bean.WCClubHonorBean;
 import com.weclubs.bean.WCClubStudentBean;
+import com.weclubs.model.WCMyClubModel;
 import com.weclubs.model.WCRequestModel;
 import com.weclubs.model.WCResultData;
 import com.weclubs.util.PinYinComparator;
@@ -230,6 +231,43 @@ public class WCClubAPI {
         HashMap<String, Object> result = new HashMap<String, Object>();
         result.put("sort_type", sortType);
         result.put("student", commonStudentSortByPinyin(studentsMap));
+        return WCResultData.getSuccessData(result);
+    }
+
+    @RequestMapping(value = "/get_my_clubs")
+    public WCResultData getMyClubs(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        check = mSecurityService.checkTokenAvailable(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        long studentId = WCRequestParamsUtil.getUserId(requestModel);
+        // TODO: 2017/3/26
+        studentId = 1;
+        List<WCMyClubModel> myClubs = mClubService.getMyClubs(studentId);
+
+        ArrayList<HashMap<String, Object>> myClubHash = new ArrayList<HashMap<String, Object>>();
+        if (myClubs != null && myClubs.size() > 0) {
+            for (WCMyClubModel myClub : myClubs) {
+                HashMap<String, Object> hash = new HashMap<String, Object>();
+                hash = getClubBaseInfo(myClub, hash);
+                hash.put("member_count", myClub.getMemberCount());
+                hash.put("todo_count", myClub.getTodoCount());
+                hash.put("activity_count", myClub.getActivityCount());
+                hash.put("level", myClub.getLevel());
+
+                myClubHash.add(hash);
+            }
+        }
+
+        HashMap<String, Object> result = new HashMap<String, Object>();
+        result.put("club", myClubHash);
         return WCResultData.getSuccessData(result);
     }
 

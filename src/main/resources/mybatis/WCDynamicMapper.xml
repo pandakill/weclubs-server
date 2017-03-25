@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.weclubs.mapper.WCDynamicMapper">
+
+    <select id="getStudentTodoCountOneClub" resultType="long">
+        select count(*)
+        from `t_student_mission_relation` mission_relation, `t_club_mission` mission
+        where mission_relation.`mission_id` = mission.`mission_id`
+        AND mission.`club_id` = #{clubId}
+        AND mission_relation.`student_id` = #{studentId}
+        AND mission_relation.`is_del` = 0 -- 未删除
+        AND mission_relation.`status` != 2  -- 2是完成的状态
+        AND mission_relation.`status` != 3  -- 3是请假的状态
+        AND mission.`is_del` = 0  -- 任务未删除
+    </select>
+
+    <select id="getStudentTodoCountNew" resultType="long">
+        select count(*)
+        from `t_student_mission_relation` mission_relation
+        where mission_relation.`student_id` = #{studentId}
+        AND mission_relation.`is_del` = 0 -- 未删除
+        AND mission_relation.`status` != 2  -- 2是完成的状态
+        AND mission_relation.`status` != 3  -- 3是请假的状态
+    </select>
+
+</mapper>

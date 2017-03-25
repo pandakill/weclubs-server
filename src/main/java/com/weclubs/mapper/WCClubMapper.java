@@ -70,4 +70,8 @@ public interface WCClubMapper {
      * @return  返回此社团当前届的所有学生
      */
     List<WCClubStudentBean> getCurrentGraduateStudentsBySortStuName(@Param("clubId") long clubId);
+
+    long getClubMemberCount(@Param("clubId") long clubId);
+
+    long getClubActivityCount(@Param("clubId") long clubId);
 }

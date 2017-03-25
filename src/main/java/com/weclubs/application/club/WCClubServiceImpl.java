@@ -5,11 +5,15 @@ import com.weclubs.bean.WCClubHonorBean;
 import com.weclubs.bean.WCClubStudentBean;
 import com.weclubs.mapper.WCClubHonorMapper;
 import com.weclubs.mapper.WCClubMapper;
+import com.weclubs.mapper.WCDynamicMapper;
+import com.weclubs.mapper.WCStudentMapper;
+import com.weclubs.model.WCMyClubModel;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,6 +35,10 @@ public class WCClubServiceImpl implements WCIClubService {
     private WCClubMapper mClubMapper;
     @Autowired
     private WCClubHonorMapper mClubHonorMapper;
+    @Autowired
+    private WCStudentMapper mStudentMapper;
+    @Autowired
+    private WCDynamicMapper mDynamicMapper;
 
     public WCClubBean getClubInfoById(long clubId) {
 
@@ -97,11 +105,6 @@ public class WCClubServiceImpl implements WCIClubService {
         return mClubHonorMapper.getClubHonorsByClubId(clubId);
     }
 
-    @Cacheable(value = "getCacheTest")
-    public String getCacheTest() {
-        return "spring-boot-test";
-    }
-
     public List<WCClubStudentBean> getStudentsByCurrentGraduate(long clubId, int sortType) {
 
         if (clubId <= 0) {
@@ -114,5 +117,26 @@ public class WCClubServiceImpl implements WCIClubService {
         }
 
         return mClubMapper.getCurrentGraduateStudents(clubId);
+    }
+
+    public List<WCMyClubModel> getMyClubs(long studentId) {
+
+        if (studentId <= 0) {
+            log.error("getMyClubs：studentId不能小于等于0");
+            return null;
+        }
+
+        List<WCMyClubModel> result = new ArrayList<WCMyClubModel>();
+
+        List<WCClubBean> myClubs = mClubMapper.getClubsByStudentId(studentId);
+        for (WCClubBean myClub : myClubs) {
+            WCMyClubModel myClubModel = new WCMyClubModel(myClub);
+            myClubModel.setMemberCount(mClubMapper.getClubMemberCount(myClub.getClubId()));
+            myClubModel.setActivityCount(mClubMapper.getClubActivityCount(myClub.getClubId()));
+            myClubModel.setTodoCount(mDynamicMapper.getStudentTodoCountOneClub(studentId, myClub.getClubId()));
+            result.add(myClubModel);
+        }
+
+        return result;
     }
 }

@@ -160,4 +160,23 @@
         ASC
     </select>
 
+    <select id="getClubMemberCount" resultType="long">
+        SELECT count(student.student_id) AS `count_num`
+        FROM `t_student` student, `t_student_club_graduate_relation` stu_clu_gra_relation,
+        `t_club_graduate` club_graudate
+        WHERE student.`student_id` = stu_clu_gra_relation.`student_id`
+        AND stu_clu_gra_relation.`status` = 1 -- 在职的社团成员
+        AND stu_clu_gra_relation.`graduate_id` = club_graudate.`club_graduate_id`
+        AND stu_clu_gra_relation.`is_del` = 0 -- 不是被删除的个人
+        AND club_graudate.`is_current` = 1  -- 社团当前届
+        AND club_graudate.`club_id` = #{clubId}
+    </select>
+
+    <select id="getClubActivityCount" resultType="long">
+        SELECT count(club_activity.`club_activity_id`) AS `count_num`
+        FROM `t_club_activity` club_activity
+        WHERE club_activity.`club_id` = #{clubId}
+        AND club_activity.`is_del` = 0
+    </select>
+
 </mapper>

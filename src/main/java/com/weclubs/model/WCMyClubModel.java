@@ -1,5 +1,7 @@
 package com.weclubs.model;
 
+import com.weclubs.bean.WCClubBean;
+
 import java.io.Serializable;
 
 /**
@@ -7,29 +9,25 @@ import java.io.Serializable;
  *
  * Created by fangzanpan on 2017/3/13.
  */
-public class WCMyClubModel implements Serializable {
+public class WCMyClubModel extends WCClubBean implements Serializable {
 
-    private long clubId;
-    private String clubName;
     private long memberCount;
-    private String clubLevel;
     private long todoCount;
     private long activityCount;
 
-    public long getClubId() {
-        return clubId;
-    }
+    public WCMyClubModel(WCClubBean clubBean) {
+        super();
 
-    public void setClubId(long clubId) {
-        this.clubId = clubId;
-    }
-
-    public String getClubName() {
-        return clubName;
-    }
-
-    public void setClubName(String clubName) {
-        this.clubName = clubName;
+        setClubId(clubBean.getClubId());
+        setAvatarUrl(clubBean.getAvatarUrl());
+        setSchoolId(clubBean.getSchoolId());
+        setIntroduction(clubBean.getIntroduction());
+        setIsAuth(clubBean.getIsAuth());
+        setLevel(clubBean.getLevel());
+        setName(clubBean.getName());
+        setSchoolBean(clubBean.getSchoolBean());
+        setSlogan(clubBean.getSlogan());
+        setStatus(clubBean.getStatus());
     }
 
     public long getMemberCount() {
@@ -38,14 +36,6 @@ public class WCMyClubModel implements Serializable {
 
     public void setMemberCount(long memberCount) {
         this.memberCount = memberCount;
-    }
-
-    public String getClubLevel() {
-        return clubLevel;
-    }
-
-    public void setClubLevel(String clubLevel) {
-        this.clubLevel = clubLevel;
     }
 
     public long getTodoCount() {
@@ -67,10 +57,7 @@ public class WCMyClubModel implements Serializable {
     @Override
     public String toString() {
         return "WCMyClubModel{" +
-                "clubId=" + clubId +
-                ", clubName='" + clubName + '\'' +
-                ", memberCount=" + memberCount +
-                ", clubLevel='" + clubLevel + '\'' +
+                "memberCount=" + memberCount +
                 ", todoCount=" + todoCount +
                 ", activityCount=" + activityCount +
                 '}';
