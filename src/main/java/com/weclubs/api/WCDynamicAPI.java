@@ -91,6 +91,7 @@ public class WCDynamicAPI {
         HashMap<String, Object> result = new HashMap<String, Object>();
         result.put("todo_type", todoType);
         result.put(todoType, todoList);
+        result.put("has_more", pageInfo.isHasNextPage() ? 1 : 0);
         return WCResultData.getSuccessData(result);
     }
 
