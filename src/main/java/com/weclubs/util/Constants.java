@@ -8,4 +8,8 @@ package com.weclubs.util;
 public class Constants {
 
     public final static int ONE_PAGE_SIZE = 10;
+
+    public final static String TODO_NOTIFY = "notify";
+    public final static String TODO_MEETING = "meeting";
+    public final static String TODO_MISSION = "mission";
 }

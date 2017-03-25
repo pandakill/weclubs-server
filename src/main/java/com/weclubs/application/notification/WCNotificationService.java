@@ -1,6 +1,7 @@
 package com.weclubs.application.notification;
 
 import com.weclubs.bean.WCClubMissionBean;
+import com.weclubs.bean.WCStudentMissionRelationBean;
 import com.weclubs.mapper.WCNotificationMapper;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,7 +110,7 @@ public class WCNotificationService implements WCINotificationService {
         return mNotificationMapper.getNotificationsByClubId(clubId);
     }
 
-    public List<WCClubMissionBean> getNotificationsByStudentId(long studentId) {
+    public List<WCStudentMissionRelationBean> getNotificationsByStudentId(long studentId) {
 
         if (studentId <= 0) {
             log.error("getNotificationsByStudentId：查找学生所有通知失败，studentId不能小于等于0。");
@@ -126,6 +127,6 @@ public class WCNotificationService implements WCINotificationService {
             return null;
         }
 
-        return mNotificationMapper.getUnConfirmNotificationsByStudentId(studentId);
+        return mNotificationMapper.getUnConfirmNotificationByClubId(studentId);
     }
 }

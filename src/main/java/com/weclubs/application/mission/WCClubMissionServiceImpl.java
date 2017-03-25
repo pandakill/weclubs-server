@@ -5,6 +5,7 @@ import com.weclubs.bean.WCStudentMissionRelationBean;
 import com.weclubs.mapper.WCClubMissionMapper;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -13,6 +14,7 @@ import java.util.List;
  *
  * Created by fangzanpan on 2017/3/16.
  */
+@Service("clubMissionService")
 public class WCClubMissionServiceImpl implements WCIClubMissionService {
 
     private Logger log = Logger.getLogger(WCClubMissionServiceImpl.class);

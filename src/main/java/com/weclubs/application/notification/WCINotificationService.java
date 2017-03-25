@@ -1,6 +1,7 @@
 package com.weclubs.application.notification;
 
 import com.weclubs.bean.WCClubMissionBean;
+import com.weclubs.bean.WCStudentMissionRelationBean;
 
 import java.util.List;
 
@@ -25,7 +26,7 @@ public interface WCINotificationService {
 
     List<WCClubMissionBean> getNotificationsByClubId(long clubId);
 
-    List<WCClubMissionBean> getNotificationsByStudentId(long studentId);
+    List<WCStudentMissionRelationBean> getNotificationsByStudentId(long studentId);
 
     List<WCClubMissionBean> getUnConfirmNotificationByClubId(long studentId);
 }
