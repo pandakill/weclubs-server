@@ -13,41 +13,41 @@
     <!-- 创建社团职位 -->
     <insert id="createClubJob" useGeneratedKeys="true" keyProperty="id" parameterType="com.weclubs.bean.WCClubJobBean">
         INSERT INTO T_CLUB_JOB(`NAME`)
-        VALUES (#{name});
+        VALUES (#{name})
     </insert>
 
     <!-- 根据 id 获取社团职位详情 -->
     <select id="getClubJobById" resultMap="clubJobMap">
         SELECT * FROM `T_CLUB_JOB`
-        WHERE `JOB_ID` = #{clubJobId};
+        WHERE `JOB_ID` = #{clubJobId}
     </select>
 
     <!-- 更新社团职位实体信息 -->
     <update id="updateClubJob" parameterType="com.weclubs.bean.WCClubJobBean">
         UPDATE `T_CLUB_JOB`
         SET `NAME` = #{name}, `IS_SUGGEST` = #{isSuggest}
-        WHERE `JOB_ID` = #{jobId};
+        WHERE `JOB_ID` = #{jobId}
     </update>
 
     <!-- 根据 id 删除社团职位 -->
     <update id="deleteClubJob">
         UPDATE `T_CLUB_JOB`
         SET `IS_DEL` = #{isDel}
-        WHERE `JOB_ID` = #{clubJobId};
+        WHERE `JOB_ID` = #{clubJobId}
     </update>
 
     <!-- 获取所有推荐的职位表 -->
     <select id="getClubJobBySuggest" resultType="List" resultMap="clubJobMap">
         SELECT * FROM `T_CLUB_JOB`
         WHERE `IS_SUGGEST` = 1
-        AND `IS_DEL` = 0;
+        AND `IS_DEL` = 0
     </select>
 
     <!-- 根据 jobName 获取社团职位详情 -->
     <select id="getClubJobByJobName" resultMap="clubJobMap" resultType="com.weclubs.bean.WCClubJobBean">
         SELECT *
         FROM `T_CLUB_JOB`
-        WHERE `NAME` = #{jobName};
+        WHERE `NAME` = #{jobName}
     </select>
 
     <!-- 根据社团 id 设置当前届的社团的职位 -->
@@ -55,7 +55,7 @@
         UPDATE `T_CLUB_GRADUATE`
         SET `JOBS` = #{jobs}
         WHERE `CLUB_ID` = #{clubId}
-        AND `IS_CURRENT` = 1;
+        AND `IS_CURRENT` = 1
     </update>
 
     <!-- 根据社团 id 获取当前届社团的职位表 -->
@@ -63,7 +63,7 @@
         SELECT `JOBS`
         FROM `T_CLUB_GRADUATE`
         WHERE `CLUB_ID` = #{clubId}
-        AND `IS_CURRENT` = 1;
+        AND `IS_CURRENT` = 1
     </select>
 
 </mapper>

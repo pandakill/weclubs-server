@@ -13,41 +13,41 @@
     <!-- 创建社团部门 -->
     <insert id="createClubDepartment" useGeneratedKeys="true" keyProperty="id" parameterType="com.weclubs.bean.WCClubDepartmentBean">
         INSERT INTO T_CLUB_DEPARTMENT(`NAME`)
-        VALUES (#{name});
+        VALUES (#{name})
     </insert>
 
     <!-- 根据 id 获取社团部门详情 -->
     <select id="getClubDepartmentById" resultMap="clubDepartmentMap">
         SELECT * FROM `T_CLUB_DEPARTMENT`
-        WHERE `DEPARTMENT_ID` = #{clubDepartmentId};
+        WHERE `DEPARTMENT_ID` = #{clubDepartmentId}
     </select>
 
     <!-- 更新社团部门实体信息 -->
     <update id="updateClubDepartment" parameterType="com.weclubs.bean.WCClubDepartmentBean">
         UPDATE `T_CLUB_DEPARTMENT`
         SET `NAME` = #{name}, `IS_SUGGEST` = #{isSuggest}
-        WHERE `DEPARTMENT_ID` = #{id};
+        WHERE `DEPARTMENT_ID` = #{id}
     </update>
 
     <!-- 根据 id 删除社团部门 -->
     <update id="deleteClubDepartment">
         UPDATE `T_CLUB_DEPARTMENT`
         SET `IS_DEL` = #{isDel}
-        WHERE `DEPARTMENT_ID` = #{clubDepartmentId};
+        WHERE `DEPARTMENT_ID` = #{clubDepartmentId}
     </update>
 
     <!-- 获取所有推荐的部门表 -->
     <select id="getClubDepartmentBySuggest" resultType="List" resultMap="clubDepartmentMap">
         SELECT * FROM `T_CLUB_DEPARTMENT`
         WHERE `IS_SUGGEST` = 1
-        AND `IS_DEL` = 0;
+        AND `IS_DEL` = 0
     </select>
 
     <!-- 根据 departmentName 获取社团部门详情 -->
     <select id="getClubDepartmentByName" resultMap="clubDepartmentMap" resultType="com.weclubs.bean.WCClubDepartmentBean">
         SELECT *
         FROM `T_CLUB_DEPARTMENT`
-        WHERE `NAME` = #{departmentName};
+        WHERE `NAME` = #{departmentName}
     </select>
 
     <!-- 根据社团 id 和 部门集合设置社团当前届的部门 -->
@@ -55,7 +55,7 @@
         UPDATE `T_CLUB_GRADUATE`
         SET `DEPARTMENTS` = #{departments}
         WHERE `CLUB_ID` = #{clubId}
-        AND `IS_CURRENT` = 1;
+        AND `IS_CURRENT` = 1
     </update>
 
     <!-- 根据社团 id 获取当前届数社团的所有部门 -->
@@ -63,7 +63,7 @@
         SELECT `DEPARTMENTS`
         FROM `T_CLUB_GRADUATE`
         WHERE `CLUB_ID` = #{clubId}
-        AND `IS_CURRENT` = 1;
+        AND `IS_CURRENT` = 1
     </select>
 
 </mapper>

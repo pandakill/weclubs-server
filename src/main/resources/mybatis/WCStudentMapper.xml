@@ -51,7 +51,7 @@
     <select id="getStudentsBySchool" resultMap="studentWithSchoolMap" resultType="List">
         SELECT *
         FROM `T_STUDENT`
-        WHERE `SCHOOL_ID` = #{schoolId};
+        WHERE `SCHOOL_ID` = #{schoolId}
     </select>
 
     <!-- 查找当前届社团的所有学生 -->
@@ -63,7 +63,7 @@
         AND club.`club_id` = club_graduate.`CLUB_ID`
         AND student.`student_id` = student_club_graduate.`STUDENT_ID`
         AND student_club_graduate.`graduate_id` = club_graduate.`club_graduate_id`
-        AND club_graduate.`IS_CURRENT` = 1;
+        AND club_graduate.`IS_CURRENT` = 1
     </select>
 
     <!-- 根据 graduateId 查找某一届社团的所有学生 -->
@@ -71,27 +71,27 @@
         SELECT *
         FROM `T_STUDENT` student, `T_CLUB_GRADUATE` club_graduate, `T_CLUB` club
         WHERE club_graduate.`CLUB_ID` = club.`club_id`
-        AND club_graduate.`club_graduate_id` = #{graduateId};
+        AND club_graduate.`club_graduate_id` = #{graduateId}
     </select>
 
     <!-- 根据 studentId 获取学生信息 -->
     <select id="getStudentById" resultMap="studentWithSchoolMap" resultType="com.weclubs.bean.WCClubBean">
         SELECT *
         FROM `T_STUDENT`
-        WHERE `student_id` = #{studentId};
+        WHERE `student_id` = #{studentId}
     </select>
 
     <!-- 根据学生手机号码获取学生信息 -->
     <select id="getStudentByMobile" resultMap="studentWithSchoolMap" resultType="com.weclubs.bean.WCClubBean">
         SELECT *
         FROM `T_STUDENT`
-        WHERE `MOBILE` = #{mobile};
+        WHERE `MOBILE` = #{mobile}
     </select>
 
     <!-- 根据手机号码创建一个学生账号 -->
     <insert id="createStudent" useGeneratedKeys="true" keyProperty="id" parameterType="com.weclubs.bean.WCStudentBean">
         INSERT INTO T_STUDENT(`MOBILE`)
-        VALUES (#{mobile});
+        VALUES (#{mobile})
     </insert>
 
     <!-- 更新学生信息 -->
@@ -101,13 +101,13 @@
          `REAL_NAME` = #{real_name}, `PASSWORD` = #{password}, `AVATAR_URL` = #{avatarUrl},
          `BIRTHDAY` = #{birthday}, `QRCORD_URL` = #{qrcordUrl}, `CLASS_NAME` = #{className},
          `GRADUATE_YEAR` = #{graduateYear}, `STATUS` = #{status}, `IS_DEL` = #{isDel}
-        WHERE `student_id` = #{id};
+        WHERE `student_id` = #{id}
     </update>
 
     <!-- 更新学生密码 -->
     <update id="updateStudentPassword">
         UPDATE `T_STUDENT`
         SET `PASSWORD` = #{password}
-        WHERE `student_id` = #{studentId};
+        WHERE `student_id` = #{studentId}
     </update>
 </mapper>

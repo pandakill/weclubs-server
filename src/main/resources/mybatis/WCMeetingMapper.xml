@@ -73,14 +73,14 @@
     <insert id="createMeeting" parameterType="com.weclubs.bean.WCClubMissionBean">
         INSERT INTO T_CLUB_MISSION(`CLUB_ID`, `ATTRIBUTION`, `TYPE`,
          `PARENT_ID`, `ADDRESS`,  `DEADLINE`, `IS_DEL`)
-        VALUES (#{clubId}, #{attribution}, #{type}, #{parentId}, #{address}, #{deadline}, #{isDel});
+        VALUES (#{clubId}, #{attribution}, #{type}, #{parentId}, #{address}, #{deadline}, #{isDel})
     </insert>
 
     <!-- 更新通知对象 -->
     <update id="updateMeeting" parameterType="com.weclubs.bean.WCClubMissionBean">
         UPDATE `T_CLUB_MISSION`
         SET `ATTRIBUTION` = #{attribution}, `ADDRESS` = #{address}, `DEADLINE` = #{deadline}
-        WHERE `mission_id` = #{missionId};
+        WHERE `mission_id` = #{missionId}
     </update>
 
     <!-- 根据 id 删除通知实体对象，实际是将 is_del 设置为 1 -->
@@ -89,7 +89,7 @@
         SET `IS_DEL` = 1
         WHERE `mission_id` = #{meetingId}
         AND club_mission.`TYPE` = 2
-        AND `IS_DEL` = 0;
+        AND `IS_DEL` = 0
     </update>
 
     <!-- 根据 id 改变通知的状态 -->
@@ -97,7 +97,7 @@
         UPDATE `T_CLUB_MISSION`
         SET `STATUS` = #{status}
         WHERE `mission_id` = #{meetingId}
-        AND club_mission.`TYPE` = 2;
+        AND club_mission.`TYPE` = 2
     </update>
 
     <!-- 根据通知 meetingId 获取通知详情 -->
@@ -106,7 +106,7 @@
         FROM `T_CLUB_MISSION`
         WHERE `mittion_id` = #{meetingId}
         AND club_mission.`TYPE` = 2
-        AND `IS_DEL` = 0;
+        AND `IS_DEL` = 0
     </select>
 
     <!-- 根据社团 clubId 获取该社团的所有未删除的通知 -->
@@ -116,7 +116,7 @@
         WHERE club_mission.`CLUB_ID` = club.`club_id`
         AND club_mission.`IS_DEl` = 0
         AND club_mission.`TYPE` = 2
-        AND club.`club_id` = #{clubId};
+        AND club.`club_id` = #{clubId}
     </select>
 
     <!-- 根据 studentId 获取该学生的所有未删除的通知 -->
@@ -128,7 +128,7 @@
         AND student_mission.`IS_DEL` = 0
         AND club_mission.`TYPE` = 2
         AND student.`student_id` = club_mission.`SPONSOR_ID`
-        AND student_mission.`STUDENT_ID` = #{studentId};
+        AND student_mission.`STUDENT_ID` = #{studentId}
     </select>
 
     <!-- 根据 schoolId 获取该校的所有未删除的通知 -->
@@ -139,7 +139,7 @@
         AND club.`SCHOOL_ID` = school.`school_id`
         AND club_mission.`IS_DEL` = 0
         AND club_mission.`TYPE` = 2
-        AND school.`school_id` = #{schoolId};
+        AND school.`school_id` = #{schoolId}
     </select>
 
     <!-- 根据社团 clubId 获取该社团的所有未确认并且未删除的通知 -->
@@ -153,7 +153,7 @@
         AND student_mission.`STATUS` = 0
         AND student_mission.`MISSION_ID` = club_mission.`mission_id`
         AND student_mission.`IS_DEL` = 0
-        AND club.`club_id` = #{clubId};
+        AND club.`club_id` = #{clubId}
     </select>
 
     <!-- 根据 studentId 获取该学生的所有未确认并且未删除的通知 -->
@@ -167,7 +167,7 @@
         AND club_mission.`STATUS` = 0
         AND student_mission.`IS_SIGN` = 0
         AND student.`student_id` = club_mission.`SPONSOR_ID`
-        AND student_mission.`STUDENT_ID` = #{studentId};
+        AND student_mission.`STUDENT_ID` = #{studentId}
     </select>
 
     <!-- 根据 schoolId 获取该校的所有未确认并且未删除的通知 -->
@@ -182,7 +182,7 @@
         AND student_mission.`STATUS` = 0
         AND student_mission.`MISSION_ID` = club_mission.`misstion_id`
         AND student_mission.`IS_DEL` = 0
-        AND school.`school_id` = #{schoolId};
+        AND school.`school_id` = #{schoolId}
     </select>
 
 </mapper>

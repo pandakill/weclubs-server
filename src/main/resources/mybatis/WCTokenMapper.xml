@@ -14,20 +14,20 @@
     <select id="getTokenByUIdAndCaller" resultMap="clubMap">
         SELECT * FROM `T_TOKEN`
         WHERE `UID` = #{uId}
-        AND `CALLER` = #{caller};
+        AND `CALLER` = #{caller}
     </select>
 
     <!-- 根据 uid 和 caller 删除对应的 token 实体对象 -->
     <delete id="deleteTokenByUIdAndCaller">
         DELETE FROM `T_TOKEN`
         WHERE `UID` = #{uId}
-        AND `CALLER` = #{caller};
+        AND `CALLER` = #{caller}
     </delete>
 
     <!-- 创建 token 实体对象 -->
     <insert id="createToken" parameterType="com.weclubs.bean.WCTokenBean">
         INSERT INTO T_TOKEN(`UID`, `TOKEN`, `CALLER`, `CREATE_DATE`)
-        VALUES (#{uId}, #{token}, #{caller}, #{createDate});
+        VALUES (#{uId}, #{token}, #{caller}, #{createDate})
     </insert>
 
     <!-- 更新 token 对象 -->
@@ -35,7 +35,7 @@
         UPDATE `T_TOKEN`
         SET `TOKEN` = #{token}, `CREATE_DATE` = #{createDate}
         WHERE `UID` = #{uId}
-        AND `CALLER` = #{caller};
+        AND `CALLER` = #{caller}
     </update>
 
 </mapper>
