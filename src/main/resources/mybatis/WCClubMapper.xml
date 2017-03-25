@@ -81,7 +81,7 @@
     <!-- 根据社团 id 查找社团信息 -->
     <select id="getClubById" resultMap="clubWithSchoolMap">
         SELECT * FROM `T_CLUB`
-        WHERE `CLUB_ID` = #{clubId};
+        WHERE `CLUB_ID` = #{clubId}
     </select>
 
     <!-- 查找审核通过的所有社团 -->
@@ -89,7 +89,7 @@
         SELECT * FROM `T_CLUB` club, `T_SCHOOL` school
         WHERE school.`SCHOOL_ID` = #{schoolId}
         AND club.`SCHOOL_ID` = school.`school_id`
-        AND club.`STATUS` = 1;
+        AND club.`STATUS` = 1
     </select>
 
     <!-- 根据学生 id 查找该学生当前加入的所有社团实体列表 -->
@@ -101,7 +101,7 @@
         AND club_graduate.`is_current` = 1
         AND club_graduate.`club_graduate_id` = student_club.`graduate_id`
         AND student_club.`is_del` = 0
-        AND club.`STATUS` = 1;
+        AND club.`STATUS` = 1
     </select>
 
     <!-- 创建社团实体 -->
@@ -109,7 +109,7 @@
         INSERT INTO T_CLUB(`SCHOOL_ID`, `NAME`, `INTRODUCTION`, `AVATAR_URL`,
          `IS_AUTH`, `LEVEL`, `STATUS`, `CHECK_COUNT`)
         VALUES (#{schoolId}, #{name}, #{introduction}, #{avatarUrl},
-         #{isAuth}, #{level}, #{status}, #{checkCount});
+         #{isAuth}, #{level}, #{status}, #{checkCount})
     </insert>
 
     <!-- 更新社团实体信息 -->
@@ -118,7 +118,7 @@
         SET `SCHOOL_ID` = #{schoolId}, `NAME` = #{name}, `INTRODUCTION` = #{introduction},
          `AVATAR_URL` = #{avatarUrl}, `IS_AUTH` = #{isAuth}, `LEVEL` = #{level},
          `STATUS` = #{status}, `CHECK_COUNT` = #{checkCount}
-        WHERE `club_id` = #{clubId};
+        WHERE `club_id` = #{clubId}
     </update>
 
     <!-- 根据社团 clubId 查找此社团当前届数的所有学生 -->
@@ -136,7 +136,7 @@
         AND student.`school_id` = school.`school_id`
         AND department.`is_del` = 0
         AND job.`is_del` = 0
-        AND school.`is_del` = 0;
+        AND school.`is_del` = 0
     </select>
 
     <!-- 根据社团 clubId 查找根据学生的姓名进行首字母拼音排序 -->
@@ -157,7 +157,7 @@
         AND school.`is_del` = 0
         ORDER BY convert(student.`real_name` USING utf8)
         COLLATE utf8_bin
-        ASC;
+        ASC
     </select>
 
 </mapper>

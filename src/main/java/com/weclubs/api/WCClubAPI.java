@@ -1,5 +1,7 @@
 package com.weclubs.api;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.weclubs.application.club.WCClubServiceImpl;
 import com.weclubs.application.club.WCIClubService;
 import com.weclubs.application.security.WCISecurityService;
@@ -110,9 +112,15 @@ public class WCClubAPI {
             return WCResultData.getHttpStatusData(check, null);
         }
 
+        int pageNo = WCRequestParamsUtil.getPageNo(requestModel);
+        int pageSize = WCRequestParamsUtil.getPageSize(requestModel);
+
+        PageHelper.startPage(pageNo, pageSize);
         List<WCClubBean> suggestClubs = mClubService.getClubsBySchoolId(1);
+        PageInfo<WCClubBean> pageInfo = new PageInfo<WCClubBean>(suggestClubs);
+
         List<HashMap<String, Object>> resultSuggest = new ArrayList<HashMap<String, Object>>();
-        for (WCClubBean suggestClub : suggestClubs) {
+        for (WCClubBean suggestClub : pageInfo.getList()) {
             HashMap<String, Object> club = new HashMap<String, Object>();
             club = getClubBaseInfo(suggestClub, club);
             resultSuggest.add(club);
@@ -121,6 +129,7 @@ public class WCClubAPI {
         HashMap<String, Object> result = new HashMap<String, Object>();
 
         result.put("club", resultSuggest);
+        result.put("has_more", pageInfo.isHasNextPage() ? 1 : 0);
 
         return WCResultData.getSuccessData(result);
     }
@@ -145,11 +154,18 @@ public class WCClubAPI {
             return WCResultData.getHttpStatusData(check, null);
         }
 
-        long studentId = WCRequestParamsUtil.getUserId(requestModel);
+        int pageNo = WCRequestParamsUtil.getPageNo(requestModel);
+        int pageSize = WCRequestParamsUtil.getPageSize(requestModel);
 
+        long studentId = WCRequestParamsUtil.getUserId(requestModel);
+        studentId = 2;
+
+        PageHelper.startPage(pageNo, pageSize);
         List<WCClubBean> clubs = mClubService.getClubsByStudentId(studentId);
+        PageInfo<WCClubBean> pageInfo = new PageInfo<WCClubBean>(clubs);
+
         ArrayList<HashMap<String, Object>> ownerClubs = new ArrayList<HashMap<String, Object>>();
-        for (WCClubBean club : clubs) {
+        for (WCClubBean club : pageInfo.getList()) {
             HashMap<String, Object> clubHash = new HashMap<String, Object>();
             clubHash = getClubBaseInfo(club, clubHash);
             clubHash.put("member_count", "10");
@@ -161,6 +177,7 @@ public class WCClubAPI {
 
         HashMap<String, Object> result = new HashMap<String, Object>();
         result.put("club", ownerClubs);
+        result.put("has_more", pageInfo.isHasNextPage() ? 1 : 0);
 
         return WCResultData.getSuccessData(result);
     }

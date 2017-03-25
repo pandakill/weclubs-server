@@ -258,4 +258,60 @@ public class WCRequestParamsUtil {
         }
         return null;
     }
+
+    /**
+     * 从请求参数中获取页码，如果没有上传页码或者上传的格式不符合要求，则会默认为page_no=1
+     *
+     * @param requestModel  请求参数
+     * @return  页码
+     */
+    public static int getPageNo(WCRequestModel requestModel) {
+        try {
+            if (requestModel.getData() instanceof HashMap) {
+                HashMap<String, Object> data = (HashMap<String, Object>) requestModel.getData();
+                if (data == null || data.size() == 0) {
+                    return 1;
+                } else if (data.get("page_no") instanceof Integer) {
+                    return (Integer) data.get("page_no");
+                } else if (data.get("page_no") instanceof String) {
+                    return Integer.parseInt((String) data.get("page_no"));
+                } else {
+                    return 1;
+                }
+            } else {
+                return 1;
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return 1;
+        }
+    }
+
+    /**
+     * 获取一页的大小，默认为 {@link Constants}{@code ONE_PAGE_SIZE}
+     *
+     * @param requestModel  请求参数
+     * @return  一页的大小
+     */
+    public static int getPageSize(WCRequestModel requestModel) {
+        try {
+            if (requestModel.getData() instanceof HashMap) {
+                HashMap<String, Object> data = (HashMap<String, Object>) requestModel.getData();
+                if (data == null || data.size() == 0) {
+                    return Constants.ONE_PAGE_SIZE;
+                } else if (data.get("size") instanceof Integer) {
+                    return (Integer) data.get("size");
+                } else if (data.get("size") instanceof String) {
+                    return Integer.parseInt((String) data.get("size"));
+                } else {
+                    return Constants.ONE_PAGE_SIZE;
+                }
+            } else {
+                return Constants.ONE_PAGE_SIZE;
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return Constants.ONE_PAGE_SIZE;
+        }
+    }
 }
