@@ -6,9 +6,9 @@
     <resultMap id="clubMissionMap" type="com.weclubs.bean.WCClubMissionBean">
         <id property="missionId" column="mission_id" />
         <result property="clubId" column="club_id" />
-        <result property="attribution" column="content" />
-        <result property="type" column="get_date" />
-        <result property="parentId" column="is_del" />
+        <result property="attribution" column="attribution" />
+        <result property="type" column="type" />
+        <result property="parentId" column="parentId" />
         <result property="address" column="address" />
         <result property="deadline" column="deadline" />
         <result property="sponsorId" column="sponsor_id" />
@@ -78,7 +78,7 @@
         SELECT *
         FROM `T_CLUB_MISSION`
         WHERE `mission_id` = #{clubMissionId}
-        AND club_mission.`TYPE` = 1
+        AND `TYPE` = 1
         AND `IS_DEL` = 0
     </select>
 

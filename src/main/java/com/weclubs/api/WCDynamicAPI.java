@@ -6,6 +6,7 @@ import com.weclubs.application.meeting.WCIClubMeetingService;
 import com.weclubs.application.mission.WCIClubMissionService;
 import com.weclubs.application.notification.WCINotificationService;
 import com.weclubs.application.security.WCISecurityService;
+import com.weclubs.bean.WCClubMissionBean;
 import com.weclubs.bean.WCStudentMissionRelationBean;
 import com.weclubs.model.WCRequestModel;
 import com.weclubs.model.WCResultData;
@@ -99,21 +100,51 @@ class WCDynamicAPI {
         return WCResultData.getSuccessData(result);
     }
 
+    @RequestMapping(value = "/get_notify_detail")
+    public WCResultData getNotifyDetail(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        check = mSecurityService.checkTokenAvailable(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        if (requestData == null || requestData.size() == 0) {
+            check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        WCClubMissionBean notifyBean = mNotifyService.getNotificationDetailById(1);
+
+        HashMap<String, Object> result = new HashMap<String, Object>();
+        return WCResultData.getSuccessData(result);
+    }
+
     private HashMap<String, Object> getTodoHash(WCStudentMissionRelationBean relationBean, String todoType) {
         HashMap<String, Object> result = new HashMap<String, Object>();
 
         result.put("student_id", relationBean.getStudentId());
         result.put("create_date", relationBean.getCreateDate());
-        result.put("content",
-                relationBean.getClubMissionBean() != null ? relationBean.getClubMissionBean().getAttribution() : null);
+        WCClubMissionBean detailBean;
 
         if (Constants.TODO_NOTIFY.equals(todoType)) {
             result.put("notify_id", relationBean.getMissionId());
             result.put("confirm_receive", relationBean.getStatus() <= 0 ? 0 : 1);   // status <= 0 即为未确认
+
+            detailBean = mNotifyService.getNotificationDetailById(relationBean.getMissionId());
+            result.put("content", detailBean.getAttribution());
         } else if (Constants.TODO_MISSION.equals(todoType)) {
             result.put("mission_id", relationBean.getMissionId());
             result.put("deadline",
                     relationBean.getClubMissionBean() != null ? relationBean.getClubMissionBean().getDeadline() : null);
+
+            detailBean = mMissionService.getMissionDetailById(relationBean.getMissionId());
+            result.put("content", detailBean.getAttribution());
 
             boolean confirmReceive = relationBean.getStatus() > 0;
             result.put("confirm_receive", confirmReceive ? 1 : 0);
@@ -128,6 +159,9 @@ class WCDynamicAPI {
 
             result.put("address",
                     relationBean.getClubMissionBean() != null ? relationBean.getClubMissionBean().getAddress() : null);
+
+            detailBean = mMeetingService.getMeetingDetailById(relationBean.getMissionId());
+            result.put("content", detailBean.getAttribution());
 
             boolean confirmReceive = relationBean.getStatus() > 0 && relationBean.getStatus() != 3;
             result.put("confirm_join", confirmReceive ? 1 : 0);

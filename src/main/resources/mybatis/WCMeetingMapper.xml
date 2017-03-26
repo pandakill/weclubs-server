@@ -6,9 +6,9 @@
     <resultMap id="meetingMap" type="com.weclubs.bean.WCClubMissionBean">
         <id property="missionId" column="mission_id" />
         <result property="clubId" column="club_id" />
-        <result property="attribution" column="content" />
-        <result property="type" column="get_date" />
-        <result property="parentId" column="is_del" />
+        <result property="attribution" column="attribution" />
+        <result property="type" column="type" />
+        <result property="parentId" column="parentId" />
         <result property="address" column="address" />
         <result property="deadline" column="deadline" />
         <result property="sponsorId" column="sponsor_id" />
@@ -88,7 +88,7 @@
         UPDATE `T_CLUB_MISSION`
         SET `IS_DEL` = 1
         WHERE `mission_id` = #{meetingId}
-        AND club_mission.`TYPE` = 2
+        AND `TYPE` = 2
         AND `IS_DEL` = 0
     </update>
 
@@ -104,8 +104,8 @@
     <select id="getMeetingById" resultMap="meetingMap">
         SELECT *
         FROM `T_CLUB_MISSION`
-        WHERE `mittion_id` = #{meetingId}
-        AND club_mission.`TYPE` = 2
+        WHERE `mission_id` = #{meetingId}
+        AND `TYPE` = 2
         AND `IS_DEL` = 0
     </select>
 
@@ -123,7 +123,7 @@
     <select id="getMeetingsByStudentId" resultMap="studentMeetingMap" resultType="List">
         SELECT *
         FROM `T_CLUB_MISSION` club_mission, `T_STUDENT_MISSION_RELATION` student_mission, `T_STUDENT` student
-        WHERE club_mission.`misstion_id` = student_mission.`MISSION_ID`
+        WHERE club_mission.`mission_id` = student_mission.`MISSION_ID`
         AND club_mission.`IS_DEL` = 0
         AND student_mission.`IS_DEL` = 0
         AND club_mission.`TYPE` = 2
