@@ -26,16 +26,20 @@ import java.util.HashMap;
  */
 @RestController
 @RequestMapping("/user")
-public class WCUserAPI {
+class WCUserAPI {
 
     private Logger log = Logger.getLogger(WCUserAPI.class);
 
-    @Autowired
     private WCISecurityService mSecurityService;
-    @Autowired
     private WCIUserService mUserService;
-    @Autowired
     private WCITokenService mTokenService;
+
+    @Autowired
+    public WCUserAPI(WCIUserService mUserService, WCITokenService mTokenService, WCISecurityService mSecurityService) {
+        this.mUserService = mUserService;
+        this.mTokenService = mTokenService;
+        this.mSecurityService = mSecurityService;
+    }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public WCResultData register(@RequestBody WCRequestModel requestModel) {
@@ -46,7 +50,7 @@ public class WCUserAPI {
             return WCResultData.getHttpStatusData(check, null);
         }
 
-        HashMap<String, Object> requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        HashMap requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
         if (requestData == null || requestData.size() == 0) {
             log.error("register：请求参数为空");
             return WCResultData.getHttpStatusData(WCHttpStatus.FAIL_REQUEST_NULL_PARAMS, null);
@@ -115,7 +119,7 @@ public class WCUserAPI {
             return WCResultData.getHttpStatusData(check, null);
         }
 
-        HashMap<String, Object> requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        HashMap requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
         if (requestData == null || requestData.size() == 0) {
             log.error("login：请求参数为空");
             return WCResultData.getHttpStatusData(WCHttpStatus.FAIL_REQUEST_NULL_PARAMS, null);
@@ -168,7 +172,7 @@ public class WCUserAPI {
             return WCResultData.getHttpStatusData(check, null);
         }
 
-        HashMap<String, Object> requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        HashMap requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
         if (requestData == null || requestData.size() == 0) {
             log.error("getUserInfo：请求参数为空");
             check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
@@ -203,7 +207,7 @@ public class WCUserAPI {
             return WCResultData.getHttpStatusData(check, null);
         }
 
-        HashMap<String, Object> requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        HashMap requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
         if (requestData == null || requestData.size() == 0) {
             log.error("changePassword：请求参数为空");
             check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
@@ -255,7 +259,7 @@ public class WCUserAPI {
             return WCResultData.getHttpStatusData(check, null);
         }
 
-        HashMap<String, Object> requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        HashMap requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
         if (requestData == null || requestData.size() == 0) {
             log.error("updateUserInfo：请求参数为空");
             check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;

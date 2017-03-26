@@ -26,14 +26,18 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(value = "/meeting")
-public class WCClubMeetingAPI {
+class WCClubMeetingAPI {
 
     private Logger log = Logger.getLogger(WCClubMeetingAPI.class);
 
-    @Autowired
     private WCISecurityService mSecurityService;
-    @Autowired
     private WCIClubMeetingService mClubMeetingService;
+
+    @Autowired
+    public WCClubMeetingAPI(WCISecurityService mSecurityService, WCIClubMeetingService mClubMeetingService) {
+        this.mSecurityService = mSecurityService;
+        this.mClubMeetingService = mClubMeetingService;
+    }
 
     @RequestMapping(value = "/get_meeting_by_student_id")
     public WCResultData getMeetingByStudentId(@RequestBody WCRequestModel requestModel) {
@@ -53,7 +57,11 @@ public class WCClubMeetingAPI {
         try {
             HashMap<String, Object> result = new HashMap<String, Object>();
 
-            HashMap<String, Object> requestParams = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+            HashMap requestParams = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+            if (requestParams == null || requestParams.size() <= 0) {
+                check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
+                return WCResultData.getHttpStatusData(check, null);
+            }
             long studentId = Long.parseLong((String) requestParams.get("student_id"));
 
             List<WCStudentMissionRelationBean> studentMeetingRelations = mClubMeetingService.getMeetingsByStudentId(studentId);
@@ -113,7 +121,11 @@ public class WCClubMeetingAPI {
 //        }
 
         try {
-            HashMap<String, Object> requestParams = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+            HashMap requestParams = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+            if (requestParams == null || requestParams.size() <= 0) {
+                check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
+                return WCResultData.getHttpStatusData(check, null);
+            }
             long meetingId = Long.getLong((String) requestParams.get("meeting_id"));
 
             WCClubMissionBean clubMissionBean = mClubMeetingService.getMeetingDetailById(meetingId);

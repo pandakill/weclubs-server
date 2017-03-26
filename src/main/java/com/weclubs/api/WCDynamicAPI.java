@@ -29,18 +29,22 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(value = "/dynamic")
-public class WCDynamicAPI {
+class WCDynamicAPI {
 
     private Logger log = Logger.getLogger(WCDynamicAPI.class);
 
-    @Autowired
     private WCISecurityService mSecurityService;
-    @Autowired
     private WCIClubMeetingService mMeetingService;
-    @Autowired
     private WCINotificationService mNotifyService;
-    @Autowired
     private WCIClubMissionService mMissionService;
+
+    @Autowired
+    public WCDynamicAPI(WCISecurityService mSecurityService, WCIClubMeetingService mMeetingService, WCINotificationService mNotifyService, WCIClubMissionService mMissionService) {
+        this.mSecurityService = mSecurityService;
+        this.mMeetingService = mMeetingService;
+        this.mNotifyService = mNotifyService;
+        this.mMissionService = mMissionService;
+    }
 
     @RequestMapping(value = "/get_todo_list")
     public WCResultData getTodoList(@RequestBody WCRequestModel requestModel) {
@@ -55,7 +59,7 @@ public class WCDynamicAPI {
             return WCResultData.getHttpStatusData(check, null);
         }
 
-        HashMap<String, Object> requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        HashMap requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
         if (requestData == null || requestData.size() == 0) {
             check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
             return WCResultData.getHttpStatusData(check, null);

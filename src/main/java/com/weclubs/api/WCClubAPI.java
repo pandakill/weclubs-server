@@ -35,14 +35,18 @@ import java.util.Locale;
  */
 @RestController
 @RequestMapping(value = "/club")
-public class WCClubAPI {
+class WCClubAPI {
 
     private Logger log = Logger.getLogger(WCClubAPI.class);
 
-    @Autowired
     private WCISecurityService mSecurityService;
-    @Autowired
     private WCIClubService mClubService;
+
+    @Autowired
+    public WCClubAPI(WCIClubService mClubService, WCISecurityService mSecurityService) {
+        this.mClubService = mClubService;
+        this.mSecurityService = mSecurityService;
+    }
 
     @RequestMapping(value = "/get_club_detail")
     public WCResultData getClubDetail(@RequestBody WCRequestModel requestModel) {
@@ -58,7 +62,7 @@ public class WCClubAPI {
         }
 
         try {
-            HashMap<String, Object> requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+            HashMap requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
 
             if (requestData == null || requestData.size() == 0) {
                 log.error("getClubDetail：请求参数data为空");
@@ -149,7 +153,7 @@ public class WCClubAPI {
             return WCResultData.getHttpStatusData(check, null);
         }
 
-        HashMap<String, Object> requestParams = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        HashMap requestParams = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
         if (requestParams == null || requestParams.size() == 0) {
             check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
             return WCResultData.getHttpStatusData(check, null);
@@ -197,7 +201,7 @@ public class WCClubAPI {
             return WCResultData.getHttpStatusData(check, null);
         }
 
-        HashMap<String, Object> requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        HashMap requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
         if (requestData == null || requestData.size() == 0) {
             check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
             return WCResultData.getHttpStatusData(check, null);
