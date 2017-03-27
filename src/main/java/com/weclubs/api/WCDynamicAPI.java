@@ -264,15 +264,26 @@ class WCDynamicAPI {
             if (detailBean.getChildMissions() != null && detailBean.getChildMissions().size() > 0) {
                 for (WCClubMissionBean clubMissionBean : detailBean.getChildMissions()) {
                     HashMap<String, Object> child = new HashMap<String, Object>();
-                    child.put("mission_id", clubMissionBean.getChildMissions());
+                    child.put("mission_id", clubMissionBean.getMissionId());
                     child.put("content", clubMissionBean.getAttribution());
                     child.put("finish", 1);
 
                     childMissions.add(child);
                 }
             }
+            List<HashMap<String, Object>> participants = new ArrayList<HashMap<String, Object>>();
+            List<WCStudentBean> participantBeans = mMissionService.getRelatedStudentByMissionId(dynamicId);
+            for (WCStudentBean studentBean : participantBeans) {
+                HashMap<String, Object> hash = new HashMap<String, Object>();
+                hash.put("student_id", studentBean.getStudentId());
+                hash.put("student_name", studentBean.getRealName());
+                hash.put("avatar_url", studentBean.getAvatarUrl());
+                participants.add(hash);
+            }
+
             result = getTodoHash(relationBean, dynamicType, detailBean);
             result.put("child", childMissions);
+            result.put("participant", participants);
         } else if (Constants.TODO_NOTIFY.equals(dynamicType)) {
             result = getTodoHash(relationBean, dynamicType, null);
         }

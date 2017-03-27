@@ -157,6 +157,7 @@
         FROM `t_student` student, `t_student_mission_relation` student_mission
         WHERE student_mission.`student_id` = student.`student_id`
         AND student_mission.`is_del` = 0
+        AND student_mission.`mission_id` = #{missionId}
     </select>
 
 </mapper>
