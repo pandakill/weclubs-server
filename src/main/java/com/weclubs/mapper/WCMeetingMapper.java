@@ -18,11 +18,11 @@ public interface WCMeetingMapper {
 
     void updateMeeting(WCClubMissionBean missionBean);
 
-    void deleteMeetingById(@Param("meetingId") long MeetingId);
+    void deleteMeetingById(@Param("meetingId") long meetingId);
 
-    void changeMeetingStatus(@Param("meetingId") long MeetingId, int status);
+    void changeMeetingStatus(@Param("meetingId") long meetingId, int status);
 
-    WCClubMissionBean getMeetingById(@Param("meetingId") long MeetingId);
+    WCClubMissionBean getMeetingById(@Param("meetingId") long neetingId);
 
     List<WCClubMissionBean> getMeetingsByClubId(@Param("clubId") long clubId);
 
@@ -41,4 +41,6 @@ public interface WCMeetingMapper {
     List<WCClubMissionBean> getUnSignMeetingsByStudentId(@Param("studentId") long studentId);
 
     List<WCClubMissionBean> getUnSignMeetingsBySchoolId(@Param("schoolId") long schoolId);
+
+    List<WCStudentMissionRelationBean> getMeetingLeader(@Param("meetingId") long meetingId);
 }

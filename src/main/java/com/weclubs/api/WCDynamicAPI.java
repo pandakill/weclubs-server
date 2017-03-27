@@ -9,9 +9,10 @@ import com.weclubs.application.notification.WCINotificationService;
 import com.weclubs.application.security.WCISecurityService;
 import com.weclubs.application.user.WCIUserService;
 import com.weclubs.bean.WCClubMissionBean;
+import com.weclubs.bean.WCStudentBean;
 import com.weclubs.bean.WCStudentMissionRelationBean;
-import com.weclubs.model.WCRequestModel;
-import com.weclubs.model.WCResultData;
+import com.weclubs.model.request.WCRequestModel;
+import com.weclubs.model.response.WCResultData;
 import com.weclubs.util.Constants;
 import com.weclubs.util.WCHttpStatus;
 import com.weclubs.util.WCRequestParamsUtil;
@@ -218,6 +219,19 @@ class WCDynamicAPI {
         }
 
         result = getTodoHash(relationBean, dynamicType);
+
+        if (Constants.TODO_MEETING.equals(dynamicType)) {
+            List<WCStudentBean> leaders = mMeetingService.getMeetingLeaderByMeetingId(dynamicId);
+            List<HashMap<String, Object>> leaderHash = new ArrayList<HashMap<String, Object>>();
+            if (leaders != null && leaders.size() > 0) {
+                for (WCStudentBean leader : leaders) {
+                    HashMap<String, Object> hash = new HashMap<String, Object>();
+                    hash.put("student_id", leader.getStudentId());
+//                    hash.put("")
+                    leaderHash.add(hash);
+                }
+            }
+        }
 
         return result;
     }

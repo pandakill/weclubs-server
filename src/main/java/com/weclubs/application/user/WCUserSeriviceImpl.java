@@ -5,6 +5,7 @@ import com.weclubs.application.security.WCISecurityService;
 import com.weclubs.bean.WCSchoolBean;
 import com.weclubs.bean.WCStudentBean;
 import com.weclubs.mapper.WCStudentMapper;
+import com.weclubs.model.WCStudentBaseInfoModel;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -146,5 +147,12 @@ public class WCUserSeriviceImpl implements WCIUserService {
         majorBean.setSchoolId(majorId);
 
         mStudentMapper.updateStudent(studentBean);
+    }
+
+    public WCStudentBaseInfoModel getUserBaseInfo(long userId) {
+
+        WCStudentBean studentBean = getUserInfoById(userId);
+
+        return null;
     }
 }

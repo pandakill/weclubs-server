@@ -185,4 +185,15 @@
         AND school.`school_id` = #{schoolId}
     </select>
 
+    <select id="getMeetingLeader" resultMap="studentMeetingMap" resultType="list">
+        SELECT *
+        FROM `T_CLUB_MISSION` club_mission, `T_STUDENT_MISSION_RELATION` student_mission, `T_STUDENT` student
+        WHERE club_mission.`mission_id` = student_mission.`MISSION_ID`
+        AND club_mission.`IS_DEL` = 0
+        AND student_mission.`IS_DEL` = 0
+        AND club_mission.`TYPE` = 2
+        AND student.`student_id` = student_mission.`student_id`
+        AND student_mission.`is_leader` = 1
+    </select>
+
 </mapper>

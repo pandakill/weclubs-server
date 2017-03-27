@@ -2,7 +2,7 @@ package com.weclubs.application.security;
 
 import com.weclubs.application.token.WCITokenService;
 import com.weclubs.bean.WCStudentBean;
-import com.weclubs.model.WCRequestModel;
+import com.weclubs.model.request.WCRequestModel;
 import com.weclubs.util.MD5;
 import com.weclubs.util.WCHttpStatus;
 import com.weclubs.util.WCRequestParamsUtil;

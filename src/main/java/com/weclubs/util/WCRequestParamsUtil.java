@@ -1,6 +1,6 @@
 package com.weclubs.util;
 
-import com.weclubs.model.WCRequestModel;
+import com.weclubs.model.request.WCRequestModel;
 import org.springframework.util.StringUtils;
 
 import java.util.HashMap;

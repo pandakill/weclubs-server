@@ -1,6 +1,7 @@
 package com.weclubs.application.user;
 
 import com.weclubs.bean.WCStudentBean;
+import com.weclubs.model.WCStudentBaseInfoModel;
 
 /**
  * 用户service接口层
@@ -22,4 +23,6 @@ public interface WCIUserService {
     void updateSchoolInfo(long userId, long schoolId);
 
     void updateMajorInfo(long userId, long majorId);
+
+    WCStudentBaseInfoModel getUserBaseInfo(long userId);
 }

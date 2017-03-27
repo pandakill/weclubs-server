@@ -1,12 +1,15 @@
 package com.weclubs.application.meeting;
 
+import com.weclubs.application.user.WCIUserService;
 import com.weclubs.bean.WCClubMissionBean;
+import com.weclubs.bean.WCStudentBean;
 import com.weclubs.bean.WCStudentMissionRelationBean;
 import com.weclubs.mapper.WCMeetingMapper;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,8 +22,14 @@ public class WCClubMeetingService implements WCIClubMeetingService {
 
     private Logger log = Logger.getLogger(WCClubMeetingService.class);
 
-    @Autowired
     private WCMeetingMapper mMeetingMapper;
+    private WCIUserService mUserService;
+
+    @Autowired
+    public WCClubMeetingService(WCIUserService mUserService, WCMeetingMapper mMeetingMapper) {
+        this.mUserService = mUserService;
+        this.mMeetingMapper = mMeetingMapper;
+    }
 
     public void createMeeting(WCClubMissionBean meetingBean) {
 
@@ -128,5 +137,29 @@ public class WCClubMeetingService implements WCIClubMeetingService {
         }
 
         return mMeetingMapper.getUnConfirmMeetingsByStudentId(studentId);
+    }
+
+    public List<WCStudentBean> getMeetingLeaderByMeetingId(long meetingId) {
+
+        if (meetingId <= 0) {
+            log.error("getMeetingLeaderByMeetingId：查找会议详情失败，meetingId不能小于等于0");
+            return null;
+        }
+
+        if (mMeetingMapper.getMeetingById(meetingId) == null) {
+            log.error("getMeetingLeaderByMeetingId：找不到 meetingId = " + meetingId + "的会议" );
+            return null;
+        }
+
+        List<WCStudentMissionRelationBean> leaderRelations = mMeetingMapper.getMeetingLeader(meetingId);
+        List<WCStudentBean> leaders = new ArrayList<WCStudentBean>();
+        if (leaderRelations != null && leaderRelations.size() > 0) {
+            for (WCStudentMissionRelationBean leaderRelation : leaderRelations) {
+                WCStudentBean studentBean = mUserService.getUserInfoById(leaderRelation.getStudentId());
+                leaders.add(studentBean);
+            }
+        }
+
+        return leaders;
     }
 }

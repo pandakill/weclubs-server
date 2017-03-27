@@ -1,7 +1,7 @@
 package com.weclubs.application.security;
 
 import com.weclubs.bean.WCStudentBean;
-import com.weclubs.model.WCRequestModel;
+import com.weclubs.model.request.WCRequestModel;
 import com.weclubs.util.WCHttpStatus;
 
 import java.util.HashMap;

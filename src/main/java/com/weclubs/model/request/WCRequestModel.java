@@ -1,4 +1,4 @@
-package com.weclubs.model;
+package com.weclubs.model.request;
 
 import java.io.Serializable;
 
