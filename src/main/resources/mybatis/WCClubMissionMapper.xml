@@ -75,6 +75,7 @@
         <result property="avatarUrl" column="avatar_url" />
         <result property="clubId" column="club_id" />
         <result property="parentId" column="parent_id" />
+        <result property="chlidCount" column="child_count" />
     </resultMap>
 
     <!-- 创建社团任务实体 -->
@@ -177,15 +178,19 @@
 
     <select id="getChildMissionDetailListByMissionIdWithStudent" resultMap="childMissionDetailMap" resultType="list">
         SELECT student.`student_id`, student.`real_name` AS `student_name`, student.`avatar_url`,
-        mission.`mission_id`, mission.`attribution`, mission.`address`, mission.`create_date`, mission.`deadline`,
-        mission.`type`, mission.`club_id`, mission.`parent_id`, relation.`status`
-        FROM `t_student` student, `t_club_mission` mission, `t_student_mission_relation` relation
+         miss.`mission_id`, miss.`attribution`, miss.`address`, miss.`create_date`, miss.`deadline`, miss.`type`,
+          miss.`club_id`, miss.`parent_id`, relation.`status`,
+        (SELECT COUNT(*) FROM `t_student_mission_relation` relation, `t_club_mission` mission
+         WHERE relation.`mission_id` = mission.`mission_id`
+         AND mission.`parent_id` = miss.`mission_id`
+         AND relation.`student_id` = #{studentId})
+        AS child_count
+        FROM `t_student` student, `t_club_mission` miss, `t_student_mission_relation` relation
         WHERE student.`student_id` = relation.`student_id`
-        AND mission.`mission_id` = relation.`mission_id`
-        AND mission.`parent_id` = #{missionId}
+        AND miss.`mission_id` = relation.`mission_id`
+        AND miss.`parent_id` = #{missionId}
         AND student.`student_id` = #{studentId}
         AND relation.`is_del` = 0
-
     </select>
 
 </mapper>

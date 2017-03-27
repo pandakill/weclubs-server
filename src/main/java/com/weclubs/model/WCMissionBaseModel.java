@@ -23,6 +23,8 @@ public class WCMissionBaseModel {
     private String clubId;
     private long parentId;
 
+    private int chlidCount;
+
     public long getMissionId() {
         return missionId;
     }
@@ -119,6 +121,14 @@ public class WCMissionBaseModel {
         this.parentId = parentId;
     }
 
+    public int getChlidCount() {
+        return chlidCount;
+    }
+
+    public void setChlidCount(int chlidCount) {
+        this.chlidCount = chlidCount;
+    }
+
     @Override
     public String toString() {
         return "WCMissionBaseModel{" +
@@ -134,6 +144,7 @@ public class WCMissionBaseModel {
                 ", avatarUrl='" + avatarUrl + '\'' +
                 ", clubId='" + clubId + '\'' +
                 ", parentId=" + parentId +
+                ", chlidCount=" + chlidCount +
                 '}';
     }
 }
