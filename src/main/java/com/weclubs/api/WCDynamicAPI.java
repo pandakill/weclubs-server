@@ -2,15 +2,16 @@ package com.weclubs.api;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.weclubs.application.club.WCIClubService;
 import com.weclubs.application.dynamic.WCIDynamicService;
 import com.weclubs.application.meeting.WCIClubMeetingService;
 import com.weclubs.application.mission.WCIClubMissionService;
 import com.weclubs.application.notification.WCINotificationService;
 import com.weclubs.application.security.WCISecurityService;
-import com.weclubs.application.user.WCIUserService;
 import com.weclubs.bean.WCClubMissionBean;
 import com.weclubs.bean.WCStudentBean;
 import com.weclubs.bean.WCStudentMissionRelationBean;
+import com.weclubs.model.WCStudentForClubModel;
 import com.weclubs.model.request.WCRequestModel;
 import com.weclubs.model.response.WCResultData;
 import com.weclubs.util.Constants;
@@ -42,18 +43,18 @@ class WCDynamicAPI {
     private WCINotificationService mNotifyService;
     private WCIClubMissionService mMissionService;
     private WCIDynamicService mDynamicService;
-    private WCIUserService mUserService;
+    private WCIClubService mClubService;
 
     @Autowired
     public WCDynamicAPI(WCISecurityService mSecurityService, WCIClubMeetingService mMeetingService,
                         WCINotificationService mNotifyService, WCIClubMissionService mMissionService,
-                        WCIDynamicService dynamicService, WCIUserService userService) {
+                        WCIDynamicService dynamicService, WCIClubService clubService) {
         this.mSecurityService = mSecurityService;
         this.mMeetingService = mMeetingService;
         this.mNotifyService = mNotifyService;
         this.mMissionService = mMissionService;
         this.mDynamicService = dynamicService;
-        this.mUserService = userService;
+        this.mClubService = clubService;
     }
 
     @RequestMapping(value = "/get_dynamic_list")
@@ -102,7 +103,7 @@ class WCDynamicAPI {
         ArrayList<HashMap<String, Object>> todoList = new ArrayList<HashMap<String, Object>>();
         if (pageInfo.getList().size() > 0) {
             for (WCStudentMissionRelationBean studentMissionRelationBean : pageInfo.getList()) {
-                HashMap<String, Object> hash = getTodoHash(studentMissionRelationBean, dynamicType);
+                HashMap<String, Object> hash = getTodoHash(studentMissionRelationBean, dynamicType, null);
                 todoList.add(hash);
             }
         }
@@ -158,17 +159,18 @@ class WCDynamicAPI {
         return WCResultData.getSuccessData(result);
     }
 
-    private HashMap<String, Object> getTodoHash(WCStudentMissionRelationBean relationBean, String dynamicType) {
+    private HashMap<String, Object> getTodoHash(WCStudentMissionRelationBean relationBean, String dynamicType, WCClubMissionBean detailBean) {
         HashMap<String, Object> result = new HashMap<String, Object>();
 
         result.put("student_id", relationBean.getStudentId());
-        WCClubMissionBean detailBean;
 
         if (Constants.TODO_NOTIFY.equals(dynamicType)) {
             result.put("notify_id", relationBean.getMissionId());
             result.put("confirm_receive", relationBean.getStatus() <= 0 ? 0 : 1);   // status <= 0 即为未确认
 
-            detailBean = mNotifyService.getNotificationDetailById(relationBean.getMissionId());
+            if (detailBean == null) {
+                detailBean = mNotifyService.getNotificationDetailById(relationBean.getMissionId());
+            }
             result.put("content", detailBean.getAttribution());
             result.put("create_date", detailBean.getCreateDate());
         } else if (Constants.TODO_MISSION.equals(dynamicType)) {
@@ -176,7 +178,9 @@ class WCDynamicAPI {
             result.put("deadline",
                     relationBean.getClubMissionBean() != null ? relationBean.getClubMissionBean().getDeadline() : null);
 
-            detailBean = mMissionService.getMissionDetailById(relationBean.getMissionId());
+            if (detailBean == null) {
+                detailBean = mMissionService.getMissionDetailById(relationBean.getMissionId());
+            }
             result.put("content", detailBean.getAttribution());
             result.put("create_date", detailBean.getCreateDate());
 
@@ -194,7 +198,9 @@ class WCDynamicAPI {
             result.put("address",
                     relationBean.getClubMissionBean() != null ? relationBean.getClubMissionBean().getAddress() : null);
 
-            detailBean = mMeetingService.getMeetingDetailById(relationBean.getMissionId());
+            if (detailBean == null) {
+                detailBean = mMeetingService.getMeetingDetailById(relationBean.getMissionId());
+            }
             result.put("content", detailBean.getAttribution());
             result.put("create_date", detailBean.getCreateDate());
 
@@ -209,29 +215,38 @@ class WCDynamicAPI {
 
     private HashMap<String, Object> getDynamicDetailHash(long studentId, long dynamicId, String dynamicType) {
 
-        HashMap<String, Object> result;
+        HashMap<String, Object> result = new HashMap<String, Object>();
 
         WCStudentMissionRelationBean relationBean
                 = mDynamicService.getDynamicStudentRelationByDynamicId(studentId, dynamicId, dynamicType);
+        WCClubMissionBean detailBean = null;
+
         if (relationBean == null) {
             log.error("getDynamicDetailHash：relationBean == null");
             return null;
         }
 
-        result = getTodoHash(relationBean, dynamicType);
-
         if (Constants.TODO_MEETING.equals(dynamicType)) {
             List<WCStudentBean> leaders = mMeetingService.getMeetingLeaderByMeetingId(dynamicId);
             List<HashMap<String, Object>> leaderHash = new ArrayList<HashMap<String, Object>>();
+            detailBean = mMeetingService.getMeetingDetailById(dynamicId);
             if (leaders != null && leaders.size() > 0) {
                 for (WCStudentBean leader : leaders) {
                     HashMap<String, Object> hash = new HashMap<String, Object>();
-                    hash.put("student_id", leader.getStudentId());
-//                    hash.put("")
+                    WCStudentForClubModel studentForClubModel
+                            = mClubService.getClubStudentByStudentId(leader.getStudentId(), detailBean.getClubId());
+                    hash.put("student_id", studentForClubModel.getStudentId());
+                    hash.put("student_name", studentForClubModel.getRealName());
+                    hash.put("department_name", studentForClubModel.getDepartmentName());
+                    hash.put("job_name", studentForClubModel.getJobName());
+                    hash.put("mobile", studentForClubModel.getMobile());
                     leaderHash.add(hash);
                 }
             }
+            result = getTodoHash(relationBean, dynamicType, detailBean);
+            result.put("leaders", leaderHash);
         }
+
 
         return result;
     }

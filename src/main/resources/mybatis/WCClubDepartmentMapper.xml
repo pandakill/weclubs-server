@@ -5,7 +5,7 @@
     <!-- 社团部门映射 map -->
     <resultMap id="clubDepartmentMap" type="com.weclubs.bean.WCClubDepartmentBean">
         <id property="departmentId" column="department_id" />
-        <result property="name" column="name" />
+        <result property="departmentName" column="department_name" />
         <result property="isSuggest" column="is_suggest" />
         <result property="isDel" column="is_del" />
     </resultMap>

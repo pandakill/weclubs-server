@@ -33,7 +33,7 @@
         WHERE `school_id` = #{schoolId}
     </update>
 
-    <select id="getSchoolById" parameterType="long">
+    <select id="getSchoolById" resultMap="schoolMap" parameterType="long">
         SELECT *
         FROM `t_school`
         WHERE `school_id` = #{schoolId}
@@ -41,7 +41,7 @@
         AND `is_del` = 0
     </select>
 
-    <select id="getMajorById" parameterType="long">
+    <select id="getMajorById" resultMap="schoolMap" parameterType="long">
         SELECT *
         FROM `t_school`
         WHERE `school_id` = #{majorId}
@@ -49,14 +49,14 @@
         AND `is_del` = 0
     </select>
 
-    <select id="getSchools">
+    <select id="getSchools" resultType="list">
         SELECT *
         FROM `t_school`
         AND `parent_id` = 0
         WHERE `is_del` = 0
     </select>
 
-    <select id="getMajorsBySchoolId">
+    <select id="getMajorsBySchoolId" resultType="list">
         SELECT *
         FROM `t_school`
         WHERE `parent_id` = #{schoolId}

@@ -4,6 +4,7 @@ import com.weclubs.bean.WCClubBean;
 import com.weclubs.bean.WCClubHonorBean;
 import com.weclubs.bean.WCClubStudentBean;
 import com.weclubs.model.WCMyClubModel;
+import com.weclubs.model.WCStudentForClubModel;
 
 import java.util.List;
 
@@ -29,4 +30,6 @@ public interface WCIClubService {
     List<WCClubStudentBean> getStudentsByCurrentGraduate(long clubId, int sortType);
 
     List<WCMyClubModel> getMyClubs(long studentId);
+
+    WCStudentForClubModel getClubStudentByStudentId(long studentId, long clubId);
 }

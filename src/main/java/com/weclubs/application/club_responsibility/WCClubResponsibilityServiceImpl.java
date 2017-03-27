@@ -250,4 +250,24 @@ public class WCClubResponsibilityServiceImpl implements WCIClubResponsibilitySer
 
         return result;
     }
+
+    public WCClubDepartmentBean getClubDepartmentById(long departmentId) {
+
+        if (departmentId <= 0) {
+            log.error("getClubDepartmentById：departmentId不能小于等于0");
+            return null;
+        }
+
+        return mDepartmentMapper.getClubDepartmentById(departmentId);
+    }
+
+    public WCClubJobBean getClubJobById(long jobId) {
+
+        if (jobId <= 0) {
+            log.error("getClubJobById：jobId不能小于等于0");
+            return null;
+        }
+
+        return mJobMapper.getClubJobById(jobId);
+    }
 }

@@ -1,6 +1,7 @@
 package com.weclubs.mapper;
 
 import com.weclubs.bean.WCClubGraduateBean;
+import com.weclubs.bean.WCStudentClubGraduateRelationBean;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -23,4 +24,7 @@ public interface WCClubGraduateMapper {
     WCClubGraduateBean getClubGraduateByClubGraduateId(@Param("clubGraduateId") long clubGraduateId);
 
     WCClubGraduateBean getCurrentClubGraduateByClubId(@Param("clubId") long clubId);
+
+    WCStudentClubGraduateRelationBean getStudentGraduateRelation(@Param("studentId") long studentId,
+                                                                 @Param("graduateId") long graduateId);
 }

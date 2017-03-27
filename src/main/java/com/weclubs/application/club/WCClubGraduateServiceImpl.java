@@ -1,15 +1,18 @@
 package com.weclubs.application.club;
 
 import com.weclubs.bean.WCClubGraduateBean;
+import com.weclubs.bean.WCStudentClubGraduateRelationBean;
 import com.weclubs.mapper.WCClubGraduateMapper;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * 社团届数服务的实现类
  *
  * Created by fangzanpan on 2017/3/8.
  */
+@Service(value = "clubGraduateService")
 public class WCClubGraduateServiceImpl implements WCIClubGraduateService {
 
     private Logger log = Logger.getLogger(WCClubGraduateServiceImpl.class);
@@ -62,5 +65,25 @@ public class WCClubGraduateServiceImpl implements WCIClubGraduateService {
 
         mClubGraduateMapper.updateClubGraduate(willSelect);
         mClubGraduateMapper.updateClubGraduate(oldSelect);
+    }
+
+    public WCClubGraduateBean getCurrentClubGraduate(long clubId) {
+
+        if (clubId <= 0) {
+            log.error("getCurrentClubGraduate：clubId 不能小于等于0");
+            return null;
+        }
+
+        return mClubGraduateMapper.getCurrentClubGraduateByClubId(clubId);
+    }
+
+    public WCStudentClubGraduateRelationBean getStudentClubGraduationRelationByGraduateId(long studentId, long graduateId) {
+
+        if (graduateId <= 0) {
+            log.error("getStudentClubGraduationRelationByGraduateId：graduateId不能小于等于0");
+            return null;
+        }
+
+        return mClubGraduateMapper.getStudentGraduateRelation(studentId, graduateId);
     }
 }

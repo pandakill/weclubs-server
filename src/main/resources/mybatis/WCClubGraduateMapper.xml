@@ -13,6 +13,16 @@
         <result property="isCurrent" column="is_current" />
     </resultMap>
 
+    <resultMap id="studentClubRelationMap" type="com.weclubs.bean.WCStudentClubGraduateRelationBean">
+        <id property="stuCluGraRelId" column="stu_clu_gra_rel_id" />
+        <result property="graduateId" column="graduate_id" />
+        <result property="studentId" column="student_id" />
+        <result property="status" column="status" />
+        <result property="departmentId" column="department_id" />
+        <result property="jobId" column="job_id" />
+        <result property="isDel" column="is_del" />
+    </resultMap>
+
     <!-- 创建社团届数实体对象 -->
     <insert id="createClubGraduate" parameterType="com.weclubs.bean.WCClubGraduateBean">
         INSERT INTO T_CLUB_GRADUATE(`CLUB_ID`, `GRADUATE_COUNT`, `GRADUATE_NAME`, `IS_CURRENT`)
@@ -50,6 +60,14 @@
         SELECT * FROM `T_CLUB_GRADUATE`
         WHERE `CLUB_ID` = #{clubId}
         AND `IS_CURRENT` = 1
+    </select>
+
+    <select id="getStudentGraduateRelation" resultMap="studentClubRelationMap">
+        SELECT *
+        FROM `t_student_club_graduate_relation`
+        WHERE `graduate_id` = #{graduateId}
+        AND `student_id` = #{studentId}
+        AND `is_del` = 0
     </select>
 
 </mapper>

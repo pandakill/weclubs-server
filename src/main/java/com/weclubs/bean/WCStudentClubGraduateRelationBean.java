@@ -9,7 +9,7 @@ import java.io.Serializable;
  */
 public class WCStudentClubGraduateRelationBean implements Serializable {
 
-    private long StuCluGraRelId;
+    private long stuCluGraRelId;
     private long graduateId;
     private long studentId;
     private int status;
@@ -21,11 +21,11 @@ public class WCStudentClubGraduateRelationBean implements Serializable {
     private WCStudentBean studentBean;
 
     public long getStuCluGraRelId() {
-        return StuCluGraRelId;
+        return stuCluGraRelId;
     }
 
     public void setStuCluGraRelId(long stuCluGraRelId) {
-        StuCluGraRelId = stuCluGraRelId;
+        this.stuCluGraRelId = stuCluGraRelId;
     }
 
     public long getGraduateId() {
@@ -95,7 +95,7 @@ public class WCStudentClubGraduateRelationBean implements Serializable {
     @Override
     public String toString() {
         return "WCStudentClubGraduateRelationBean{" +
-                "StuCluGraRelId=" + StuCluGraRelId +
+                "stuCluGraRelId=" + stuCluGraRelId +
                 ", graduateId=" + graduateId +
                 ", studentId=" + studentId +
                 ", status=" + status +

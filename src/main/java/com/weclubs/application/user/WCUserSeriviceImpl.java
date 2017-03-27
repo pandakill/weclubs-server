@@ -151,8 +151,38 @@ public class WCUserSeriviceImpl implements WCIUserService {
 
     public WCStudentBaseInfoModel getUserBaseInfo(long userId) {
 
+        WCStudentBaseInfoModel studentBaseInfoModel = new WCStudentBaseInfoModel();
+
         WCStudentBean studentBean = getUserInfoById(userId);
 
-        return null;
+        studentBaseInfoModel.setStudentId(studentBean.getStudentId());
+        studentBaseInfoModel.setRealName(studentBean.getRealName());
+        studentBaseInfoModel.setNickName(studentBean.getNickName());
+        studentBaseInfoModel.setClassName(studentBean.getClassName());
+        studentBaseInfoModel.setAvatarUrl(studentBean.getAvatarUrl());
+        studentBaseInfoModel.setGraduate(studentBean.getGraduateYear());
+        studentBaseInfoModel.setMobile(studentBean.getMobile());
+
+        if (studentBean.getSchoolId() != 0) {
+            WCSchoolBean collegeBean = mSchoolService.getMajorById(studentBean.getSchoolId());
+            if (collegeBean == null) {
+                collegeBean = mSchoolService.getSchoolById(studentBean.getSchoolId());
+
+                studentBaseInfoModel.setSchoolId(collegeBean.getSchoolId());
+                studentBaseInfoModel.setSchoolName(collegeBean.getName());
+            } else {
+                WCSchoolBean schoolBean = mSchoolService.getSchoolById(collegeBean.getParentId());
+
+                studentBaseInfoModel.setSchoolName(schoolBean.getName());
+                studentBaseInfoModel.setSchoolId(schoolBean.getSchoolId());
+
+                log.debug("getUserBaseInfo：schoolBean.getId = " + schoolBean.getSchoolId()
+                        + ";college.getParentId = " + collegeBean.getParentId());
+                studentBaseInfoModel.setCollegeId(collegeBean.getSchoolId());
+                studentBaseInfoModel.setCollegeName(collegeBean.getName());
+            }
+        }
+
+        return studentBaseInfoModel;
     }
 }

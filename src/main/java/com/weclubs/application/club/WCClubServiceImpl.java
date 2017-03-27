@@ -1,13 +1,14 @@
 package com.weclubs.application.club;
 
-import com.weclubs.bean.WCClubBean;
-import com.weclubs.bean.WCClubHonorBean;
-import com.weclubs.bean.WCClubStudentBean;
+import com.weclubs.application.club_responsibility.WCIClubResponsibilityService;
+import com.weclubs.application.user.WCIUserService;
+import com.weclubs.bean.*;
 import com.weclubs.mapper.WCClubHonorMapper;
 import com.weclubs.mapper.WCClubMapper;
 import com.weclubs.mapper.WCDynamicMapper;
-import com.weclubs.mapper.WCStudentMapper;
 import com.weclubs.model.WCMyClubModel;
+import com.weclubs.model.WCStudentBaseInfoModel;
+import com.weclubs.model.WCStudentForClubModel;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -36,9 +37,14 @@ public class WCClubServiceImpl implements WCIClubService {
     @Autowired
     private WCClubHonorMapper mClubHonorMapper;
     @Autowired
-    private WCStudentMapper mStudentMapper;
-    @Autowired
     private WCDynamicMapper mDynamicMapper;
+
+    @Autowired
+    private WCIClubGraduateService mClubGraduateService;
+    @Autowired
+    private WCIUserService mUserService;
+    @Autowired
+    private WCIClubResponsibilityService mClubResponsibilityService;
 
     public WCClubBean getClubInfoById(long clubId) {
 
@@ -136,6 +142,49 @@ public class WCClubServiceImpl implements WCIClubService {
             myClubModel.setTodoCount(mDynamicMapper.getStudentTodoCountOneClub(studentId, myClub.getClubId()));
             result.add(myClubModel);
         }
+
+        return result;
+    }
+
+    public WCStudentForClubModel getClubStudentByStudentId(long studentId, long clubId) {
+
+        WCStudentBaseInfoModel baseInfoModel = mUserService.getUserBaseInfo(studentId);
+
+        WCClubGraduateBean graduateBean = mClubGraduateService.getCurrentClubGraduate(clubId);
+
+        WCStudentForClubModel result = new WCStudentForClubModel(baseInfoModel);
+
+        if (graduateBean != null) {
+            WCClubBean clubBean = mClubMapper.getClubById(clubId);
+            WCStudentClubGraduateRelationBean clubGraduateRelationBean
+                    = mClubGraduateService.getStudentClubGraduationRelationByGraduateId(studentId, graduateBean.getClubGraduateId());
+
+            result.setClubId(clubBean.getClubId());
+            result.setClubLevel(clubBean.getLevel());
+            result.setClubLogo(clubBean.getAvatarUrl());
+            result.setClubSlogan(clubBean.getSlogan());
+            result.setClubIntroduction(clubBean.getIntroduction());
+
+            if (clubGraduateRelationBean.getDepartmentId() > 0) {
+                WCClubDepartmentBean departmentBean
+                        = mClubResponsibilityService.getClubDepartmentById(clubGraduateRelationBean.getDepartmentId());
+                if (departmentBean != null) {
+                    result.setDepartmentId(departmentBean.getDepartmentId());
+                    result.setDepartmentName(departmentBean.getDepartmentName());
+                }
+            }
+
+            if (clubGraduateRelationBean.getJobId() > 0) {
+                WCClubJobBean jobBean = mClubResponsibilityService.getClubJobById(clubGraduateRelationBean.getJobId());
+                if (jobBean != null) {
+                    result.setJobId(jobBean.getJobId());
+                    result.setJobName(jobBean.getJobName());
+                }
+            }
+
+        }
+
+        log.info("getClubStudentByStudentId：result = " + result.toString());
 
         return result;
     }
