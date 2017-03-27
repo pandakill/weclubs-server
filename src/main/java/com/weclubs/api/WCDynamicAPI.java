@@ -11,6 +11,7 @@ import com.weclubs.application.security.WCISecurityService;
 import com.weclubs.bean.WCClubMissionBean;
 import com.weclubs.bean.WCStudentBean;
 import com.weclubs.bean.WCStudentMissionRelationBean;
+import com.weclubs.model.WCMissionBaseModel;
 import com.weclubs.model.WCStudentForClubModel;
 import com.weclubs.model.request.WCRequestModel;
 import com.weclubs.model.response.WCResultData;
@@ -258,15 +259,16 @@ class WCDynamicAPI {
             result = getTodoHash(relationBean, dynamicType, detailBean);
             result.put("leaders", leaderHash);
         } else if (Constants.TODO_MISSION.equals(dynamicType)) {
-            detailBean = mMissionService.getMissionDetailWithChildById(dynamicId);
+            detailBean = mMissionService.getMissionDetailById(dynamicId);
+            detailBean.setChildMissonDetails(mMissionService.getChildMissionDetailByMissionIdWithStudent(studentId, dynamicId));
 
             ArrayList<HashMap<String, Object>> childMissions = new ArrayList<HashMap<String, Object>>();
-            if (detailBean.getChildMissions() != null && detailBean.getChildMissions().size() > 0) {
-                for (WCClubMissionBean clubMissionBean : detailBean.getChildMissions()) {
+            if (detailBean.getChildMissonDetails() != null && detailBean.getChildMissonDetails().size() > 0) {
+                for (WCMissionBaseModel missionBaseModel : detailBean.getChildMissonDetails()) {
                     HashMap<String, Object> child = new HashMap<String, Object>();
-                    child.put("mission_id", clubMissionBean.getMissionId());
-                    child.put("content", clubMissionBean.getAttribution());
-                    child.put("finish", 1);
+                    child.put("mission_id", missionBaseModel.getMissionId());
+                    child.put("content", missionBaseModel.getAttribution());
+                    child.put("finish", missionBaseModel.getStatus() == 2 ? 1 : 0);
 
                     childMissions.add(child);
                 }

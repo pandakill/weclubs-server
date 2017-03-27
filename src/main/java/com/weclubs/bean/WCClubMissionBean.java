@@ -1,5 +1,7 @@
 package com.weclubs.bean;
 
+import com.weclubs.model.WCMissionBaseModel;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -27,6 +29,7 @@ public class WCClubMissionBean implements Serializable {
     private WCStudentBean sponsorStudentBean;
 
     private List<WCClubMissionBean> childMissions;
+    private List<WCMissionBaseModel> childMissonDetails;
 
     public long getMissionId() {
         return missionId;
@@ -132,6 +135,14 @@ public class WCClubMissionBean implements Serializable {
         this.sponsorStudentBean = sponsorStudentBean;
     }
 
+    public List<WCMissionBaseModel> getChildMissonDetails() {
+        return childMissonDetails;
+    }
+
+    public void setChildMissonDetails(List<WCMissionBaseModel> childMissonDetails) {
+        this.childMissonDetails = childMissonDetails;
+    }
+
     public List<WCClubMissionBean> getChildMissions() {
         return childMissions;
     }
@@ -157,6 +168,7 @@ public class WCClubMissionBean implements Serializable {
                 ", parentMissionBean=" + parentMissionBean +
                 ", sponsorStudentBean=" + sponsorStudentBean +
                 ", childMissions=" + childMissions +
+                ", childMissonDetails=" + childMissonDetails +
                 '}';
     }
 }

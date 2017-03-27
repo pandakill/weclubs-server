@@ -3,6 +3,7 @@ package com.weclubs.application.mission;
 import com.weclubs.bean.WCClubMissionBean;
 import com.weclubs.bean.WCStudentBean;
 import com.weclubs.bean.WCStudentMissionRelationBean;
+import com.weclubs.model.WCMissionBaseModel;
 
 import java.util.List;
 
@@ -42,4 +43,6 @@ public interface WCIClubMissionService {
     WCClubMissionBean getMissionDetailWithChildById(long missionId);
 
     List<WCStudentBean> getRelatedStudentByMissionId(long missionId);
+
+    List<WCMissionBaseModel> getChildMissionDetailByMissionIdWithStudent(long studentId, long missionId);
 }

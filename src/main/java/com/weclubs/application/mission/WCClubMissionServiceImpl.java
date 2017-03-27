@@ -5,6 +5,7 @@ import com.weclubs.bean.WCClubMissionBean;
 import com.weclubs.bean.WCStudentBean;
 import com.weclubs.bean.WCStudentMissionRelationBean;
 import com.weclubs.mapper.WCClubMissionMapper;
+import com.weclubs.model.WCMissionBaseModel;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -174,5 +175,20 @@ public class WCClubMissionServiceImpl implements WCIClubMissionService {
         }
 
         return mClubMissionMapper.getClubMissionParticipantByMissionId(missionId);
+    }
+
+    public List<WCMissionBaseModel> getChildMissionDetailByMissionIdWithStudent(long studentId, long missionId) {
+
+        if (missionId <= 0) {
+            log.error("getChildMissionDetailByMissionIdWithStudent：missionId不能小于等于0。");
+            return null;
+        }
+
+        if (studentId <= 0) {
+            log.error("getChildMissionDetailByMissionIdWithStudent：studentId不能小于等于0。");
+            return null;
+        }
+
+        return mClubMissionMapper.getChildMissionDetailListByMissionIdWithStudent(studentId, missionId);
     }
 }
