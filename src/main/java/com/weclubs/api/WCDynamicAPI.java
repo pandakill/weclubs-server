@@ -150,6 +150,10 @@ class WCDynamicAPI {
         String dynamicType = (String) requestData.get("dynamic_type");
 
         HashMap<String, Object> result = getDynamicDetailHash(studentId, dynamicId, dynamicType);
+        if (result == null) {
+            result = new HashMap<String, Object>();
+        }
+        result.put("dynamic_type", dynamicType);
         return WCResultData.getSuccessData(result);
     }
 
