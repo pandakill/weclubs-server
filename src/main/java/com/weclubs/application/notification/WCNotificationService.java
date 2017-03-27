@@ -1,6 +1,8 @@
 package com.weclubs.application.notification;
 
+import com.weclubs.application.user.WCIUserService;
 import com.weclubs.bean.WCClubMissionBean;
+import com.weclubs.bean.WCStudentBean;
 import com.weclubs.bean.WCStudentMissionRelationBean;
 import com.weclubs.mapper.WCNotificationMapper;
 import org.apache.log4j.Logger;
@@ -21,6 +23,8 @@ public class WCNotificationService implements WCINotificationService {
 
     @Autowired
     private WCNotificationMapper mNotificationMapper;
+    @Autowired
+    private WCIUserService mUserService;
 
     public void createNotification(WCClubMissionBean notificationBean) {
 
@@ -85,6 +89,11 @@ public class WCNotificationService implements WCINotificationService {
         if (notification == null) {
             log.error("getNotificationDetailById：找不到 notificationId = " + notificationId + "的通知。" );
             return null;
+        }
+
+        if (notification.getSponsorStudentBean() == null && notification.getSponsorId() > 0) {
+            WCStudentBean sponsor = mUserService.getUserInfoById(notification.getSponsorId());
+            notification.setSponsorStudentBean(sponsor);
         }
 
         return notification;

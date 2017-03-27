@@ -51,6 +51,17 @@
         </association>
     </resultMap>
 
+    <!-- 学生实体映射 map，不包含学校信息 -->
+    <resultMap id="studentMap" type="com.weclubs.bean.WCStudentBean">
+        <id property="studentId" column="student_id" />
+        <result property="mobile" column="mobile" />
+        <result property="nickName" column="nick_name" />
+        <result property="realName" column="real_name" />
+        <result property="avatarUrl" column="avatar_url" />
+        <result property="status" column="status" />
+        <result property="isDel" column="is_Del" />
+    </resultMap>
+
     <!-- 创建社团任务实体 -->
     <insert id="createClubMission" parameterType="com.weclubs.bean.WCClubMissionBean">
         INSERT INTO T_CLUB_MISSION(`CLUB_ID`, `ATTRIBUTION`, `TYPE`,
@@ -132,5 +143,20 @@
         WHERE `mission_id` = #{clubMissionId}
         AND club_mission.`TYPE` = 1
     </update>
+
+    <select id="getChildMissionsByMissionId" resultMap="clubMissionMap" resultType="list">
+        SELECT *
+        FROM `t_club_mission`
+        WHERE `parent_id` = #{missionId}
+        AND `is_del` = 0
+    </select>
+
+    <select id="getClubMissionParticipantByMissionId" resultMap="studentMap" resultType="list">
+        SELECT student.`student_id`, student.`mobile`, student.`nick_name`, student.`real_name`,
+         student.`avatar_url`, student.`status`, student.`is_del`
+        FROM `t_student` student, `t_student_mission_relation` student_mission
+        WHERE student_mission.`student_id` = student.`student_id`
+        AND student_mission.`is_del` = 0
+    </select>
 
 </mapper>

@@ -96,6 +96,11 @@ public class WCClubMeetingService implements WCIClubMeetingService {
             return null;
         }
 
+        if (meeting.getSponsorStudentBean() == null && meeting.getSponsorId() > 0) {
+            WCStudentBean sponsor = mUserService.getUserInfoById(meeting.getSponsorId());
+            meeting.setSponsorStudentBean(sponsor);
+        }
+
         return meeting;
     }
 

@@ -1,6 +1,7 @@
 package com.weclubs.application.mission;
 
 import com.weclubs.bean.WCClubMissionBean;
+import com.weclubs.bean.WCStudentBean;
 import com.weclubs.bean.WCStudentMissionRelationBean;
 
 import java.util.List;
@@ -30,4 +31,15 @@ public interface WCIClubMissionService {
 
     List<WCStudentMissionRelationBean> getUnConfirmMissionByClubId(long studentId);
 
+    List<WCClubMissionBean> getChildMissionByMissionId(long missionId);
+
+    /**
+     * 获取任务详情，包括任务发布者、子任务列表等信息
+     *
+     * @param missionId 任务id
+     * @return  任务详情
+     */
+    WCClubMissionBean getMissionDetailWithChildById(long missionId);
+
+    List<WCStudentBean> getRelatedStudentByMissionId(long missionId);
 }

@@ -159,8 +159,10 @@ class WCDynamicAPI {
         return WCResultData.getSuccessData(result);
     }
 
-    private HashMap<String, Object> getTodoHash(WCStudentMissionRelationBean relationBean, String dynamicType, WCClubMissionBean detailBean) {
+    private HashMap<String, Object> getTodoHash(WCStudentMissionRelationBean relationBean,
+                                                String dynamicType, WCClubMissionBean detailBean) {
         HashMap<String, Object> result = new HashMap<String, Object>();
+        HashMap<String, Object> sponsor = new HashMap<String, Object>();
 
         result.put("student_id", relationBean.getStudentId());
 
@@ -179,7 +181,7 @@ class WCDynamicAPI {
                     relationBean.getClubMissionBean() != null ? relationBean.getClubMissionBean().getDeadline() : null);
 
             if (detailBean == null) {
-                detailBean = mMissionService.getMissionDetailById(relationBean.getMissionId());
+                detailBean = mMissionService.getMissionDetailWithChildById(relationBean.getMissionId());
             }
             result.put("content", detailBean.getAttribution());
             result.put("create_date", detailBean.getCreateDate());
@@ -210,6 +212,16 @@ class WCDynamicAPI {
             result.put("has_sign", relationBean.getIsSign() == 1 ? 1 : 0);
         }
 
+        if (detailBean != null) {
+            sponsor.put("sponsor_id", detailBean.getSponsorId());
+            if (detailBean.getSponsorStudentBean() != null) {
+                sponsor.put("sponsor_name", detailBean.getSponsorStudentBean().getRealName());
+                sponsor.put("sponsor_avatar", detailBean.getSponsorStudentBean().getAvatarUrl());
+            }
+            sponsor.put("sponsor_type", "student");
+        }
+        result.put("sponsor", sponsor);
+
         return result;
     }
 
@@ -219,7 +231,7 @@ class WCDynamicAPI {
 
         WCStudentMissionRelationBean relationBean
                 = mDynamicService.getDynamicStudentRelationByDynamicId(studentId, dynamicId, dynamicType);
-        WCClubMissionBean detailBean = null;
+        WCClubMissionBean detailBean;
 
         if (relationBean == null) {
             log.error("getDynamicDetailHash：relationBean == null");
@@ -245,8 +257,25 @@ class WCDynamicAPI {
             }
             result = getTodoHash(relationBean, dynamicType, detailBean);
             result.put("leaders", leaderHash);
-        }
+        } else if (Constants.TODO_MISSION.equals(dynamicType)) {
+            detailBean = mMissionService.getMissionDetailWithChildById(dynamicId);
 
+            ArrayList<HashMap<String, Object>> childMissions = new ArrayList<HashMap<String, Object>>();
+            if (detailBean.getChildMissions() != null && detailBean.getChildMissions().size() > 0) {
+                for (WCClubMissionBean clubMissionBean : detailBean.getChildMissions()) {
+                    HashMap<String, Object> child = new HashMap<String, Object>();
+                    child.put("mission_id", clubMissionBean.getChildMissions());
+                    child.put("content", clubMissionBean.getAttribution());
+                    child.put("finish", 1);
+
+                    childMissions.add(child);
+                }
+            }
+            result = getTodoHash(relationBean, dynamicType, detailBean);
+            result.put("child", childMissions);
+        } else if (Constants.TODO_NOTIFY.equals(dynamicType)) {
+            result = getTodoHash(relationBean, dynamicType, null);
+        }
 
         return result;
     }

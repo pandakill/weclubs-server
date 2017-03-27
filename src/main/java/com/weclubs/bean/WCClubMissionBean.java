@@ -1,6 +1,7 @@
 package com.weclubs.bean;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * 通知\任务基本信息表，对应数据库 t_club_mission 表
@@ -24,6 +25,8 @@ public class WCClubMissionBean implements Serializable {
     private WCClubMissionBean parentMissionBean;
 
     private WCStudentBean sponsorStudentBean;
+
+    private List<WCClubMissionBean> childMissions;
 
     public long getMissionId() {
         return missionId;
@@ -129,6 +132,14 @@ public class WCClubMissionBean implements Serializable {
         this.sponsorStudentBean = sponsorStudentBean;
     }
 
+    public List<WCClubMissionBean> getChildMissions() {
+        return childMissions;
+    }
+
+    public void setChildMissions(List<WCClubMissionBean> childMissions) {
+        this.childMissions = childMissions;
+    }
+
     @Override
     public String toString() {
         return "WCClubMissionBean{" +
@@ -145,6 +156,7 @@ public class WCClubMissionBean implements Serializable {
                 ", clubBean=" + clubBean +
                 ", parentMissionBean=" + parentMissionBean +
                 ", sponsorStudentBean=" + sponsorStudentBean +
+                ", childMissions=" + childMissions +
                 '}';
     }
 }
