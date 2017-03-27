@@ -14,10 +14,7 @@ import org.springframework.util.StringUtils;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * 安全service的检查接口
@@ -132,7 +129,7 @@ public class WCSecurityServiceImpl implements WCISecurityService {
 
     public String encodePassword(long userId, String password) {
         String encodeBaseStr = password + "_userId=" +userId;
-        return MD5.md5(encodeBaseStr);
+        return MD5.md5(encodeBaseStr).toLowerCase(Locale.getDefault());
     }
 
     /**
