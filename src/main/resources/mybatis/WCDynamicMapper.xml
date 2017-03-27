@@ -2,6 +2,32 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.weclubs.mapper.WCDynamicMapper">
 
+    <resultMap id="studentDynamicMap" type="com.weclubs.bean.WCStudentMissionRelationBean">
+        <id property="stuMisRelId" column="stu_mis_rel_id" />
+        <result property="studentId" column="student_id" />
+        <result property="missionId" column="mission_id" />
+        <result property="isLeader" column="is_leader" />
+        <result property="status" column="status" />
+        <result property="isSign" column="is_sign" />
+        <result property="comment" column="comment" />
+        <result property="createDate" column="create_date" />
+        <result property="signDate" column="sign_date" />
+        <result property="isDel" column="is_del" />
+
+        <association property="clubMissionBean" javaType="com.weclubs.bean.WCClubMissionBean">
+            <id property="missionId" column="mission_id" />
+            <result property="clubId" column="club_id" />
+            <result property="attribution" column="attribution" />
+            <result property="type" column="get_date" />
+            <result property="parentId" column="is_del" />
+            <result property="address" column="address" />
+            <result property="deadline" column="deadline" />
+            <result property="sponsorId" column="sponsor_id" />
+            <result property="createDate" column="create_date" />
+            <result property="isDel" column="is_del" />
+        </association>
+    </resultMap>
+
     <select id="getStudentTodoCountOneClub" resultType="long">
         select count(*)
         from `t_student_mission_relation` mission_relation, `t_club_mission` mission
@@ -21,6 +47,17 @@
         AND mission_relation.`is_del` = 0 -- 未删除
         AND mission_relation.`status` != 2  -- 2是完成的状态
         AND mission_relation.`status` != 3  -- 3是请假的状态
+    </select>
+
+    <select id="getDynamicStudentRelation" resultMap="studentDynamicMap">
+        SELECT *
+        FROM `t_student_mission_relation` mission_relation, `t_club_mission` mission
+        WHERE mission.`mission_id` = mission_relation.`mission_id`
+        AND mission.`mission_id` = #{dynamicId}
+        AND mission_relation.`student_id` = #{studentId}
+        AND mission.`type` = #{dynamicType}
+        AND mission.`is_del` = 0
+        AND mission_relation.`is_del` = 0
     </select>
 
 </mapper>

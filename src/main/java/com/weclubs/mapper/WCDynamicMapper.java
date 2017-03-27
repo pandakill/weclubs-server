@@ -1,5 +1,6 @@
 package com.weclubs.mapper;
 
+import com.weclubs.bean.WCStudentMissionRelationBean;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -27,4 +28,16 @@ public interface WCDynamicMapper {
      */
     long getStudentTodoCountNew(@Param("studentId") long studentId, @Param("clubId") long clubId);
 
+    /**
+     * 获取动态和学生的 relation 关系
+     * @param studentId 学生id
+     * @param dynamicId 动态id
+     * @param dynamicType   动态类型 type = 0 通知
+     *                              type = 1 任务
+     *                              type = 2 会议
+     * @return  该动态和学生的 relation 关系
+     */
+    WCStudentMissionRelationBean getDynamicStudentRelation(@Param("studentId") long studentId,
+                                                           @Param("dynamicId") long dynamicId,
+                                                           @Param("dynamicType") int dynamicType);
 }
