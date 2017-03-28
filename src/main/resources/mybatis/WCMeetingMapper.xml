@@ -69,6 +69,20 @@
         </association>
     </resultMap>
 
+    <resultMap id="meetingParticipationMap" type="com.weclubs.model.WCMeetingParticipationModel">
+        <result property="studentId" column="student_id" />
+        <result property="studentName" column="student_name" />
+        <result property="studentAvatar" column="avatar_url" />
+        <result property="departmentName" column="department_name" />
+        <result property="jobName" column="job_name" />
+        <result property="status" column="status" />
+        <result property="isLeader" column="is_leader" />
+        <result property="comment" column="comment" />
+        <result property="createDate" column="create_date" />
+        <result property="signDate" column="sign_date" />
+        <result property="isSign" column="is_sign" />
+    </resultMap>
+
     <!-- 创建通知实体 -->
     <insert id="createMeeting" parameterType="com.weclubs.bean.WCClubMissionBean">
         INSERT INTO T_CLUB_MISSION(`CLUB_ID`, `ATTRIBUTION`, `TYPE`,
@@ -194,6 +208,40 @@
         AND club_mission.`TYPE` = 2
         AND student.`student_id` = student_mission.`student_id`
         AND student_mission.`is_leader` = 1
+    </select>
+
+    <select id="getMeetingParticipation" resultMap="meetingParticipationMap" resultType="list">
+        SELECT ca.`student_id`, ca.`student_name`, ca.`avatar_url`, ca.`department_name`, ca.`job_name`,
+         relation.`status`, relation.`is_leader`, relation.`comment`, relation.`create_date`,
+          relation.`sign_date`, relation.`is_sign`
+        FROM `t_student_mission_relation` relation
+        RIGHT JOIN
+        (SELECT mission.`mission_id`, student_mission_relation.`student_id`, student_mission_relation.`stu_mis_rel_id`
+        FROM `t_club_mission` mission, `t_club_graduate` graduate, `t_student_mission_relation` student_mission_relation,
+        `t_student_club_graduate_relation` student_club_relation
+         WHERE mission.`graduate_id` = student_club_relation.`graduate_id`
+         AND mission.`mission_id` = student_mission_relation.`mission_id`
+         AND graduate.`club_graduate_id` = mission.`graduate_id`
+         AND mission.`mission_id` = #{meetingId}
+        ) missions
+        ON
+        missions.`mission_id` = relation.`mission_id`
+        AND relation.`stu_mis_rel_id` = missions.`stu_mis_rel_id`
+        AND relation.`mission_id` = #{meetingId}
+        LEFT JOIN
+        (SELECT graduate_relation.`stu_clu_gra_rel_id`, graduate.`club_id`, student.`student_id`,
+        student.`real_name` AS `student_name`, student.`avatar_url`, graduate.`club_graduate_id`,
+         graduate_relation.`department_id`, graduate_relation.`job_id`, department.`department_name`, job.`job_name`
+         FROM `t_student_club_graduate_relation` graduate_relation, `t_club_graduate` graduate,
+         `t_student` student, `t_club_department` department, `t_club_job` job
+         WHERE graduate_relation.`graduate_id` = graduate.`club_graduate_id`
+         AND student.`student_id` = graduate_relation.`student_id`
+         AND department.`department_id` = graduate_relation.`department_id`
+         AND job.`job_id` = graduate_relation.`job_id`
+         GROUP BY graduate_relation.`stu_clu_gra_rel_id`) ca
+        ON
+        ca.`student_id` = relation.`student_id`
+        GROUP BY relation.`stu_mis_rel_id`
     </select>
 
 </mapper>

@@ -2,6 +2,7 @@ package com.weclubs.mapper;
 
 import com.weclubs.bean.WCClubMissionBean;
 import com.weclubs.bean.WCStudentMissionRelationBean;
+import com.weclubs.model.WCMeetingParticipationModel;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -43,4 +44,6 @@ public interface WCMeetingMapper {
     List<WCClubMissionBean> getUnSignMeetingsBySchoolId(@Param("schoolId") long schoolId);
 
     List<WCStudentMissionRelationBean> getMeetingLeader(@Param("meetingId") long meetingId);
+
+    List<WCMeetingParticipationModel> getMeetingParticipation(@Param("meetingId") long meetingId);
 }

@@ -5,6 +5,7 @@ import com.weclubs.bean.WCClubMissionBean;
 import com.weclubs.bean.WCStudentBean;
 import com.weclubs.bean.WCStudentMissionRelationBean;
 import com.weclubs.mapper.WCMeetingMapper;
+import com.weclubs.model.WCMeetingParticipationModel;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -166,5 +167,15 @@ public class WCClubMeetingService implements WCIClubMeetingService {
         }
 
         return leaders;
+    }
+
+    public List<WCMeetingParticipationModel> getMeetingParticipation(long meetingId) {
+
+        if (meetingId <= 0) {
+            log.error("getMeetingParticipation：meetingId不能小于等于0");
+            return null;
+        }
+
+        return mMeetingMapper.getMeetingParticipation(meetingId);
     }
 }

@@ -3,6 +3,7 @@ package com.weclubs.application.meeting;
 import com.weclubs.bean.WCClubMissionBean;
 import com.weclubs.bean.WCStudentBean;
 import com.weclubs.bean.WCStudentMissionRelationBean;
+import com.weclubs.model.WCMeetingParticipationModel;
 
 import java.util.List;
 
@@ -32,4 +33,12 @@ public interface WCIClubMeetingService {
     List<WCStudentMissionRelationBean> getUnConfirmMeetingByClubId(long studentId);
 
     List<WCStudentBean> getMeetingLeaderByMeetingId(long meetingId);
+
+    /**
+     * 获取会议参与情况
+     *
+     * @param meetingId 会议id
+     * @return  返回当前会议的参与情况
+     */
+    List<WCMeetingParticipationModel> getMeetingParticipation(long meetingId);
 }
