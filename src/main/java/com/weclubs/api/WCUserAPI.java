@@ -98,6 +98,7 @@ class WCUserAPI {
 
             WCStudentBean createStatus = mUserService.createUserByMobile(mobile);
             if (createStatus == null || createStatus.getStudentId() == 0) {
+                log.error(createStatus == null ? "student == null：" : ("createStatus.getStudentId = " + createStatus.getStudentId()));
                 check = WCHttpStatus.FAIL_CUSTOM_DAILOG;
                 check.msg = "未知错误";
                 return WCResultData.getHttpStatusData(check, null);

@@ -89,7 +89,7 @@
     </select>
 
     <!-- 根据手机号码创建一个学生账号 -->
-    <insert id="createStudent" useGeneratedKeys="true" keyProperty="id" parameterType="com.weclubs.bean.WCStudentBean">
+    <insert id="createStudent" useGeneratedKeys="true" keyProperty="studentId" parameterType="com.weclubs.bean.WCStudentBean">
         INSERT INTO T_STUDENT(`MOBILE`)
         VALUES (#{mobile})
     </insert>

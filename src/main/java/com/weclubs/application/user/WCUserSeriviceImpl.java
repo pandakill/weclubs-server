@@ -61,7 +61,7 @@ public class WCUserSeriviceImpl implements WCIUserService {
         WCStudentBean studentBean = mStudentMapper.getStudentByMobile(mobile);
 
         if (studentBean != null) {
-            exitStatus = studentBean.getStatus();
+            exitStatus = studentBean.getIsDel();
         }
 
         return exitStatus;
