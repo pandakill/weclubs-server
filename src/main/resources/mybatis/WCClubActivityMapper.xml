@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.weclubs.mapper.WCClubActivityMapper">
+
+    <resultMap id="activityBaseMap" type="com.weclubs.model.WCActivityDetailBaseModel">
+        <id property="activityId" column="activity_id" />
+        <result property="activityName" column="activity_name" />
+        <result property="posterUrl" column="poster_url" />
+        <result property="address" column="address" />
+        <result property="allowApply" column="allow_apply" />
+        <result property="allowPreApply" column="allow_pre_apply" />
+        <result property="applyDeadline" column="apply_deadline" />
+        <result property="holdDate" column="hold_date" />
+        <result property="holdDeadline" column="hold_deadline" />
+
+        <result property="clubId" column="club_id" />
+        <result property="clubName" column="club_name" />
+
+        <result property="commentCount" column="comment_count" />
+
+        <result property="isDel" column="is_del" />
+    </resultMap>
+    
+    <select id="getActivitiesByCurrentClubId" resultMap="activityBaseMap" resultType="list" >
+        SELECT activity.`club_activity_id` AS `activity_id`, activity.`name` AS `activity_name`, activity.`poster_url`,
+        activity.`address`, activity.`allow_apply`, activity.`allow_pre_apply`, activity.`apply_deadline`,
+        activity.`hold_date`, activity.`hold_deadline`, activity.`is_del`, club.`club_id`, club.`name` AS `club_name`,
+        COUNT(comment.`comment_id`) AS `comment_count`
+        FROM `t_club_activity` activity, `t_club` club,  `t_comment` comment
+        WHERE activity.`club_id` = club.`club_id`
+        AND comment.`source_type` = 1
+        AND comment.`source_id` = activity.`club_activity_id`
+        AND activity.`club_id` = #{clubId}
+    </select>
+
+</mapper>
