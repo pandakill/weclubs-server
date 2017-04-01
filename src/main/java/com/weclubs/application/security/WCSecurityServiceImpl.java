@@ -102,7 +102,7 @@ public class WCSecurityServiceImpl implements WCISecurityService {
     }
 
     public WCHttpStatus checkCallerAvailable(String caller) {
-        String[] callers = new String[]{"android_v1", "ios", "chrome_test"};
+        String[] callers = new String[]{"ios_test", "chrome_test"};
 
         boolean available = false;
         for (String s : callers) {
@@ -151,7 +151,8 @@ public class WCSecurityServiceImpl implements WCISecurityService {
             sb.append(secretKey);
             log.info("sign = " + sb.toString());
             byte[] sha1Digest = getSHA1Digest(sb.toString());
-            return MD5.toHexString(sha1Digest).toLowerCase();
+            String md5Sign = MD5.md5(MD5.toHexString(sha1Digest));
+            return md5Sign.toLowerCase();
         } catch (IOException e) {
             log.error("sign：Sign 值签名错误");
             e.printStackTrace();
