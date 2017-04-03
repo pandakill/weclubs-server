@@ -164,7 +164,7 @@ public class WCUserSeriviceImpl implements WCIUserService {
         studentBaseInfoModel.setMobile(studentBean.getMobile());
 
         if (studentBean.getSchoolId() != 0) {
-            WCSchoolBean collegeBean = mSchoolService.getMajorById(studentBean.getSchoolId());
+            WCSchoolBean collegeBean = mSchoolService.getCollegeById(studentBean.getSchoolId());
             if (collegeBean == null) {
                 collegeBean = mSchoolService.getSchoolById(studentBean.getSchoolId());
 

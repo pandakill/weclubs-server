@@ -32,19 +32,19 @@ public class WCSchoolServiceImpl implements WCISchoolService {
         mSchoolMapper.createSchool(name);
     }
 
-    public void createMajor(String name, long schoolId) {
+    public void createCollege(String name, long schoolId) {
 
         if (StringUtils.isEmpty(name)) {
-            log.error("createMajor：院系名称不能为空");
+            log.error("createCollege：院系名称不能为空");
             return;
         }
 
         if (mSchoolMapper.getSchoolById(schoolId) == null) {
-            log.error("createMajor：找不到学校名称");
+            log.error("createCollege：找不到学校名称");
             return;
         }
 
-        mSchoolMapper.createMajor(name, schoolId);
+        mSchoolMapper.createCollege(name, schoolId);
     }
 
     public void updateSchool(WCSchoolBean schoolBean) {
@@ -62,19 +62,19 @@ public class WCSchoolServiceImpl implements WCISchoolService {
         mSchoolMapper.updateSchool(schoolBean);
     }
 
-    public void updateMajor(WCSchoolBean majorBean) {
+    public void updateCollege(WCSchoolBean collegeBean) {
 
-        if (majorBean == null) {
-            log.error("updateMajor：院系实体不能为空");
+        if (collegeBean == null) {
+            log.error("updateCollege：院系实体不能为空");
             return;
         }
 
-        if (majorBean.getParentId() <= 0) {
-            log.error("updateMajor：院系的parentId不能小于等于0");
+        if (collegeBean.getParentId() <= 0) {
+            log.error("updateCollege：院系的parentId不能小于等于0");
             return;
         }
 
-        mSchoolMapper.updateMajor(majorBean);
+        mSchoolMapper.updateCollege(collegeBean);
     }
 
     public WCSchoolBean getSchoolById(long schoolId) {
@@ -88,38 +88,38 @@ public class WCSchoolServiceImpl implements WCISchoolService {
         return mSchoolMapper.getSchoolById(schoolId);
     }
 
-    public WCSchoolBean getMajorById(long majorId) {
+    public WCSchoolBean getCollegeById(long collegeId) {
 
-        if (majorId <= 0) {
-            log.error("getMajorById：majorId不能小于等于0");
+        if (collegeId <= 0) {
+            log.error("getCollegeById：CollegeId不能小于等于0");
             return null;
         }
 
-        return mSchoolMapper.getMajorById(majorId);
+        return mSchoolMapper.getCollegeById(collegeId);
     }
 
     public List<WCSchoolBean> getSchools() {
         return mSchoolMapper.getSchools();
     }
 
-    public List<WCSchoolBean> getMajorsBySchoolId(long schoolId) {
+    public List<WCSchoolBean> getCollegesBySchoolId(long schoolId) {
 
         if (schoolId <= 0) {
-            log.error("getMajorsBySchoolId：学校id不能小于等于0");
+            log.error("getCollegesBySchoolId：学校id不能小于等于0");
             return null;
         }
 
         WCSchoolBean schoolBean = mSchoolMapper.getSchoolById(schoolId);
         if (schoolBean == null) {
-            log.error("getMajorsBySchoolId：找不到schoolId = " + schoolId + " 的学校");
+            log.error("getCollegesBySchoolId：找不到schoolId = " + schoolId + " 的学校");
             return null;
         }
 
-        if (schoolBean.getParentId() <= 0) {
-            log.error("getMajorsBySchoolId：输入的 schoolId " + schoolId +  " 找到的是学校而非院系");
+        if (schoolBean.getParentId() > 0) {
+            log.error("getCollegesBySchoolId：输入的 schoolId " + schoolId +  " 找到的是院系而非学校");
             return null;
         }
 
-        return mSchoolMapper.getMajorsBySchoolId(schoolId);
+        return mSchoolMapper.getCollegesBySchoolId(schoolId);
     }
 }

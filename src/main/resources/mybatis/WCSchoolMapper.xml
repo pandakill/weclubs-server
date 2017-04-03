@@ -14,7 +14,7 @@
         VALUES (#{name}, 0, 0)
     </insert>
 
-    <insert id="createMajor" useGeneratedKeys="true" keyProperty="id" parameterType="String">
+    <insert id="createCollege" useGeneratedKeys="true" keyProperty="id" parameterType="String">
         INSERT INTO t_school(`name`, `parent_id` `is_del`)
         VALUES (#{name}, #{schoolId}, 0)
     </insert>
@@ -22,15 +22,15 @@
     <update id="updateSchool" parameterType="com.weclubs.bean.WCSchoolBean">
         INSERT INTO t_school(`name`, `parent_id`)
         VALUES (#{name}, #{parentId})
-        AND `parent_id` == 0
         WHERE `school_id` = #{schoolId}
+        AND `parent_id` == 0
     </update>
 
-    <update id="updateMajor" parameterType="com.weclubs.bean.WCSchoolBean">
+    <update id="updateCollege" parameterType="com.weclubs.bean.WCSchoolBean">
         INSERT INTO t_school(`name`, `parent_id`)
         VALUES (#{name}, #{parentId})
-        AND `parent_id` != 0
         WHERE `school_id` = #{schoolId}
+        AND `parent_id` != 0
     </update>
 
     <select id="getSchoolById" resultMap="schoolMap" parameterType="long">
@@ -41,22 +41,22 @@
         AND `is_del` = 0
     </select>
 
-    <select id="getMajorById" resultMap="schoolMap" parameterType="long">
+    <select id="getCollegeById" resultMap="schoolMap" parameterType="long">
         SELECT *
         FROM `t_school`
-        WHERE `school_id` = #{majorId}
+        WHERE `school_id` = #{CollegeId}
         AND `parent_id` != 0
         AND `is_del` = 0
     </select>
 
-    <select id="getSchools" resultType="list">
+    <select id="getSchools" resultMap="schoolMap" resultType="list">
         SELECT *
         FROM `t_school`
-        AND `parent_id` = 0
         WHERE `is_del` = 0
+        AND `parent_id` = 0
     </select>
 
-    <select id="getMajorsBySchoolId" resultType="list">
+    <select id="getCollegesBySchoolId" resultMap="schoolMap" resultType="list">
         SELECT *
         FROM `t_school`
         WHERE `parent_id` = #{schoolId}

@@ -13,17 +13,17 @@ public interface WCISchoolService {
 
     void createSchool(String name);
 
-    void createMajor(String name, long schoolId);
+    void createCollege(String name, long schoolId);
 
     void updateSchool(WCSchoolBean schoolBean);
 
-    void updateMajor(WCSchoolBean majorBean);
+    void updateCollege(WCSchoolBean collegeBean);
 
     WCSchoolBean getSchoolById(long schoolId);
 
-    WCSchoolBean getMajorById(long majorId);
+    WCSchoolBean getCollegeById(long collegeId);
 
     List<WCSchoolBean> getSchools();
 
-    List<WCSchoolBean> getMajorsBySchoolId(long schoolId);
+    List<WCSchoolBean> getCollegesBySchoolId(long schoolId);
 }
