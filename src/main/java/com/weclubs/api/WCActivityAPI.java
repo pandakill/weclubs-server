@@ -27,7 +27,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(value = "/activity")
-public class WCActivityAPI {
+class WCActivityAPI {
 
     private Logger log = Logger.getLogger(WCActivityAPI.class);
 

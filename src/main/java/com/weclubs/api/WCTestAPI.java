@@ -28,7 +28,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(value = "/test")
-public class WCTestAPI {
+class WCTestAPI {
 
     private Logger log = Logger.getLogger(WCTestAPI.class);
 

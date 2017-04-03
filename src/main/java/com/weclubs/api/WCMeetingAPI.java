@@ -24,7 +24,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(value = "/meeting")
-public class WCMeetingAPI {
+class WCMeetingAPI {
 
     private Logger log = Logger.getLogger(WCMeetingAPI.class);
 
