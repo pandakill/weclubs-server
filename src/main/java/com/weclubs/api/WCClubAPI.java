@@ -163,7 +163,6 @@ class WCClubAPI {
         int pageSize = WCRequestParamsUtil.getPageSize(requestModel);
 
         long studentId = WCRequestParamsUtil.getUserId(requestModel);
-        studentId = 2;
 
         PageHelper.startPage(pageNo, pageSize);
         List<WCClubBean> clubs = mClubService.getClubsByStudentId(studentId);
@@ -212,7 +211,6 @@ class WCClubAPI {
             return WCResultData.getHttpStatusData(check, null);
         }
 
-        long studentId = WCRequestParamsUtil.getRequestId(requestModel);
         long clubId = Long.parseLong((String) requestData.get("club_id"));
 
         int sortType = WCClubServiceImpl.SORT_BY_REAL_NAME; // 默认排序为按照真实姓名
@@ -252,8 +250,6 @@ class WCClubAPI {
         }
 
         long studentId = WCRequestParamsUtil.getUserId(requestModel);
-        // TODO: 2017/3/26
-        studentId = 1;
         List<WCMyClubModel> myClubs = mClubService.getMyClubs(studentId);
 
         ArrayList<HashMap<String, Object>> myClubHash = new ArrayList<HashMap<String, Object>>();
