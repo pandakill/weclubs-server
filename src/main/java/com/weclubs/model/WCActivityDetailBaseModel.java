@@ -11,6 +11,7 @@ public class WCActivityDetailBaseModel implements Serializable {
 
     private long activityId;
     private String activityName;
+    private String attribution;
     private String posterUrl;
     private String address;
     private int allowApply;
@@ -46,6 +47,14 @@ public class WCActivityDetailBaseModel implements Serializable {
 
     public void setActivityName(String activityName) {
         this.activityName = activityName;
+    }
+
+    public String getAttribution() {
+        return attribution;
+    }
+
+    public void setAttribution(String attribution) {
+        this.attribution = attribution;
     }
 
     public String getPosterUrl() {
@@ -173,6 +182,7 @@ public class WCActivityDetailBaseModel implements Serializable {
         return "WCActivityDetailBaseModel{" +
                 "activityId=" + activityId +
                 ", activityName='" + activityName + '\'' +
+                ", attribution='" + attribution + '\'' +
                 ", posterUrl='" + posterUrl + '\'' +
                 ", address='" + address + '\'' +
                 ", allowApply=" + allowApply +

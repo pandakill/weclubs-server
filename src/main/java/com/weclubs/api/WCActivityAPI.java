@@ -91,6 +91,7 @@ class WCActivityAPI {
 
         result.put("activity_id", detailBaseModel.getActivityId());
         result.put("activity_name", detailBaseModel.getActivityName());
+        result.put("attribution", detailBaseModel.getAttribution());
         result.put("apply_deadline", detailBaseModel.getApplyDeadline());
         result.put("hold_date", detailBaseModel.getHoldDate());
         result.put("hold_deadline", detailBaseModel.getHoldDeadline());
