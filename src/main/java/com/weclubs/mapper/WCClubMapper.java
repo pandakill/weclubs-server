@@ -2,6 +2,7 @@ package com.weclubs.mapper;
 
 import com.weclubs.bean.WCClubBean;
 import com.weclubs.bean.WCClubStudentBean;
+import com.weclubs.model.WCManageClubModel;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -74,4 +75,12 @@ public interface WCClubMapper {
     long getClubMemberCount(@Param("clubId") long clubId);
 
     long getClubActivityCount(@Param("clubId") long clubId);
+
+    /**
+     * 获取我管理的所有社团
+     *
+     * @param studentId 学生id
+     * @return  该学生所有管理的社团
+     */
+    List<WCManageClubModel> getMyManageCurrentGraClub(@Param("studentId") long studentId);
 }

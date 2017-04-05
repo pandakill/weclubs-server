@@ -78,6 +78,24 @@
         </association>
     </resultMap>
 
+    <resultMap id="manageClubMap" type="com.weclubs.model.WCManageClubModel">
+        <id property="clubId" column="club_id" />
+        <result property="clubName" column="club_name" />
+        <result property="avatarUrl" column="avatar_url" />
+        <result property="level" column="level" />
+        <result property="introduction" column="introduction" />
+        <result property="slogan" column="slogan" />
+
+        <result property="departments" column="departments" />
+        <result property="jobs" column="jobs" />
+
+        <result property="myDepartment" column="department_id" />
+        <result property="myJob" column="job_id" />
+
+        <result property="memberCount" column="member_count" />
+        <result property="honorCount" column="honor_count" />
+    </resultMap>
+
     <!-- 根据社团 id 查找社团信息 -->
     <select id="getClubById" resultMap="clubWithSchoolMap">
         SELECT * FROM `T_CLUB`
@@ -177,6 +195,20 @@
         FROM `t_club_activity` club_activity
         WHERE club_activity.`club_id` = #{clubId}
         AND club_activity.`is_del` = 0
+    </select>
+
+    <!-- TODO:需要计算荣誉、人数 -->
+    <select id="getMyManageCurrentGraClub" resultMap="manageClubMap" resultType="list" >
+        SELECT club.`club_id`, club.`name` AS `club_name`, club.`avatar_url`, club.`level`, club.`introduction`,
+        club.`slogan`, club_graduate.`departments`, club_graduate.`jobs`, stu_clu_gra_relation.`department_id`,
+        stu_clu_gra_relation.`job_id`,
+        count(SELECT * FROM `t_honor` honor WHERE honor.`club_id`=club.`club_id`) AS `honor_count`
+        FROM `t_club` club, `t_club_graduate` club_graduate, `t_student_club_graduate_relation` stu_clu_gra_relation
+        WHERE club_graduate.`is_current` = 1
+        AND club_graduate.`club_id` = club.`club_id`
+        AND club_graduate.`club_graduate_id` = stu_clu_gra_relation.`graduate_id`
+        AND stu_clu_gra_relation.`status` = 1
+        AND stu_clu_gra_relation.`student_id` = #{studentId}
     </select>
 
 </mapper>
