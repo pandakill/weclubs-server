@@ -71,7 +71,7 @@ class WCActivityAPI {
         List<HashMap<String, Object>> activityHashs = new ArrayList<HashMap<String, Object>>();
         if (pageInfo.getList() != null && pageInfo.getList().size() > 0) {
             for (WCActivityDetailBaseModel activityDetailBaseModel : pageInfo.getList()) {
-                HashMap<String, Object> hash = getClubDetaiBaseInfo(activityDetailBaseModel);
+                HashMap<String, Object> hash = getClubDetailBaseInfo(activityDetailBaseModel);
 
                 activityHashs.add(hash);
             }
@@ -83,7 +83,38 @@ class WCActivityAPI {
         return WCResultData.getSuccessData(result);
     }
 
-    private HashMap<String, Object> getClubDetaiBaseInfo(WCActivityDetailBaseModel detailBaseModel) {
+    @RequestMapping(value = "/get_activity_detail")
+    public WCResultData getActivityDetail(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        check = mSecurityService.checkTokenAvailable(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        if (requestData == null || requestData.size() == 0) {
+            check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        long activityId = 0;
+        if (requestData.get("activity_id") instanceof String) {
+            activityId = Long.parseLong((String) requestData.get("activity_id"));
+        } else if (requestData.get("activity_id") instanceof Integer) {
+            activityId = (Integer) requestData.get("activity_id");
+        }
+
+        WCActivityDetailBaseModel activityDetailBaseModel = mActivityService.getActivityDetail(activityId);
+        HashMap<String, Object> result = getClubDetailBaseInfo(activityDetailBaseModel);
+        return WCResultData.getSuccessData(result);
+    }
+
+    private HashMap<String, Object> getClubDetailBaseInfo(WCActivityDetailBaseModel detailBaseModel) {
         HashMap<String, Object> result = new HashMap<String, Object>();
 
         result.put("club_id", detailBaseModel.getClubId());

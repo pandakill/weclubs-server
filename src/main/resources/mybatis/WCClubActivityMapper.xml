@@ -35,4 +35,18 @@
         AND activity.`club_id` = #{clubId}
     </select>
 
+    <select id="getActivityDetail" resultMap="activityBaseMap" resultType="com.weclubs.model.WCActivityDetailBaseModel">
+        SELECT activity.`club_activity_id` AS `activity_id`, activity.`name` AS `activity_name`, activity.`attribution`,
+        activity.`poster_url`,  activity.`address`, activity.`allow_apply`, activity.`allow_pre_apply`,
+        activity.`apply_deadline`, activity.`hold_date`, activity.`hold_deadline`, activity.`is_del`,
+        club.`club_id`, club.`name` AS `club_name`,
+        COUNT(comment.`comment_id`) AS `comment_count`
+        FROM `t_club_activity` activity, `t_club` club,  `t_comment` comment
+        WHERE activity.`club_id` = club.`club_id`
+        AND comment.`source_type` = 1
+        AND comment.`source_id` = activity.`club_activity_id`
+        AND activity.`club_id` = activity.`club_id`
+        AND activity.`club_activity_id` = #{activityId}
+    </select>
+
 </mapper>

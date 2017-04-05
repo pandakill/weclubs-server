@@ -6,7 +6,6 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -26,8 +25,19 @@ class WCActivityServiceImpl implements WCIActivityService {
 
         if (clubId <= 0) {
             log.error("getActivitiesByCurrentClub：clubId不能小于等于0");
+            return null;
         }
 
         return mActivityMapper.getActivitiesByCurrentClubId(clubId);
+    }
+
+    public WCActivityDetailBaseModel getActivityDetail(long activityId) {
+
+        if (activityId <= 0) {
+            log.error("getActivityDetail：activityId不能小于等于0");
+            return null;
+        }
+
+        return mActivityMapper.getActivityDetail(activityId);
     }
 }

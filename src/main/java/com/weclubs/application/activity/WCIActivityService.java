@@ -12,4 +12,6 @@ import java.util.List;
 public interface WCIActivityService {
 
     List<WCActivityDetailBaseModel> getActivitiesByCurrentClub(long clubId);
+
+    WCActivityDetailBaseModel getActivityDetail(long activityId);
 }

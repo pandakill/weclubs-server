@@ -19,4 +19,6 @@ public interface WCClubActivityMapper {
      * @return  该社团当届的活动列表
      */
     List<WCActivityDetailBaseModel> getActivitiesByCurrentClubId(@Param("clubId") long clubId);
+
+    WCActivityDetailBaseModel getActivityDetail(@Param("activityId") long activityId);
 }
