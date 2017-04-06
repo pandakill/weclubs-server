@@ -6,15 +6,20 @@ import com.weclubs.bean.*;
 import com.weclubs.mapper.WCClubHonorMapper;
 import com.weclubs.mapper.WCClubMapper;
 import com.weclubs.mapper.WCDynamicMapper;
+import com.weclubs.model.WCManageClubModel;
 import com.weclubs.model.WCMyClubModel;
 import com.weclubs.model.WCStudentBaseInfoModel;
 import com.weclubs.model.WCStudentForClubModel;
 import org.apache.log4j.Logger;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -187,5 +192,50 @@ public class WCClubServiceImpl implements WCIClubService {
         log.info("getClubStudentByStudentId：result = " + result.toString());
 
         return result;
+    }
+
+    public List<WCManageClubModel> getMyManageClubs(long studentId) {
+
+        if (studentId <= 0) {
+            log.error("getMyManageClubs：studentId不能小于等于0");
+            return null;
+        }
+
+        List<WCManageClubModel> myManageClubs = mClubMapper.getMyManageCurrentGraClub(studentId);
+        if (myManageClubs != null && myManageClubs.size() > 0) {
+            for (WCManageClubModel myManageClub : myManageClubs) {
+                List<WCClubHonorBean> honors = mClubHonorMapper.getClubHonorsByClubId(myManageClub.getClubId());
+                myManageClub.setHonorCount(honors != null ? honors.size() : 0);
+                myManageClub.setMemberCount(mClubMapper.getClubMemberCount(myManageClub.getClubId()));
+
+                if (!StringUtils.isEmpty(myManageClub.getJobs())) {
+                    try {
+                        JSONObject authority = new JSONObject(myManageClub.getJobs());
+                        myManageClub.setJobAuthority(authority);
+
+                        String jobs = "";
+
+                        Iterator it = authority.keys();
+                        ArrayList<String> job = new ArrayList<String>();
+                        while (it.hasNext()) {
+                            job.add((String) it.next());
+                        }
+                        for (int i = 0; i < job.size(); i++) {
+                            jobs += job.get(i);
+                            if (i != (job.size() - 1)) {
+                                jobs += ",";
+                            }
+                        }
+
+                        myManageClub.setJobs(jobs);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
+        return myManageClubs;
     }
 }

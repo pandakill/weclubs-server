@@ -1,6 +1,6 @@
 package com.weclubs.model;
 
-import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.Serializable;
 
@@ -27,7 +27,7 @@ public class WCManageClubModel implements Serializable {
     private long myDepartment;
     private long myJob;
 
-    private JSONArray jobAuthority;
+    private JSONObject jobAuthority;
 
     public long getClubId() {
         return clubId;
@@ -109,11 +109,11 @@ public class WCManageClubModel implements Serializable {
         this.honorCount = honorCount;
     }
 
-    public JSONArray getJobAuthority() {
+    public JSONObject getJobAuthority() {
         return jobAuthority;
     }
 
-    public void setJobAuthority(JSONArray jobAuthority) {
+    public void setJobAuthority(JSONObject jobAuthority) {
         this.jobAuthority = jobAuthority;
     }
 

@@ -3,6 +3,7 @@ package com.weclubs.application.club;
 import com.weclubs.bean.WCClubBean;
 import com.weclubs.bean.WCClubHonorBean;
 import com.weclubs.bean.WCClubStudentBean;
+import com.weclubs.model.WCManageClubModel;
 import com.weclubs.model.WCMyClubModel;
 import com.weclubs.model.WCStudentForClubModel;
 
@@ -32,4 +33,12 @@ public interface WCIClubService {
     List<WCMyClubModel> getMyClubs(long studentId);
 
     WCStudentForClubModel getClubStudentByStudentId(long studentId, long clubId);
+
+    /**
+     * 根据学生id 获取该学生具有管理权限的社团列表
+     *
+     * @param studentId 学生id
+     * @return  返回该学生具有管理权限的社团
+     */
+    List<WCManageClubModel> getMyManageClubs(long studentId);
 }
