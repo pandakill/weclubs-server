@@ -67,6 +67,18 @@ public class WCManageClubAPI {
         return WCResultData.getSuccessData(result);
     }
 
+    @RequestMapping(value = "/create_club")
+    private WCResultData createClub(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap<String, Object> result = new HashMap<String, Object>();
+        return WCResultData.getSuccessData(result);
+    }
+
     private HashMap<String, Object> getMyManageClub(WCManageClubModel manageClubModel) {
 
         HashMap<String, Object> result = new HashMap<String, Object>();

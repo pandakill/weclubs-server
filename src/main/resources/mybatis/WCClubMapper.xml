@@ -197,7 +197,6 @@
         AND club_activity.`is_del` = 0
     </select>
 
-    <!-- TODO:需要计算荣誉、人数 -->
     <select id="getMyManageCurrentGraClub" resultMap="manageClubMap" resultType="list" >
         SELECT club.`club_id`, club.`name` AS `club_name`, club.`avatar_url`, club.`level`, club.`introduction`,
         club.`slogan`, club_graduate.`departments`, club_graduate.`jobs`, stu_clu_gra_relation.`department_id`,

@@ -109,6 +109,22 @@ public class WCManageClubModel implements Serializable {
         this.honorCount = honorCount;
     }
 
+    public long getMyDepartment() {
+        return myDepartment;
+    }
+
+    public void setMyDepartment(long myDepartment) {
+        this.myDepartment = myDepartment;
+    }
+
+    public long getMyJob() {
+        return myJob;
+    }
+
+    public void setMyJob(long myJob) {
+        this.myJob = myJob;
+    }
+
     public JSONObject getJobAuthority() {
         return jobAuthority;
     }

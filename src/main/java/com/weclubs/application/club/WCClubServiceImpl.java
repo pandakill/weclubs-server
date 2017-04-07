@@ -202,6 +202,7 @@ public class WCClubServiceImpl implements WCIClubService {
         }
 
         List<WCManageClubModel> myManageClubs = mClubMapper.getMyManageCurrentGraClub(studentId);
+        List<WCManageClubModel> resultClubs = new ArrayList<WCManageClubModel>();
         if (myManageClubs != null && myManageClubs.size() > 0) {
             for (WCManageClubModel myManageClub : myManageClubs) {
                 List<WCClubHonorBean> honors = mClubHonorMapper.getClubHonorsByClubId(myManageClub.getClubId());
@@ -233,9 +234,25 @@ public class WCClubServiceImpl implements WCIClubService {
                         e.printStackTrace();
                     }
                 }
+
+                if (myManageClub.getMyJob() > 0 && myManageClub.getJobAuthority() != null) {
+                    if (myManageClub.getJobAuthority().has(myManageClub.getMyJob() + "")) {
+                        try {
+                            String jobs = (String) myManageClub.getJobAuthority().get(myManageClub.getMyJob() + "");
+                            if (jobs.contains("1")
+                                    || jobs.contains("2")
+                                    || jobs.contains("5")
+                                    || jobs.contains("7")) {
+                                resultClubs.add(myManageClub);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
             }
         }
 
-        return myManageClubs;
+        return resultClubs;
     }
 }
