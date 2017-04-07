@@ -24,6 +24,8 @@ public class WCManageClubModel implements Serializable {
     private long memberCount;
     private long honorCount;
 
+    private long isSuperAdmin;
+
     private long myDepartment;
     private long myJob;
 
@@ -109,6 +111,14 @@ public class WCManageClubModel implements Serializable {
         this.honorCount = honorCount;
     }
 
+    public long getIsSuperAdmin() {
+        return isSuperAdmin;
+    }
+
+    public void setIsSuperAdmin(long isSuperAdmin) {
+        this.isSuperAdmin = isSuperAdmin;
+    }
+
     public long getMyDepartment() {
         return myDepartment;
     }
@@ -146,6 +156,7 @@ public class WCManageClubModel implements Serializable {
                 ", jobs='" + jobs + '\'' +
                 ", memberCount=" + memberCount +
                 ", honorCount=" + honorCount +
+                ", isSuperAdmin=" + isSuperAdmin +
                 ", myDepartment=" + myDepartment +
                 ", myJob=" + myJob +
                 ", jobAuthority=" + jobAuthority +

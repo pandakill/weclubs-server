@@ -75,6 +75,17 @@ public class WCManageClubAPI {
             return WCResultData.getHttpStatusData(check, null);
         }
 
+        check = mSecurityService.checkTokenAvailable(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        if (requestData == null || requestData.size() == 0) {
+            check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
         HashMap<String, Object> result = new HashMap<String, Object>();
         return WCResultData.getSuccessData(result);
     }

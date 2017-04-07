@@ -10,6 +10,7 @@
         <result property="graduateName" column="graduate_name" />
         <result property="departments" column="departments" />
         <result property="jobs" column="jobs" />
+        <result property="superAdmin" column="super_admin" />
         <result property="isCurrent" column="is_current" />
     </resultMap>
 

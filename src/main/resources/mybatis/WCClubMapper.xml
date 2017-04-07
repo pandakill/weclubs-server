@@ -89,6 +89,8 @@
         <result property="departments" column="departments" />
         <result property="jobs" column="jobs" />
 
+        <result property="isSuperAdmin" column="super_admin" />
+
         <result property="myDepartment" column="department_id" />
         <result property="myJob" column="job_id" />
 
@@ -200,7 +202,7 @@
     <select id="getMyManageCurrentGraClub" resultMap="manageClubMap" resultType="list" >
         SELECT club.`club_id`, club.`name` AS `club_name`, club.`avatar_url`, club.`level`, club.`introduction`,
         club.`slogan`, club_graduate.`departments`, club_graduate.`jobs`, stu_clu_gra_relation.`department_id`,
-        stu_clu_gra_relation.`job_id`
+        stu_clu_gra_relation.`job_id`, stu_clu_gra_relation.`super_admin`
         FROM `t_club` club, `t_club_graduate` club_graduate, `t_student_club_graduate_relation` stu_clu_gra_relation
         WHERE club_graduate.`is_current` = 1
         AND club_graduate.`club_id` = club.`club_id`

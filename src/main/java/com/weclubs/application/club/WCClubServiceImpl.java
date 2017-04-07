@@ -235,7 +235,9 @@ public class WCClubServiceImpl implements WCIClubService {
                     }
                 }
 
-                if (myManageClub.getMyJob() > 0 && myManageClub.getJobAuthority() != null) {
+                if (myManageClub.getIsSuperAdmin() == 1) {
+                    resultClubs.add(myManageClub);
+                } else if (myManageClub.getMyJob() > 0 && myManageClub.getJobAuthority() != null) {
                     if (myManageClub.getJobAuthority().has(myManageClub.getMyJob() + "")) {
                         try {
                             String jobs = (String) myManageClub.getJobAuthority().get(myManageClub.getMyJob() + "");
