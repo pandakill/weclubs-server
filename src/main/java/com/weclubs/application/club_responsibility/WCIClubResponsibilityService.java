@@ -24,7 +24,7 @@ public interface WCIClubResponsibilityService {
 
     List<WCClubJobBean> getJobsBySuggest();
 
-    List<WCClubDepartmentBean> getDepartmentsByClubId(long clubId);
+    List<WCClubDepartmentBean> getDepartmentsByClubId(long clubId, boolean pureSelected);
 
     List<WCClubJobBean> getJobsByClubId(long clubId);
 

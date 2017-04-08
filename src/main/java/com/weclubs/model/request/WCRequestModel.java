@@ -64,6 +64,7 @@ public class WCRequestModel implements Serializable {
                 ", sign='" + sign + '\'' +
                 ", data=" + data +
                 '}';
+
     }
 
     public static class ClientBean implements Serializable {

@@ -12,6 +12,8 @@ public class WCClubDepartmentBean {
     private int isSuggest;
     private int isDel;
 
+    private int isSelected;
+
     public long getDepartmentId() {
         return departmentId;
     }
@@ -42,6 +44,14 @@ public class WCClubDepartmentBean {
 
     public void setIsDel(int isDel) {
         this.isDel = isDel;
+    }
+
+    public int getIsSelected() {
+        return isSelected;
+    }
+
+    public void setIsSelected(int isSelected) {
+        this.isSelected = isSelected;
     }
 
     @Override

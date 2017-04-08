@@ -1,10 +1,12 @@
 package com.weclubs.api.manager;
 
 import com.weclubs.application.club.WCIClubService;
+import com.weclubs.application.club_responsibility.WCIClubResponsibilityService;
 import com.weclubs.application.school.WCISchoolService;
 import com.weclubs.application.security.WCISecurityService;
 import com.weclubs.application.user.WCIUserService;
 import com.weclubs.bean.WCClubBean;
+import com.weclubs.bean.WCClubDepartmentBean;
 import com.weclubs.bean.WCSchoolBean;
 import com.weclubs.bean.WCStudentBean;
 import com.weclubs.model.WCManageClubModel;
@@ -42,6 +44,8 @@ class WCManageClubAPI {
     private WCISchoolService mSchoolService;
     @Autowired
     private WCIUserService mUserService;
+    @Autowired
+    private WCIClubResponsibilityService mClubResponsibilityService;
 
     @RequestMapping(value = "/get_my_club")
     public WCResultData getMyManagerClub(@RequestBody WCRequestModel requestModel) {
@@ -77,7 +81,7 @@ class WCManageClubAPI {
     }
 
     @RequestMapping(value = "/create_club")
-    private WCResultData createClub(@RequestBody WCRequestModel requestModel) {
+    public WCResultData createClub(@RequestBody WCRequestModel requestModel) {
 
         WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
         if (check != WCHttpStatus.SUCCESS) {
@@ -123,6 +127,54 @@ class WCManageClubAPI {
 
         HashMap<String, Object> result = new HashMap<String, Object>();
         result.put("club_id", clubId);
+        return WCResultData.getSuccessData(result);
+    }
+
+    @RequestMapping(value = "/get_club_department")
+    public WCResultData getClubDepartment(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        check = mSecurityService.checkTokenAvailable(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        if (requestData == null || requestData.size() == 0) {
+            check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        long clubId = 0;
+        int pureSelected = 0;
+        if (requestData.get("club_id") instanceof Integer) {
+            clubId = (Integer) requestData.get("club_id");
+        } else if (requestData.get("club_id") instanceof String) {
+            clubId = Integer.parseInt((String) requestData.get("club_id"));
+        }
+        if (requestData.containsKey("pure_selected")) {
+            if (requestData.get("pure_selected") instanceof Integer) {
+                pureSelected = (Integer) requestData.get("pure_selected");
+            } else if (requestData.get("pure_selected") instanceof String) {
+                pureSelected = Integer.parseInt((String) requestData.get("pure_selected"));
+            }
+        }
+
+        ArrayList<HashMap<String, Object>> resultArray = new ArrayList<HashMap<String, Object>>();
+        List<WCClubDepartmentBean> clubDepartmentBeans = mClubResponsibilityService.getDepartmentsByClubId(clubId, pureSelected == 1);
+        if (clubDepartmentBeans != null && clubDepartmentBeans.size() > 0) {
+            for (WCClubDepartmentBean clubDepartmentBean : clubDepartmentBeans) {
+                HashMap<String, Object> departmentHash = getDepartmentHash(clubDepartmentBean);
+                resultArray.add(departmentHash);
+            }
+        }
+
+        HashMap<String, Object> result = new HashMap<String, Object>();
+        result.put("department", resultArray);
         return WCResultData.getSuccessData(result);
     }
 
@@ -173,6 +225,15 @@ class WCManageClubAPI {
         }
         result.put("finish_count", String.format("%.2f", finishCount * 100));
         // 完成情况 END
+
+        return result;
+    }
+
+    private HashMap<String, Object> getDepartmentHash(WCClubDepartmentBean departmentBean) {
+        HashMap<String, Object> result = new HashMap<String, Object>();
+        result.put("department_id", departmentBean.getDepartmentId());
+        result.put("department_name", departmentBean.getDepartmentName());
+        result.put("is_selected", departmentBean.getIsSelected());
 
         return result;
     }

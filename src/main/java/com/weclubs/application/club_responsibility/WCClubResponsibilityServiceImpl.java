@@ -168,7 +168,7 @@ public class WCClubResponsibilityServiceImpl implements WCIClubResponsibilitySer
         return mJobMapper.getClubJobBySuggest();
     }
 
-    public List<WCClubDepartmentBean> getDepartmentsByClubId(long clubId) {
+    public List<WCClubDepartmentBean> getDepartmentsByClubId(long clubId, boolean pureSelected) {
 
         if (clubId <= 0) {
             log.error("getDepartmentsByClubId：获取社团部门失败，clubId不能小于等于0。");
@@ -180,19 +180,40 @@ public class WCClubResponsibilityServiceImpl implements WCIClubResponsibilitySer
             return null;
         }
 
-        List<WCClubDepartmentBean> result = new ArrayList<WCClubDepartmentBean>();
+        List<WCClubDepartmentBean> selected = new ArrayList<WCClubDepartmentBean>();
         String departmentsStr = mDepartmentMapper.getCurrentClubDepartmentsByClubId(clubId);
+        List<WCClubDepartmentBean> suggestDepartments = getDepartmentsBySuggest();
 
         if (!StringUtils.isEmpty(departmentsStr)) {
             String[] depArray = departmentsStr.split(",");
 
             for (String s : depArray) {
                 WCClubDepartmentBean departmentBean = mDepartmentMapper.getClubDepartmentById(Long.parseLong(s));
-                result.add(departmentBean);
+                departmentBean.setIsSelected(1);
+                selected.add(departmentBean);
             }
         }
 
-        return result;
+        if (pureSelected) {
+            return selected;
+        }
+
+        List<WCClubDepartmentBean> resultArray = new ArrayList<WCClubDepartmentBean>();
+        resultArray.addAll(selected);
+        for (WCClubDepartmentBean suggestDepartment : suggestDepartments) {
+            boolean isEquale = false;
+            for (WCClubDepartmentBean departmentBean : selected) {
+                if (departmentBean.getDepartmentId() == suggestDepartment.getDepartmentId()) {
+                    isEquale = true;
+                    break;
+                }
+            }
+            if (!isEquale) {
+                resultArray.add(suggestDepartment);
+            }
+        }
+
+        return resultArray;
     }
 
     public List<WCClubJobBean> getJobsByClubId(long clubId) {
