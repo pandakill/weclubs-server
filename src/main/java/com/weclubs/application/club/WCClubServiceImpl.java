@@ -61,14 +61,57 @@ public class WCClubServiceImpl implements WCIClubService {
         return mClubMapper.getClubById(clubId);
     }
 
-    public void createClub(WCClubBean clubBean) {
+    public long createClub(WCClubBean clubBean, long studentId) {
 
         if (clubBean == null) {
             log.error("createClub：创建 club 对象失败，club 不能为 null。");
-            return;
+            return 0;
         }
 
         mClubMapper.createClub(clubBean);
+
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            log.error("createClub：创建 clubBean 失败。此时 clubBean = " + clubBean.toString());
+            e.printStackTrace();
+            return 0;
+        }
+
+        WCClubGraduateBean graduateBean = new WCClubGraduateBean();
+        graduateBean.setClubId(clubBean.getClubId());
+        graduateBean.setIsCurrent(1);
+        mClubGraduateService.createClubGraduate(graduateBean);
+
+        try {
+            Thread.sleep(200);
+
+            WCStudentClubGraduateRelationBean relationBean = new WCStudentClubGraduateRelationBean();
+            relationBean.setStudentId(studentId);
+            relationBean.setSuperAdmin(1);
+            relationBean.setStatus(1);
+            relationBean.setGraduateId(graduateBean.getClubGraduateId());
+            mClubGraduateService.createStuCluGraduateRelation(relationBean);
+
+            try {
+                Thread.sleep(200);
+
+                log.info("createClub：创建社团成功，clubBean = " + clubBean.toString());
+                log.info("createClub：创建社团成功，clubGraduateBean = " + graduateBean.toString());
+                log.info("createClub：创建社团成功，studentRelation = " + relationBean.toString());
+
+                return clubBean.getClubId();
+            } catch (InterruptedException e) {
+                log.error("createClub：创建 studentRelation 失败。此时 clubId = " + graduateBean.getClubId());
+                log.error("createClub：创建 studentRelation 失败。此时 clubGraduateId = " + graduateBean.getClubGraduateId());
+                e.printStackTrace();
+                return 0;
+            }
+        } catch (InterruptedException e) {
+            log.error("createClub：创建 clubGraduateBean 失败。此时 clubId = " + clubBean.getClubId());
+            e.printStackTrace();
+            return 0;
+        }
     }
 
     public void updateClub(WCClubBean clubBean) {

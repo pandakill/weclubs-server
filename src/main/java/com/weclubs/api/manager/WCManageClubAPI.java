@@ -1,7 +1,12 @@
 package com.weclubs.api.manager;
 
 import com.weclubs.application.club.WCIClubService;
+import com.weclubs.application.school.WCISchoolService;
 import com.weclubs.application.security.WCISecurityService;
+import com.weclubs.application.user.WCIUserService;
+import com.weclubs.bean.WCClubBean;
+import com.weclubs.bean.WCSchoolBean;
+import com.weclubs.bean.WCStudentBean;
 import com.weclubs.model.WCManageClubModel;
 import com.weclubs.model.request.WCRequestModel;
 import com.weclubs.model.response.WCResultData;
@@ -25,7 +30,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(value = "manage/club")
-public class WCManageClubAPI {
+class WCManageClubAPI {
 
     private Logger log = Logger.getLogger(WCManageClubAPI.class);
 
@@ -33,6 +38,10 @@ public class WCManageClubAPI {
     private WCISecurityService mSecurityService;
     @Autowired
     private WCIClubService mClubService;
+    @Autowired
+    private WCISchoolService mSchoolService;
+    @Autowired
+    private WCIUserService mUserService;
 
     @RequestMapping(value = "/get_my_club")
     public WCResultData getMyManagerClub(@RequestBody WCRequestModel requestModel) {
@@ -86,7 +95,34 @@ public class WCManageClubAPI {
             return WCResultData.getHttpStatusData(check, null);
         }
 
+        long studentId = WCRequestParamsUtil.getUserId(requestModel);
+        WCStudentBean studentBean = mUserService.getUserInfoById(studentId);
+        WCSchoolBean schoolBean = mSchoolService.getSchoolById(studentBean.getSchoolId());
+        if (schoolBean == null) {
+            log.error("找不到该学生的学校信息。");
+            check = WCHttpStatus.FAIL_APPLICATION_ERROR;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        String clubName = (String) requestData.get("club_name");
+        int level = 0;
+        if (requestData.get("level") instanceof Integer) {
+            level = (Integer) requestData.get("level");
+        } else if (requestData.get("level") instanceof String) {
+            level = Integer.parseInt((String) requestData.get("level"));
+        }
+        String avatarUrl = (String) requestData.get("avatar_url");
+
+        WCClubBean clubBean = new WCClubBean();
+        clubBean.setName(clubName);
+        clubBean.setLevel(level);
+        clubBean.setAvatarUrl(avatarUrl);
+        clubBean.setSchoolId(schoolBean.getSchoolId());
+
+        long clubId = mClubService.createClub(clubBean, studentId);
+
         HashMap<String, Object> result = new HashMap<String, Object>();
+        result.put("club_id", clubId);
         return WCResultData.getSuccessData(result);
     }
 

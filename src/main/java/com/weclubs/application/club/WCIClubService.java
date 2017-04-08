@@ -18,7 +18,7 @@ public interface WCIClubService {
 
     WCClubBean getClubInfoById(long clubId);
 
-    void createClub(WCClubBean clubBean);
+    long createClub(WCClubBean clubBean, long studentId);
 
     void updateClub(WCClubBean clubBean);
 

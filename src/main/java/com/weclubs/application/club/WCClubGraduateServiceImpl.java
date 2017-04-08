@@ -27,11 +27,6 @@ public class WCClubGraduateServiceImpl implements WCIClubGraduateService {
             return;
         }
 
-        if (clubGraduateBean.getClubGraduateId() <= 0) {
-            log.error("createClubGraduate：创建社团届数失败，clubGraduate.clubGraduateId不能小于等于0。");
-            return;
-        }
-
         mClubGraduateMapper.createClubGraduate(clubGraduateBean);
     }
 
@@ -85,5 +80,14 @@ public class WCClubGraduateServiceImpl implements WCIClubGraduateService {
         }
 
         return mClubGraduateMapper.getStudentGraduateRelation(studentId, graduateId);
+    }
+
+    public void createStuCluGraduateRelation(WCStudentClubGraduateRelationBean relationBean) {
+
+        if (relationBean == null) {
+            log.error("createStuCluGraduateRelation：创建失败，relationBean不能为空");
+            return;
+        }
+        mClubGraduateMapper.createStuCluGraRelation(relationBean);
     }
 }

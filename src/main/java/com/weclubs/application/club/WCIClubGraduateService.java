@@ -21,4 +21,6 @@ public interface WCIClubGraduateService {
     WCClubGraduateBean getCurrentClubGraduate(long clubId);
 
     WCStudentClubGraduateRelationBean getStudentClubGraduationRelationByGraduateId(long studentId, long graduateId);
+
+    void createStuCluGraduateRelation(WCStudentClubGraduateRelationBean relationBean);
 }

@@ -27,4 +27,6 @@ public interface WCClubGraduateMapper {
 
     WCStudentClubGraduateRelationBean getStudentGraduateRelation(@Param("studentId") long studentId,
                                                                  @Param("graduateId") long graduateId);
+
+    void createStuCluGraRelation(WCStudentClubGraduateRelationBean relationBean);
 }

@@ -84,8 +84,14 @@ public class WCSchoolServiceImpl implements WCISchoolService {
             return null;
         }
 
+        WCSchoolBean schoolBean = mSchoolMapper.getCollegeById(schoolId);
+        if (schoolBean != null && schoolBean.getParentId() != 0) {
+            schoolBean = mSchoolMapper.getSchoolById(schoolBean.getParentId());
+        } else if (schoolBean == null) {
+            schoolBean = mSchoolMapper.getSchoolById(schoolId);
+        }
 
-        return mSchoolMapper.getSchoolById(schoolId);
+        return schoolBean;
     }
 
     public WCSchoolBean getCollegeById(long collegeId) {

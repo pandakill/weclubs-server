@@ -21,13 +21,14 @@
         <result property="status" column="status" />
         <result property="departmentId" column="department_id" />
         <result property="jobId" column="job_id" />
+        <result property="superAdmin" column="super_admin" />
         <result property="isDel" column="is_del" />
     </resultMap>
 
     <!-- 创建社团届数实体对象 -->
-    <insert id="createClubGraduate" parameterType="com.weclubs.bean.WCClubGraduateBean">
+    <insert id="createClubGraduate" useGeneratedKeys="true" keyProperty="clubGraduateId" parameterType="com.weclubs.bean.WCClubGraduateBean">
         INSERT INTO T_CLUB_GRADUATE(`CLUB_ID`, `GRADUATE_COUNT`, `GRADUATE_NAME`, `IS_CURRENT`)
-        VALUES (#{club_id}, #{graduateCount}, #{graduateName}, #{isCurrent}
+        VALUES (#{clubId}, #{graduateCount}, #{graduateName}, #{isCurrent})
     </insert>
 
     <!-- 更新社团届数对象 -->
@@ -70,5 +71,10 @@
         AND `student_id` = #{studentId}
         AND `is_del` = 0
     </select>
+
+    <insert id="createStuCluGraRelation" useGeneratedKeys="true" keyProperty="stuCluGraRelId" parameterType="com.weclubs.bean.WCStudentClubGraduateRelationBean">
+        INSERT INTO T_STUDENT_CLUB_GRADUATE_RELATION(`GRADUATE_ID`, `STUDENT_ID`, `SUPER_ADMIN`, `STATUS`)
+        VALUES (#{graduateId}, #{studentId}, #{superAdmin}, #{status})
+    </insert>
 
 </mapper>

@@ -125,7 +125,7 @@
     </select>
 
     <!-- 创建社团实体 -->
-    <insert id="createClub" useGeneratedKeys="true" keyProperty="id" parameterType="com.weclubs.bean.WCClubBean">
+    <insert id="createClub" useGeneratedKeys="true" keyProperty="clubId" parameterType="com.weclubs.bean.WCClubBean">
         INSERT INTO T_CLUB(`SCHOOL_ID`, `NAME`, `INTRODUCTION`, `AVATAR_URL`,
          `IS_AUTH`, `LEVEL`, `STATUS`, `CHECK_COUNT`)
         VALUES (#{schoolId}, #{name}, #{introduction}, #{avatarUrl},
