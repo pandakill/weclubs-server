@@ -104,9 +104,13 @@ class WCUserAPI {
                 return WCResultData.getHttpStatusData(check, null);
             }
 
+            String caller = WCRequestParamsUtil.getClientCaller(requestModel);
+            String token = mTokenService.createTokenByUserIdAndCaller(createStatus.getStudentId(), createStatus.getPassword(), caller);
+
             HashMap<String, Object> result = new HashMap<String, Object>();
             result.put("user_id", createStatus.getStudentId());
             result.put("mobile", createStatus.getMobile());
+            result.put("token", token);
             return WCResultData.getSuccessData(result);
         }
     }
@@ -147,6 +151,11 @@ class WCUserAPI {
             check.msg = "用户名或密码错误，请重新输入";
             return WCResultData.getHttpStatusData(check, null);
         } else {
+            if (StringUtils.isEmpty(student.getPassword())) {
+                check = WCHttpStatus.FAIL_CUSTOM_DAILOG_AND_CLOSE;
+                check.msg = "您还未设置密码";
+                return WCResultData.getHttpStatusData(check, null);
+            }
             check = mSecurityService.checkPasswordAvailable(student,  password);
             if (check != WCHttpStatus.SUCCESS) {
                 log.error("用户密码输入错误");
@@ -246,9 +255,15 @@ class WCUserAPI {
             return WCResultData.getHttpStatusData(check, null);
         }
 
-        mUserService.changePassword(userId, password);
+        String realPsw = mUserService.changePassword(userId, password);
 
-        return WCResultData.getSuccessData(null);
+        String token = mTokenService.createTokenByUserIdAndCaller(userId, realPsw, caller);
+
+        HashMap<String, Object> result = new HashMap<String, Object>();
+        result.put("user_id", userId);
+        result.put("token", token);
+
+        return WCResultData.getSuccessData(result);
     }
 
     @RequestMapping(value = "/update_school_info", method = RequestMethod.POST)
@@ -283,6 +298,49 @@ class WCUserAPI {
         }
 
         HashMap<String, Object> result = new HashMap<String, Object>();
+        return WCResultData.getSuccessData(result);
+    }
+
+    @RequestMapping(value = "/setup_password", method = RequestMethod.POST)
+    public WCResultData setPassword(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        check = mSecurityService.checkTokenAvailable(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        if (requestData == null || requestData.size() == 0) {
+            check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        long studentId = WCRequestParamsUtil.getUserId(requestModel);
+        String password = (String) requestData.get("password");
+
+        WCStudentBean studentBean = mUserService.getUserInfoById(studentId);
+        if (studentBean != null && !StringUtils.isEmpty(studentBean.getPassword())) {
+            check = WCHttpStatus.FAIL_USER_SETUP_PASSWORD_UNVAILID;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        String realPsw = mUserService.changePassword(studentId, password);
+        if (StringUtils.isEmpty(realPsw)) {
+            check = WCHttpStatus.FAIL_USER_PSW_UNVALID;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        String caller = WCRequestParamsUtil.getClientCaller(requestModel);
+        String token = mTokenService.createTokenByUserIdAndCaller(studentId, realPsw, caller);
+
+        HashMap<String, Object> result = new HashMap<String, Object>();
+        result.put("user_id", studentId);
+        result.put("token", token);
         return WCResultData.getSuccessData(result);
     }
 

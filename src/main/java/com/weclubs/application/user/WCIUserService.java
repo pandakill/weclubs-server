@@ -18,7 +18,7 @@ public interface WCIUserService {
 
     WCStudentBean createUserByMobile(String mobile);
 
-    void changePassword(long userId, String password);
+    String changePassword(long userId, String password);
 
     void updateSchoolInfo(long userId, long schoolId);
 

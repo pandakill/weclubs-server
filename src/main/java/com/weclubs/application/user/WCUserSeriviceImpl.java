@@ -83,21 +83,22 @@ public class WCUserSeriviceImpl implements WCIUserService {
         return studentBean;
     }
 
-    public void changePassword(long userId, String password) {
+    public String changePassword(long userId, String password) {
 
         if (userId <= 0) {
             log.error("changePassword：userId不能小于等于0");
-            return;
+            return null;
         }
 
         if (StringUtils.isEmpty(password)) {
             log.error("changePassword：密码不能为空");
-            return;
+            return null;
         }
 
         String encodePsw = mSecurityService.encodePassword(userId, password);
 
-        mStudentMapper.updateStudentPaasword(userId, encodePsw);
+        mStudentMapper.updateStudentPassword(userId, encodePsw);
+        return encodePsw;
     }
 
     public void updateSchoolInfo(long userId, long schoolId) {
