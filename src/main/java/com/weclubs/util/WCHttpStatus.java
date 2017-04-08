@@ -26,7 +26,6 @@ public enum WCHttpStatus {
 
     FAIL_APPLICATION_ERROR(5000, "程序出错"),
 
-    FAIL_CUSTOM_TOAST_ERROR(9999, ""), // 弹框显示的错误
     FAIL_CUSTOM_DAILOG_AND_CLOSE(8888, ""),  // 弹框需要确定且关闭当前页面
     FAIL_CUSTOM_DAILOG(7777, "")   // 弹框但不需要关闭页面
     ;
