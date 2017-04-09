@@ -97,9 +97,11 @@ public class WCUserSeriviceImpl implements WCIUserService {
 
         WCStudentBean studentBean = new WCStudentBean();
         studentBean.setMobile(mobile);
-        studentBean.setPassword(password);
 
         mStudentMapper.createStudent(studentBean);
+
+        changePassword(studentBean.getStudentId(), password);
+
 
         log.info("创建完之后studentBean = " + studentBean.toString());
         return studentBean;
