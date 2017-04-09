@@ -224,35 +224,48 @@ class WCUserAPI {
             return WCResultData.getHttpStatusData(check, null);
         }
 
-        check = mSecurityService.checkTokenAvailable(requestModel);
-        if (check != WCHttpStatus.SUCCESS) {
-            log.error("changePassword：token失效");
-            return WCResultData.getHttpStatusData(check, null);
+        long userId = 0;
+        if (requestData.containsKey("token")) {
+            check = mSecurityService.checkTokenAvailable(requestModel);
+            if (check != WCHttpStatus.SUCCESS) {
+                log.error("changePassword：token失效");
+                return WCResultData.getHttpStatusData(check, null);
+            }
+            userId = WCRequestParamsUtil.getUserId(requestModel);
         }
 
-        long userId = WCRequestParamsUtil.getUserId(requestModel);
         String caller = WCRequestParamsUtil.getClientCaller(requestModel);
-        String mobile = (String) requestData.get("mobile");
         String password = (String) requestData.get("password");
-        String code = (String) requestData.get("code");
 
-        SmsVerifyKit smsVerifyKit = new SmsVerifyKit(caller, mobile, code);
-        boolean checkCodeSuccess = true;
-        try {
-            SmsVerifyKit.STATUS smsCheckStatus = smsVerifyKit.go();
-            if (smsCheckStatus != SmsVerifyKit.STATUS.SUCCESS) {
-                log.error("changePassword：验证码结果 ： " + smsCheckStatus.toString());
+        if (requestData.containsKey("code")) {
+            String mobile = (String) requestData.get("mobile");
+            String code = (String) requestData.get("code");
+
+            WCStudentBean studentBean = mUserService.createUserByMobile(mobile);
+            if (studentBean == null) {
+                check = WCHttpStatus.FAIL_REQUEST;
+                return WCResultData.getHttpStatusData(check, null);
+            }
+            userId = studentBean.getStudentId();
+
+            SmsVerifyKit smsVerifyKit = new SmsVerifyKit(caller, mobile, code);
+            boolean checkCodeSuccess = true;
+            try {
+                SmsVerifyKit.STATUS smsCheckStatus = smsVerifyKit.go();
+                if (smsCheckStatus != SmsVerifyKit.STATUS.SUCCESS) {
+                    log.error("changePassword：验证码结果 ： " + smsCheckStatus.toString());
+                    checkCodeSuccess = false;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
                 checkCodeSuccess = false;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            checkCodeSuccess = false;
-        }
 
-        if (!checkCodeSuccess) {
-            check = WCHttpStatus.FAIL_REQUEST;
-            check.msg = "验证码错误";
-            return WCResultData.getHttpStatusData(check, null);
+            if (!checkCodeSuccess) {
+                check = WCHttpStatus.FAIL_REQUEST;
+                check.msg = "验证码错误";
+                return WCResultData.getHttpStatusData(check, null);
+            }
         }
 
         String realPsw = mUserService.changePassword(userId, password);
