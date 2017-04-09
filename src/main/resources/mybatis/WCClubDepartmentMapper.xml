@@ -11,9 +11,9 @@
     </resultMap>
 
     <!-- 创建社团部门 -->
-    <insert id="createClubDepartment" useGeneratedKeys="true" keyProperty="id" parameterType="com.weclubs.bean.WCClubDepartmentBean">
-        INSERT INTO T_CLUB_DEPARTMENT(`NAME`)
-        VALUES (#{name})
+    <insert id="createClubDepartment" useGeneratedKeys="true" keyProperty="departmentId" parameterType="com.weclubs.bean.WCClubDepartmentBean">
+        INSERT INTO T_CLUB_DEPARTMENT(`department_name`)
+        VALUES (#{departmentName})
     </insert>
 
     <!-- 根据 id 获取社团部门详情 -->
@@ -25,7 +25,7 @@
     <!-- 更新社团部门实体信息 -->
     <update id="updateClubDepartment" parameterType="com.weclubs.bean.WCClubDepartmentBean">
         UPDATE `T_CLUB_DEPARTMENT`
-        SET `NAME` = #{name}, `IS_SUGGEST` = #{isSuggest}
+        SET `department_name` = #{departmentName}, `IS_SUGGEST` = #{isSuggest}
         WHERE `DEPARTMENT_ID` = #{id}
     </update>
 
@@ -47,7 +47,7 @@
     <select id="getClubDepartmentByName" resultMap="clubDepartmentMap" resultType="com.weclubs.bean.WCClubDepartmentBean">
         SELECT *
         FROM `T_CLUB_DEPARTMENT`
-        WHERE `NAME` = #{departmentName}
+        WHERE `department_name` = #{departmentName}
     </select>
 
     <!-- 根据社团 id 和 部门集合设置社团当前届的部门 -->

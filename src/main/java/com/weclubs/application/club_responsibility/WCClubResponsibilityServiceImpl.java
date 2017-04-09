@@ -16,9 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * 部门职能的服务类
@@ -26,18 +24,24 @@ import java.util.List;
  * Created by fangzanpan on 2017/3/10.
  */
 @Service("clubResponsibilityService")
-public class WCClubResponsibilityServiceImpl implements WCIClubResponsibilityService {
+class WCClubResponsibilityServiceImpl implements WCIClubResponsibilityService {
 
     private Logger log = Logger.getLogger(WCClubResponsibilityServiceImpl.class);
 
-    @Autowired
     private WCClubMapper mClubMapper;
-    @Autowired
     private WCClubDepartmentMapper mDepartmentMapper;
-    @Autowired
     private WCClubJobMapper mJobMapper;
-    @Autowired
     private WCClubAuthorityMapper mAuthorityMapper;
+
+    @Autowired
+    public WCClubResponsibilityServiceImpl(WCClubDepartmentMapper mDepartmentMapper,
+                                           WCClubJobMapper mJobMapper, WCClubAuthorityMapper mAuthorityMapper,
+                                           WCClubMapper mClubMapper) {
+        this.mDepartmentMapper = mDepartmentMapper;
+        this.mJobMapper = mJobMapper;
+        this.mAuthorityMapper = mAuthorityMapper;
+        this.mClubMapper = mClubMapper;
+    }
 
     public void createDepartment(WCClubDepartmentBean departmentBean) {
 
@@ -99,19 +103,102 @@ public class WCClubResponsibilityServiceImpl implements WCIClubResponsibilitySer
 
         String departmentsStr = "";
 
-        if (departments != null && departments.size() > 0) {
-            for (int i = 0; i < departments.size(); i++) {
-                departmentsStr += departments.get(i).getDepartmentId();
 
-                if (i != (departments.size() - 1)) {
-                    departmentsStr += ",";
+        List<String> list = new ArrayList<String>();
+        if (departments != null && departments.size() > 0) {
+            for (WCClubDepartmentBean department : departments) {
+                String id = department.getDepartmentId() + "";
+                departmentsStr += id + ",";
+                if (!list.contains(id)) {
+                    list.add(id);
                 }
             }
         }
 
-        log.info("setDepartmentsByClubId：departmentsStr = " + departmentsStr);
+        log.info("setDepartmentByClubId：去重之前的 departmentsStr = " + departmentsStr);
+
+        departmentsStr = "";
+
+        // 对于数组去重处理
+        for (int i = 0; i < list.size(); i++) {
+            departmentsStr += list.get(i);
+
+            if (i != (list.size() - 1)) {
+                departmentsStr += ",";
+            }
+        }
+
+        log.info("setDepartmentsByClubId：去重之后的 departmentsStr = " + departmentsStr);
 
         mDepartmentMapper.setCurrentClubDepartments(clubId, departmentsStr);
+    }
+
+    public void setDepartmentsByClubId(long clubId, String ids) {
+
+        if (clubId <= 0) {
+            log.error("setDepartmentsByClubId：clubId不能小于等于0");
+            return;
+        }
+
+        if (StringUtils.isEmpty(ids)) {
+            log.error("setDepartmentsByClubId：ids不能为空");
+            return;
+        }
+
+        String[] idArray = ids.split(",");
+        List<WCClubDepartmentBean> departmentBeans = new ArrayList<WCClubDepartmentBean>();
+        for (String s : idArray) {
+            WCClubDepartmentBean departmentBean = getClubDepartmentById(Long.parseLong(s));
+            departmentBeans.add(departmentBean);
+        }
+
+        setDepartmentsByClubId(clubId, departmentBeans);
+    }
+
+    public void setNewDepartmentsByClubId(long clubId, String ids, String departments) {
+
+        if (clubId <= 0) {
+            log.error("setNewDepartmentsByClubId：clubId不能小于等于0");
+            return;
+        }
+
+        List<WCClubDepartmentBean> departmentBeans = new ArrayList<WCClubDepartmentBean>();
+
+        if (!StringUtils.isEmpty(ids)) {
+
+            String[] idArray = ids.split(",");
+            for (String s : idArray) {
+                WCClubDepartmentBean departmentBean = getClubDepartmentById(Long.parseLong(s));
+                departmentBeans.add(departmentBean);
+            }
+        } else {
+            log.info("setDepartmentsByClubId：selected为空");
+        }
+
+        if (!StringUtils.isEmpty(departments)) {
+
+            String[] names = departments.split(",");
+            for (String name : names) {
+                WCClubDepartmentBean departmentBean = mDepartmentMapper.getClubDepartmentByName(name);
+                if (departmentBean == null) {
+                    departmentBean = new WCClubDepartmentBean();
+                    departmentBean.setDepartmentName(name);
+                    mDepartmentMapper.createClubDepartment(departmentBean);
+                    log.info("setNewDepartmentsByClubId：找不到【" + name + "】的部门，新建部门之后的id=" + departmentBean.getDepartmentId());
+                }
+
+                departmentBeans.add(departmentBean);
+            }
+        } else {
+            log.info("setNewDepartmentsByClubId：departments为空");
+        }
+
+        if (departmentBeans.size() == 0) {
+            log.error("setDepartmentsByClubId：设置的社团部门不能为空！");
+            return;
+        }
+
+        setDepartmentsByClubId(clubId, departmentBeans);
     }
 
     public void setJobsByClubId(long clubId, List<WCClubJobBean> jobs) {

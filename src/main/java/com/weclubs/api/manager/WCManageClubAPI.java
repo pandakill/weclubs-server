@@ -215,6 +215,47 @@ class WCManageClubAPI {
         return WCResultData.getSuccessData(result);
     }
 
+    @RequestMapping(value = "/set_department")
+    public WCResultData setDepartment(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        check = mSecurityService.checkTokenAvailable(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        if (requestData == null || requestData.size() == 0) {
+            check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        long clubId = 0;
+        if (requestData.get("club_id") instanceof String) {
+            clubId = Long.parseLong((String) requestData.get("club_id"));
+        } else if (requestData.get("club_id") instanceof Integer) {
+            clubId = (Integer) requestData.get("club_id");
+        }
+
+        String selected = null;
+        if (requestData.containsKey("selected")) {
+            selected = (String) requestData.get("selected");
+        }
+        String newDepartments = null;
+        if (requestData.containsKey("new_department")) {
+            newDepartments = (String) requestData.get("new_department");
+        }
+
+        mClubResponsibilityService.setNewDepartmentsByClubId(clubId, selected, newDepartments);
+
+        HashMap<String, Object> result = new HashMap<String, Object>();
+        return WCResultData.getSuccessData(result);
+    }
+
     private HashMap<String, Object> getMyManageClub(WCManageClubModel manageClubModel) {
 
         HashMap<String, Object> result = new HashMap<String, Object>();

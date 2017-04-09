@@ -18,6 +18,10 @@ public interface WCIClubResponsibilityService {
 
     void setDepartmentsByClubId(long clubId, List<WCClubDepartmentBean> departments);
 
+    void setDepartmentsByClubId(long clubId, String ids);
+
+    void setNewDepartmentsByClubId(long clubId, String ids, String departments);
+
     void setJobsByClubId(long clubId, List<WCClubJobBean> jobs);
 
     List<WCClubDepartmentBean> getDepartmentsBySuggest();
