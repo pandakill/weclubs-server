@@ -14,7 +14,9 @@ public class WCClubJobBean {
     private int isSuggest;
     private int isDel;
 
-    List<WCClubAuthorityBean> authorities;
+    private int isSelected;
+
+    private List<WCClubAuthorityBean> authorities;
 
     public long getJobId() {
         return jobId;
@@ -48,6 +50,14 @@ public class WCClubJobBean {
         this.isDel = isDel;
     }
 
+    public int getIsSelected() {
+        return isSelected;
+    }
+
+    public void setIsSelected(int isSelected) {
+        this.isSelected = isSelected;
+    }
+
     public List<WCClubAuthorityBean> getAuthorities() {
         return authorities;
     }
@@ -63,6 +73,7 @@ public class WCClubJobBean {
                 ", jobName='" + jobName + '\'' +
                 ", isSuggest=" + isSuggest +
                 ", isDel=" + isDel +
+                ", isSelected=" + isSelected +
                 ", authorities=" + authorities +
                 '}';
     }

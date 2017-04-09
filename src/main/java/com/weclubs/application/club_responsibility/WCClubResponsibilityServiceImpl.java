@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -233,13 +234,11 @@ public class WCClubResponsibilityServiceImpl implements WCIClubResponsibilitySer
 
         if (!StringUtils.isEmpty(jobsStr)) {
             try {
-                org.json.JSONArray jsonArray = new org.json.JSONArray(jobsStr);
-
-                for (int i = 0; i < jsonArray.length(); i ++) {
-                    org.json.JSONObject jsonObject = (org.json.JSONObject) jsonArray.get(i);
-
-                    String jobId = (String) jsonObject.keys().next();
-                    String authorityStr = jsonObject.getString(jobId);
+                org.json.JSONObject jobJson = new org.json.JSONObject(jobsStr);
+                Iterator iterator = jobJson.keys();
+                while (iterator.hasNext()) {
+                    String jobId = (String) iterator.next();
+                    String authorityStr = jobJson.getString(jobId);
 
                     WCClubJobBean jobBean = mJobMapper.getClubJobById(Long.parseLong(jobId));
 
@@ -258,6 +257,7 @@ public class WCClubResponsibilityServiceImpl implements WCIClubResponsibilitySer
                         }
 
                         jobBean.setAuthorities(authorities);
+                        jobBean.setIsSelected(1);
                     }
                     result.add(jobBean);
                 }

@@ -5,10 +5,7 @@ import com.weclubs.application.club_responsibility.WCIClubResponsibilityService;
 import com.weclubs.application.school.WCISchoolService;
 import com.weclubs.application.security.WCISecurityService;
 import com.weclubs.application.user.WCIUserService;
-import com.weclubs.bean.WCClubBean;
-import com.weclubs.bean.WCClubDepartmentBean;
-import com.weclubs.bean.WCSchoolBean;
-import com.weclubs.bean.WCStudentBean;
+import com.weclubs.bean.*;
 import com.weclubs.model.WCManageClubModel;
 import com.weclubs.model.request.WCRequestModel;
 import com.weclubs.model.response.WCResultData;
@@ -178,6 +175,46 @@ class WCManageClubAPI {
         return WCResultData.getSuccessData(result);
     }
 
+    @RequestMapping(value = "/get_club_job")
+    public WCResultData getClubJob(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        check = mSecurityService.checkTokenAvailable(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        if (requestData == null || requestData.size() == 0) {
+            check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        long clubId = 0;
+        if (requestData.get("club_id") instanceof String) {
+            clubId = Long.parseLong((String) requestData.get("club_id"));
+        } else if (requestData.get("club_id") instanceof Integer) {
+            clubId = (Integer) requestData.get("club_id");
+        }
+
+        ArrayList<HashMap<String, Object>> jobArrayHash = new ArrayList<HashMap<String, Object>>();
+        List<WCClubJobBean> suggestJobs = mClubResponsibilityService.getJobsByClubId(clubId);
+        if (suggestJobs != null && suggestJobs.size() > 0) {
+            for (WCClubJobBean suggestJob : suggestJobs) {
+                HashMap<String, Object> hash = getJobHash(suggestJob);
+                jobArrayHash.add(hash);
+            }
+        }
+
+        HashMap<String, Object> result = new HashMap<String, Object>();
+        result.put("job", jobArrayHash);
+        return WCResultData.getSuccessData(result);
+    }
+
     private HashMap<String, Object> getMyManageClub(WCManageClubModel manageClubModel) {
 
         HashMap<String, Object> result = new HashMap<String, Object>();
@@ -235,6 +272,26 @@ class WCManageClubAPI {
         result.put("department_name", departmentBean.getDepartmentName());
         result.put("is_selected", departmentBean.getIsSelected());
 
+        return result;
+    }
+
+    private HashMap<String, Object> getJobHash(WCClubJobBean jobBean) {
+        HashMap<String, Object> result = new HashMap<String, Object>();
+        result.put("job_id", jobBean.getJobId());
+        result.put("job_name", jobBean.getJobName());
+        result.put("is_selected", jobBean.getIsSelected());
+
+        ArrayList<HashMap<String, Object>> authArray = new ArrayList<HashMap<String, Object>>();
+        if (jobBean.getAuthorities() != null && jobBean.getAuthorities().size() > 0) {
+            for (WCClubAuthorityBean authorityBean : jobBean.getAuthorities()) {
+                HashMap<String, Object> hash = new HashMap<String, Object>();
+                hash.put("authority_id", authorityBean.getClubAuthorityId());
+                hash.put("authority_name", authorityBean.getName());
+                authArray.add(hash);
+            }
+        }
+
+        result.put("authority", authArray);
         return result;
     }
 }
