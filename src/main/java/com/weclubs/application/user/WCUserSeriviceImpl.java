@@ -83,6 +83,28 @@ public class WCUserSeriviceImpl implements WCIUserService {
         return studentBean;
     }
 
+    public WCStudentBean createUserByMobileAndPsw(String mobile, String password) {
+
+        if (StringUtils.isEmpty(mobile)) {
+            log.error("createUserByMobileAndPsw：mobile不能为空");
+            return null;
+        }
+
+        if (StringUtils.isEmpty(password)) {
+            log.error("createUserByMobileAndPsw：password不能为空");
+            return null;
+        }
+
+        WCStudentBean studentBean = new WCStudentBean();
+        studentBean.setMobile(mobile);
+        studentBean.setPassword(password);
+
+        mStudentMapper.createStudent(studentBean);
+
+        log.info("创建完之后studentBean = " + studentBean.toString());
+        return studentBean;
+    }
+
     public String changePassword(long userId, String password) {
 
         if (userId <= 0) {

@@ -58,9 +58,15 @@ class WCUserAPI {
 
         String mobile = (String) requestData.get("mobile");
         String code = (String) requestData.get("code");
+        String password = (String) requestData.get("password");
 
         if (StringUtils.isEmpty(mobile)) {
             log.error("register：请求参数中的mobile参数为空");
+            return WCResultData.getHttpStatusData(WCHttpStatus.FAIL_REQUEST_UNVALID_PARAMS, null);
+        }
+
+        if (StringUtils.isEmpty(password)) {
+            log.error("register：请求参数中的password参数为空");
             return WCResultData.getHttpStatusData(WCHttpStatus.FAIL_REQUEST_UNVALID_PARAMS, null);
         }
 
@@ -96,7 +102,7 @@ class WCUserAPI {
                 return WCResultData.getHttpStatusData(check, null);
             }
 
-            WCStudentBean createStatus = mUserService.createUserByMobile(mobile);
+            WCStudentBean createStatus = mUserService.createUserByMobileAndPsw(mobile, password);
             if (createStatus == null || createStatus.getStudentId() == 0) {
                 log.error(createStatus == null ? "student == null：" : ("createStatus.getStudentId = " + createStatus.getStudentId()));
                 check = WCHttpStatus.FAIL_CUSTOM_DAILOG;
@@ -314,7 +320,7 @@ class WCUserAPI {
         return WCResultData.getSuccessData(result);
     }
 
-    @RequestMapping(value = "/setup_password", method = RequestMethod.POST)
+//    @RequestMapping(value = "/setup_password", method = RequestMethod.POST)
     public WCResultData setPassword(@RequestBody WCRequestModel requestModel) {
 
         WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
