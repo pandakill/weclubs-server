@@ -38,7 +38,7 @@ public class SimpleCORSFilter implements Filter {
             response.setHeader("Access-Control-Max-Age", "3600");
             response.setHeader("Access-Control-Allow-Headers", "Content-type");
 
-            if (!"POST".equals(method) || !"post".equals(method)) {
+            if (!"POST".equals(method) && !"post".equals(method)) {
                 response.setStatus(200);
                 response.setCharacterEncoding("UTF-8");
                 response.setContentType("application/json;charset=UTF-8");
