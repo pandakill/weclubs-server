@@ -5,6 +5,7 @@ import com.weclubs.model.response.WCResultData;
 import com.weclubs.util.WCHttpStatus;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -38,15 +39,26 @@ public class SimpleCORSFilter implements Filter {
             response.setHeader("Access-Control-Max-Age", "3600");
             response.setHeader("Access-Control-Allow-Headers", "Content-type");
 
+            Gson gson = new Gson();
+            String json = null;
             if (!"POST".equals(method) && !"post".equals(method)) {
+                log.info("servletRequest：" + ((HttpServletRequest) servletRequest).getRequestURI());
+                WCHttpStatus check = WCHttpStatus.FAIL_REQUEST_UN_SUPPORT_METHOD;
+                WCResultData resultData = WCResultData.getHttpStatusData(check, new HashMap<String, Object>());
+                json = gson.toJson(resultData);
+            }
+
+            if (response.getStatus() == 500) {
+
+                WCHttpStatus check = WCHttpStatus.FAIL_APPLICATION_ERROR;
+                WCResultData resultData = WCResultData.getHttpStatusData(check, new HashMap<String, Object>());
+                json = gson.toJson(resultData);
+            }
+
+            if (!StringUtils.isEmpty(json)) {
                 response.setStatus(200);
                 response.setCharacterEncoding("UTF-8");
                 response.setContentType("application/json;charset=UTF-8");
-
-                WCHttpStatus check = WCHttpStatus.FAIL_REQUEST_UN_SUPPORT_METHOD;
-                WCResultData resultData = WCResultData.getHttpStatusData(check, new HashMap<String, Object>());
-                Gson gson = new Gson();
-                String json = gson.toJson(resultData);
 
                 PrintWriter writer = null;
                 try {
