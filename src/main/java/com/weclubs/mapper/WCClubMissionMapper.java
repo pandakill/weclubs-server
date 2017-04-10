@@ -26,7 +26,8 @@ public interface WCClubMissionMapper {
 
     List<WCClubMissionBean> getClubMissionsByClubId(@Param("clubId") long clubId);
 
-    List<WCStudentMissionRelationBean> getClubMissionsByStudentId(@Param("studentId") long studentId);
+    List<WCStudentMissionRelationBean> getClubMissionsByStudentId(@Param("studentId") long studentId,
+                                                                  @Param("clubId") long clubId);
 
     List<WCClubMissionBean> getClubMissionsBySchoolId(@Param("schoolId") long schoolId);
 

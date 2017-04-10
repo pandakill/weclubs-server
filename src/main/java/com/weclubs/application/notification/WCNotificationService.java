@@ -119,14 +119,19 @@ public class WCNotificationService implements WCINotificationService {
         return mNotificationMapper.getNotificationsByClubId(clubId);
     }
 
-    public List<WCStudentMissionRelationBean> getNotificationsByStudentId(long studentId) {
+    public List<WCStudentMissionRelationBean> getNotificationsByStudentId(long studentId, long clubId) {
 
         if (studentId <= 0) {
             log.error("getNotificationsByStudentId：查找学生所有通知失败，studentId不能小于等于0。");
             return null;
         }
 
-        return mNotificationMapper.getNotificationsByStudentId(studentId);
+        if (clubId <= 0) {
+            log.error("getNotificationsByStudentId：查找学生所有通知失败，clubId不能小于等于0。");
+            return null;
+        }
+
+        return mNotificationMapper.getNotificationsByStudentId(studentId, clubId);
     }
 
     public List<WCClubMissionBean> getUnConfirmNotificationByClubId(long studentId) {

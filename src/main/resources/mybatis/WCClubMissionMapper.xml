@@ -128,6 +128,7 @@
         AND student_mission.`IS_DEL` = 0
         AND club_mission.`TYPE` = 1
         AND student_mission.`STUDENT_ID` = #{studentId}
+        AND club_mission.`club_id` = #{clubId}
     </select>
 
     <!-- 根据 studentId 获取该学生的所有未确认且未删除的任务 -->

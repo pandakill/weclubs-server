@@ -143,6 +143,7 @@
         AND club_mission.`TYPE` = 2
         AND student.`student_id` = club_mission.`SPONSOR_ID`
         AND student_mission.`STUDENT_ID` = #{studentId}
+        AND club_mission.`club_id` = #{clubId}
     </select>
 
     <!-- 根据 schoolId 获取该校的所有未删除的通知 -->

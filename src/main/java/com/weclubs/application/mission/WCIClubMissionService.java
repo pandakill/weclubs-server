@@ -28,7 +28,7 @@ public interface WCIClubMissionService {
 
     List<WCClubMissionBean> getMissionsByClubId(long clubId);
 
-    List<WCStudentMissionRelationBean> getMissionsByStudentId(long studentId);
+    List<WCStudentMissionRelationBean> getMissionsByStudentId(long studentId, long clubId);
 
     List<WCStudentMissionRelationBean> getUnConfirmMissionByClubId(long studentId);
 

@@ -125,14 +125,19 @@ public class WCClubMeetingService implements WCIClubMeetingService {
         return mMeetingMapper.getMeetingsByClubId(clubId);
     }
 
-    public List<WCStudentMissionRelationBean> getMeetingsByStudentId(long studentId) {
+    public List<WCStudentMissionRelationBean> getMeetingsByStudentId(long studentId, long clubId) {
 
         if (studentId <= 0) {
             log.error("getMeetingsByStudentId：查找学生所有会议失败，studentId不能小于等于0。");
             return null;
         }
 
-        return mMeetingMapper.getMeetingsByStudentId(studentId);
+        if (clubId <= 0) {
+            log.error("getMeetingsByStudentId：查找学生所有会议失败，clubId不能小于等于0。");
+            return null;
+        }
+
+        return mMeetingMapper.getMeetingsByStudentId(studentId, clubId);
     }
 
     public List<WCStudentMissionRelationBean> getUnConfirmMeetingByClubId(long studentId) {

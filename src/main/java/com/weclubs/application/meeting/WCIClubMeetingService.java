@@ -28,7 +28,7 @@ public interface WCIClubMeetingService {
 
     List<WCClubMissionBean> getMeetingsByClubId(long clubId);
 
-    List<WCStudentMissionRelationBean> getMeetingsByStudentId(long studentId);
+    List<WCStudentMissionRelationBean> getMeetingsByStudentId(long studentId, long clubId);
 
     List<WCStudentMissionRelationBean> getUnConfirmMeetingByClubId(long studentId);
 

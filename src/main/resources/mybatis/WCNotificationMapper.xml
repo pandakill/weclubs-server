@@ -109,6 +109,7 @@
         AND club_mission.`IS_DEL` = 0
         AND student_mission.`IS_DEL` = 0
         AND club_mission.`TYPE` = 0
+        AND club_mission.`club_id` = #{clubId}
         AND student_mission.`STUDENT_ID` = #{studentId}
     </select>
 

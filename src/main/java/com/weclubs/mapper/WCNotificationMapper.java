@@ -26,7 +26,8 @@ public interface WCNotificationMapper {
 
     List<WCClubMissionBean> getNotificationsByClubId(@Param("clubId") long clubId);
 
-    List<WCStudentMissionRelationBean> getNotificationsByStudentId(@Param("studentId") long studentId);
+    List<WCStudentMissionRelationBean> getNotificationsByStudentId(@Param("studentId") long studentId,
+                                                                   @Param("clubId") long clubId);
 
     List<WCClubMissionBean> getNotificationsBySchoolId(@Param("schoolId") long schoolId);
 

@@ -26,7 +26,7 @@ public interface WCINotificationService {
 
     List<WCClubMissionBean> getNotificationsByClubId(long clubId);
 
-    List<WCStudentMissionRelationBean> getNotificationsByStudentId(long studentId);
+    List<WCStudentMissionRelationBean> getNotificationsByStudentId(long studentId, long clubId);
 
     List<WCClubMissionBean> getUnConfirmNotificationByClubId(long studentId);
 }

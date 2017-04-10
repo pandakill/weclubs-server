@@ -123,7 +123,7 @@ class WCTestAPI {
             long studentId = Long.parseLong((String) requestParams.get("student_id"));
 
             HashMap<String, Object> result = new HashMap<String, Object>();
-            result.put("notification", mNotificationService.getNotificationsByStudentId(studentId));
+            result.put("notification", mNotificationService.getNotificationsByStudentId(studentId, 1));
 
             return WCResultData.getSuccessData(result);
         } catch (NumberFormatException e) {

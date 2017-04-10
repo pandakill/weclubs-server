@@ -87,17 +87,22 @@ class WCDynamicAPI {
         int pageNo = WCRequestParamsUtil.getPageNo(requestModel);
         int pageSize = WCRequestParamsUtil.getPageSize(requestModel);
         log.info("getTodoList：dynamicType = " + dynamicType);
-        studentId = 1;
+        long clubId = 0;
+        if (requestData.get("club_id") instanceof String) {
+            clubId = Long.parseLong((String) requestData.get("club_id"));
+        } else if (requestData.get("club_id") instanceof Integer) {
+            clubId = (Integer) requestData.get("club_id");
+        }
 
         PageHelper.startPage(pageNo, pageSize);
 
         List<WCStudentMissionRelationBean> resultList = new ArrayList<WCStudentMissionRelationBean>();
         if (Constants.TODO_NOTIFY.equals(dynamicType)) {
-            resultList = mNotifyService.getNotificationsByStudentId(studentId);
+            resultList = mNotifyService.getNotificationsByStudentId(studentId, clubId);
         } else if (Constants.TODO_MISSION.equals(dynamicType)) {
-            resultList = mMissionService.getMissionsByStudentId(studentId);
+            resultList = mMissionService.getMissionsByStudentId(studentId, clubId);
         } else if (Constants.TODO_MEETING.equals(dynamicType)) {
-            resultList = mMeetingService.getMeetingsByStudentId(studentId);
+            resultList = mMeetingService.getMeetingsByStudentId(studentId, clubId);
         }
         PageInfo<WCStudentMissionRelationBean> pageInfo = new PageInfo<WCStudentMissionRelationBean>(resultList);
 

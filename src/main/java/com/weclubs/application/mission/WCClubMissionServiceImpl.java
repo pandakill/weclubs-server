@@ -119,14 +119,19 @@ public class WCClubMissionServiceImpl implements WCIClubMissionService {
         return mClubMissionMapper.getClubMissionsByClubId(clubId);
     }
 
-    public List<WCStudentMissionRelationBean> getMissionsByStudentId(long studentId) {
+    public List<WCStudentMissionRelationBean> getMissionsByStudentId(long studentId, long clubId) {
 
         if (studentId <= 0) {
             log.error("getMissionsByStudentId：studentId不能小于等于0。");
             return null;
         }
 
-        return mClubMissionMapper.getClubMissionsByStudentId(studentId);
+        if (studentId <= 0) {
+            log.error("getMissionsByStudentId：clubId不能小于等于0。");
+            return null;
+        }
+
+        return mClubMissionMapper.getClubMissionsByStudentId(studentId, clubId);
     }
 
     public List<WCStudentMissionRelationBean> getUnConfirmMissionByClubId(long studentId) {

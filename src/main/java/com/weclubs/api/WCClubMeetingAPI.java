@@ -64,7 +64,8 @@ class WCClubMeetingAPI {
             }
             long studentId = Long.parseLong((String) requestParams.get("student_id"));
 
-            List<WCStudentMissionRelationBean> studentMeetingRelations = mClubMeetingService.getMeetingsByStudentId(studentId);
+            // TODO: 2017/4/10 这里需要填写clubId
+            List<WCStudentMissionRelationBean> studentMeetingRelations = mClubMeetingService.getMeetingsByStudentId(studentId, 1);
             ArrayList<HashMap<String, Object>> resultMeetings = new ArrayList<HashMap<String, Object>>();
             if (studentMeetingRelations != null) {
                 for (WCStudentMissionRelationBean studentMeetingRelation : studentMeetingRelations) {
