@@ -12,7 +12,7 @@ public class WCCommentBean implements Serializable {
     private long commentId;
     private long studentId;
     private String content;
-    private String createDate;
+    private long createDate;
     private int sourceType;
     private long sourceId;
     private int status;
@@ -46,11 +46,11 @@ public class WCCommentBean implements Serializable {
         this.content = content;
     }
 
-    public String getCreateDate() {
+    public long getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(String createDate) {
+    public void setCreateDate(long createDate) {
         this.createDate = createDate;
     }
 

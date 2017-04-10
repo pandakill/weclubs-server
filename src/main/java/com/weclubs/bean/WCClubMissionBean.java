@@ -18,9 +18,9 @@ public class WCClubMissionBean implements Serializable {
     private int type;
     private long parentId;
     private String address;
-    private String deadline;
+    private long deadline;
     private long sponsorId;
-    private String createDate;
+    private long createDate;
     private int isDel;
 
     private WCClubBean clubBean;
@@ -79,11 +79,11 @@ public class WCClubMissionBean implements Serializable {
         this.address = address;
     }
 
-    public String getDeadline() {
+    public long getDeadline() {
         return deadline;
     }
 
-    public void setDeadline(String deadline) {
+    public void setDeadline(long deadline) {
         this.deadline = deadline;
     }
 
@@ -95,11 +95,11 @@ public class WCClubMissionBean implements Serializable {
         this.sponsorId = sponsorId;
     }
 
-    public String getCreateDate() {
+    public long getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(String createDate) {
+    public void setCreateDate(long createDate) {
         this.createDate = createDate;
     }
 

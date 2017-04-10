@@ -14,7 +14,7 @@ public class WCVoteBean implements Serializable {
     private String subject;
     private int optionCount;
     private int isUndefined;
-    private String createDate;
+    private long createDate;
     private int isAnonymous;
     private int isPublic;
     private int isTermination;
@@ -62,11 +62,11 @@ public class WCVoteBean implements Serializable {
         this.isUndefined = isUndefined;
     }
 
-    public String getCreateDate() {
+    public long getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(String createDate) {
+    public void setCreateDate(long createDate) {
         this.createDate = createDate;
     }
 

@@ -4,7 +4,7 @@
 
     <!-- 社团实体映射 map，不包含学校信息 -->
     <resultMap id="clubMap" type="com.weclubs.bean.WCClubBean">
-        <id property="id" column="id" />
+        <id property="clubId" column="club_id" />
         <result property="schoolId" column="school_id" />
         <result property="name" column="name" />
         <result property="introduction" column="introduction" />

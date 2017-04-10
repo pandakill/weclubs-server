@@ -14,15 +14,15 @@ public class WCClubActivityBean implements Serializable {
     private String name;
     private String address;
     private String posterUrl;
-    private String applyDeadline;
-    private String holdDeadline;
+    private long applyDeadline;
+    private long holdDeadline;
     private int allowApply;
     private int allowPreApply;
     private String recordComment;
     private String recordPicUrl;
     private int checkCount;
     private long sponsorId;
-    private String createDate;
+    private long createDate;
     private int isDel;
 
     private WCClubBean clubBean;
@@ -67,19 +67,19 @@ public class WCClubActivityBean implements Serializable {
         this.posterUrl = posterUrl;
     }
 
-    public String getApplyDeadline() {
+    public long getApplyDeadline() {
         return applyDeadline;
     }
 
-    public void setApplyDeadline(String applyDeadline) {
+    public void setApplyDeadline(long applyDeadline) {
         this.applyDeadline = applyDeadline;
     }
 
-    public String getHoldDeadline() {
+    public long getHoldDeadline() {
         return holdDeadline;
     }
 
-    public void setHoldDeadline(String holdDeadline) {
+    public void setHoldDeadline(long holdDeadline) {
         this.holdDeadline = holdDeadline;
     }
 
@@ -131,11 +131,11 @@ public class WCClubActivityBean implements Serializable {
         this.sponsorId = sponsorId;
     }
 
-    public String getCreateDate() {
+    public long getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(String createDate) {
+    public void setCreateDate(long createDate) {
         this.createDate = createDate;
     }
 
