@@ -107,7 +107,7 @@ class WCDynamicAPI {
         PageInfo<WCStudentMissionRelationBean> pageInfo = new PageInfo<WCStudentMissionRelationBean>(resultList);
 
         ArrayList<HashMap<String, Object>> todoList = new ArrayList<HashMap<String, Object>>();
-        if (pageInfo.getList().size() > 0) {
+        if (pageInfo.getList() != null && pageInfo.getList().size() > 0) {
             for (WCStudentMissionRelationBean studentMissionRelationBean : pageInfo.getList()) {
                 HashMap<String, Object> hash = getTodoHash(studentMissionRelationBean, dynamicType, null);
                 todoList.add(hash);
@@ -146,7 +146,6 @@ class WCDynamicAPI {
         }
 
         long studentId = WCRequestParamsUtil.getUserId(requestModel);
-        studentId = 1;
 
         long dynamicId = 0;
         if (requestData.get("dynamic_id") instanceof String) {
@@ -169,8 +168,6 @@ class WCDynamicAPI {
                                                 String dynamicType, WCClubMissionBean detailBean) {
         HashMap<String, Object> result = new HashMap<String, Object>();
         HashMap<String, Object> sponsor = new HashMap<String, Object>();
-
-        result.put("student_id", relationBean.getStudentId());
 
         if (Constants.TODO_NOTIFY.equals(dynamicType)) {
             result.put("notify_id", relationBean.getMissionId());
