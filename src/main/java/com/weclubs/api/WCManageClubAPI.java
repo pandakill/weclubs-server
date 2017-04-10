@@ -12,6 +12,8 @@ import com.weclubs.model.response.WCResultData;
 import com.weclubs.util.WCHttpStatus;
 import com.weclubs.util.WCRequestParamsUtil;
 import org.apache.log4j.Logger;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -254,6 +256,49 @@ class WCManageClubAPI {
 
         HashMap<String, Object> result = new HashMap<String, Object>();
         return WCResultData.getSuccessData(result);
+    }
+
+    @RequestMapping(value = "set_job")
+    public WCResultData setJob(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        check = mSecurityService.checkTokenAvailable(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        if (requestData == null || requestData.size() == 0) {
+            check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        long clubId = 0;
+        if (requestData.get("club_id") instanceof String) {
+            clubId = Long.parseLong((String) requestData.get("club_id"));
+        } else if (requestData.get("club_id") instanceof Integer) {
+            clubId = (Integer) requestData.get("club_id");
+        }
+
+        String jobAuth = (String) requestData.get("job_auth");
+        try {
+            JSONObject jsonObject = new JSONObject(jobAuth);
+            log.info("setJob：jobAuthJsonObj = " + jsonObject.toString());
+
+            mClubResponsibilityService.setNewJobByClubId(clubId, jsonObject);
+
+            HashMap<String, Object> result = new HashMap<String, Object>();
+            return WCResultData.getSuccessData(result);
+        } catch (JSONException e) {
+            log.error("setJob：jobAuth = " + jobAuth);
+            check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
+            e.printStackTrace();
+            return WCResultData.getHttpStatusData(check, null);
+        }
     }
 
     private HashMap<String, Object> getMyManageClub(WCManageClubModel manageClubModel) {

@@ -248,6 +248,59 @@ class WCClubResponsibilityServiceImpl implements WCIClubResponsibilityService {
         mJobMapper.setCurrentClubJobs(clubId, jobStr);
     }
 
+    public void setNewJobByClubId(long clubId, org.json.JSONObject jobAuth) {
+
+        if (clubId <= 0) {
+            log.error("setNewJobByClubId：clubId不能小于等于0");
+            return;
+        }
+
+        List<String> jobIdOrName = new ArrayList<String>();
+        Iterator iterator = jobAuth.keys();
+        while (iterator.hasNext()) {
+            String idOrName = (String) iterator.next();
+            if (!jobIdOrName.contains(idOrName)) {
+                jobIdOrName.add(idOrName);
+            }
+        }
+
+        org.json.JSONObject resultJsonObj = new org.json.JSONObject();
+
+        List<WCClubJobBean> jobBeanList = new ArrayList<WCClubJobBean>();
+        for (String s : jobIdOrName) {
+            try {
+                long id = Long.parseLong(s);
+                WCClubJobBean jobBean = mJobMapper.getClubJobById(id);
+                if (jobBean != null) {
+                    jobBeanList.add(jobBean);
+                    resultJsonObj.put(s, jobBean.getJobId() + "");
+                } else {
+                    log.info("setNewJobByClubId：找不到 id = 【" + s + "】的职位，无法添加");
+                }
+            } catch (NumberFormatException e) {
+                WCClubJobBean jobBean = mJobMapper.getClubJobByJobName(s);
+                if (jobBean == null) {
+                    jobBean = new WCClubJobBean();
+                    jobBean.setJobName(s);
+                    mJobMapper.createClubJob(jobBean);
+                    log.info("setNewJobByClubId：找不到【" + s + "】的职位，新建职位之后的id=" + jobBean.getJobId());
+                }
+                try {
+                    resultJsonObj.put(jobBean.getJobId() + "", jobAuth.get(s));
+                } catch (JSONException e1) {
+                    e1.printStackTrace();
+                }
+                jobBeanList.add(jobBean);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        log.info("setNewJobByClubId：jobBeanList = " + jobBeanList.toString());
+        log.info("setNewJobByClubId：resultJsonObj = " + resultJsonObj.toString());
+
+        mJobMapper.setCurrentClubJobs(clubId, resultJsonObj.toString());
+    }
+
     public List<WCClubDepartmentBean> getDepartmentsBySuggest() {
         return mDepartmentMapper.getClubDepartmentBySuggest();
     }

@@ -2,6 +2,7 @@ package com.weclubs.application.club_responsibility;
 
 import com.weclubs.bean.WCClubDepartmentBean;
 import com.weclubs.bean.WCClubJobBean;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -23,6 +24,8 @@ public interface WCIClubResponsibilityService {
     void setNewDepartmentsByClubId(long clubId, String ids, String departments);
 
     void setJobsByClubId(long clubId, List<WCClubJobBean> jobs);
+
+    void setNewJobByClubId(long clubId, JSONObject jobAuth);
 
     List<WCClubDepartmentBean> getDepartmentsBySuggest();
 
