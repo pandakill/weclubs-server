@@ -1,4 +1,4 @@
-package com.weclubs.api.manager;
+package com.weclubs.api;
 
 import com.weclubs.application.club.WCIClubService;
 import com.weclubs.application.club_responsibility.WCIClubResponsibilityService;
