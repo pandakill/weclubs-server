@@ -11,6 +11,7 @@ public enum WCHttpStatus {
 
     FAIL_REQUEST(3000, "请求失败"),
     FAIL_REQUEST_UN_SUPPORT_METHOD(3100, "违法的请求方法"),
+    FAIL_REQUEST_NOT_FOUNT_METHOD(3101, "不存在该请求方法"),
 
     FAIL_REQUEST_UNVALID_PARAMS(3001, "参数违法"),
     FAIL_REQUEST_NULL_PARAMS(3002, "请求参数为空"),

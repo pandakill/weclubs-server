@@ -30,7 +30,7 @@ import java.util.List;
  * Created by fangzanpan on 2017/4/5.
  */
 @RestController
-@RequestMapping(value = "manage/club")
+@RequestMapping(value = "/manage/club")
 class WCManageClubAPI {
 
     private Logger log = Logger.getLogger(WCManageClubAPI.class);
@@ -258,7 +258,7 @@ class WCManageClubAPI {
         return WCResultData.getSuccessData(result);
     }
 
-    @RequestMapping(value = "set_job")
+    @RequestMapping(value = "/set_job")
     public WCResultData setJob(@RequestBody WCRequestModel requestModel) {
 
         WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
@@ -299,6 +299,36 @@ class WCManageClubAPI {
             e.printStackTrace();
             return WCResultData.getHttpStatusData(check, null);
         }
+    }
+
+    @RequestMapping(value = "/get_all_authority")
+    public WCResultData getAllAuthority(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        check = mSecurityService.checkTokenAvailable(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        if (requestData == null || requestData.size() == 0) {
+            check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        List<HashMap<String, Object>> resultArray = new ArrayList<HashMap<String, Object>>();
+        List<WCClubAuthorityBean> authorityBeans = mClubResponsibilityService.getAllAuthority();
+        for (WCClubAuthorityBean authorityBean : authorityBeans) {
+            resultArray.add(getAuthorityHash(authorityBean));
+        }
+
+        HashMap<String, Object> result = new HashMap<String, Object>();
+        result.put("authority", resultArray);
+        return WCResultData.getSuccessData(result);
     }
 
     private HashMap<String, Object> getMyManageClub(WCManageClubModel manageClubModel) {
@@ -378,6 +408,14 @@ class WCManageClubAPI {
         }
 
         result.put("authority", authArray);
+        return result;
+    }
+
+    private HashMap<String, Object> getAuthorityHash(WCClubAuthorityBean authorityBean) {
+        HashMap<String, Object> result = new HashMap<String, Object>();
+        result.put("authority_id", authorityBean.getClubAuthorityId());
+        result.put("authority_name", authorityBean.getName());
+        result.put("authority_attribution", authorityBean.getAttribute());
         return result;
     }
 }

@@ -1,5 +1,6 @@
 package com.weclubs.application.club_responsibility;
 
+import com.weclubs.bean.WCClubAuthorityBean;
 import com.weclubs.bean.WCClubDepartmentBean;
 import com.weclubs.bean.WCClubJobBean;
 import org.json.JSONObject;
@@ -38,4 +39,6 @@ public interface WCIClubResponsibilityService {
     WCClubDepartmentBean getClubDepartmentById(long departmentId);
 
     WCClubJobBean getClubJobById(long jobId);
+
+    List<WCClubAuthorityBean> getAllAuthority();
 }

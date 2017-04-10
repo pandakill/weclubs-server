@@ -11,7 +11,7 @@
     </resultMap>
 
     <!-- 创建社团权限 -->
-    <insert id="createAuthority" useGeneratedKeys="true" keyProperty="id" parameterType="com.weclubs.bean.WCClubAuthorityBean">
+    <insert id="createAuthority" useGeneratedKeys="true" keyProperty="clubAuthorityId" parameterType="com.weclubs.bean.WCClubAuthorityBean">
         INSERT INTO T_CLUB_AUTHORITY(`NAME`, `ATTIBUTE`)
         VALUES (#{name}, #{attribute})
     </insert>

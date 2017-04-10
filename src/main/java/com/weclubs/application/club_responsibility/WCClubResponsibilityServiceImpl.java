@@ -431,4 +431,8 @@ class WCClubResponsibilityServiceImpl implements WCIClubResponsibilityService {
 
         return mJobMapper.getClubJobById(jobId);
     }
+
+    public List<WCClubAuthorityBean> getAllAuthority() {
+        return mAuthorityMapper.getAuthorities();
+    }
 }
