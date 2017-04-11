@@ -20,7 +20,7 @@
         comment.`source_type`, comment.`source_id`,
         student.`student_id`, student.`real_name` AS `student_name`, student.`avatar_url`
         FROM `t_comment` comment, `t_student` student
-        WHERE student.`student_id` = comment.`comment_id`
+        WHERE student.`student_id` = comment.`student_id`
         AND comment.`source_type` = #{sourceType}
         AND comment.`source_id` = #{sourceId}
         AND comment.`is_del` = 0

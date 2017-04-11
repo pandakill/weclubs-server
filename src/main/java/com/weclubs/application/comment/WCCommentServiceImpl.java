@@ -56,7 +56,7 @@ class WCCommentServiceImpl implements WCICommentService {
             type = COMMENT_TYPE_ACTIVITY;
         } else if (sourceType.equals("meeting")) {
             type = COMMENT_TYPE_MEETING;
-        } else if (sourceType.equals("mission:")) {
+        } else if (sourceType.equals("mission")) {
             type = COMMENT_TYPE_MISSION;
         } else if (sourceType.equals("notify")) {
             type = COMMENT_TYPE_NOTIFY;
