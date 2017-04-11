@@ -194,8 +194,7 @@ class WCClubResponsibilityServiceImpl implements WCIClubResponsibilityService {
         }
 
         if (departmentBeans.size() == 0) {
-            log.error("setDepartmentsByClubId：设置的社团部门不能为空！");
-            return;
+            log.error("setDepartmentsByClubId：设置的社团部门为空！");
         }
 
         setDepartmentsByClubId(clubId, departmentBeans);
