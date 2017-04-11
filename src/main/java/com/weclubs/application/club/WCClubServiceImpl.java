@@ -14,7 +14,6 @@ import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -148,7 +147,7 @@ public class WCClubServiceImpl implements WCIClubService {
         return mClubMapper.getClubsByStudentId(studentId);
     }
 
-    @Cacheable(value = "getClubHonorByClubId")
+//    @Cacheable(value = "getClubHonorByClubId")
     public List<WCClubHonorBean> getClubHonorByClubId(long clubId) {
 
         if (clubId <= 0) {

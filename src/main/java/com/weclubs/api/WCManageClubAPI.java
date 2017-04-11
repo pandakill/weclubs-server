@@ -35,16 +35,22 @@ class WCManageClubAPI {
 
     private Logger log = Logger.getLogger(WCManageClubAPI.class);
 
-    @Autowired
     private WCISecurityService mSecurityService;
-    @Autowired
     private WCIClubService mClubService;
-    @Autowired
     private WCISchoolService mSchoolService;
-    @Autowired
     private WCIUserService mUserService;
-    @Autowired
     private WCIClubResponsibilityService mClubResponsibilityService;
+
+    @Autowired
+    public WCManageClubAPI(WCIUserService mUserService, WCISchoolService mSchoolService,
+                           WCISecurityService mSecurityService, WCIClubService mClubService,
+                           WCIClubResponsibilityService mClubResponsibilityService) {
+        this.mUserService = mUserService;
+        this.mSchoolService = mSchoolService;
+        this.mSecurityService = mSecurityService;
+        this.mClubService = mClubService;
+        this.mClubResponsibilityService = mClubResponsibilityService;
+    }
 
     @RequestMapping(value = "/get_my_club")
     public WCResultData getMyManagerClub(@RequestBody WCRequestModel requestModel) {
@@ -331,6 +337,46 @@ class WCManageClubAPI {
         return WCResultData.getSuccessData(result);
     }
 
+    @RequestMapping(value = "/get_club_honor")
+    public WCResultData getClubHonor(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        check = mSecurityService.checkTokenAvailable(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        if (requestData == null || requestData.size() == 0) {
+            check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        long clubId = 0;
+        if (requestData.get("club_id") instanceof String) {
+            clubId = Long.parseLong((String) requestData.get("club_id"));
+        } else if (requestData.get("club_id") instanceof Integer) {
+            clubId = (Integer) requestData.get("club_id");
+        }
+
+        List<WCClubHonorBean> honorBeanList = mClubService.getClubHonorByClubId(clubId);
+        ArrayList<HashMap<String, Object>> resultArray = new ArrayList<HashMap<String, Object>>();
+        if (honorBeanList != null && honorBeanList.size() > 0) {
+            for (WCClubHonorBean clubHonorBean : honorBeanList) {
+                HashMap<String, Object> hash = getHonorHash(clubHonorBean);
+                resultArray.add(hash);
+            }
+        }
+
+        HashMap<String, Object> result = new HashMap<String, Object>();
+        result.put("honor", resultArray);
+        return WCResultData.getSuccessData(result);
+    }
+
     private HashMap<String, Object> getMyManageClub(WCManageClubModel manageClubModel) {
 
         HashMap<String, Object> result = new HashMap<String, Object>();
@@ -416,6 +462,14 @@ class WCManageClubAPI {
         result.put("authority_id", authorityBean.getClubAuthorityId());
         result.put("authority_name", authorityBean.getName());
         result.put("authority_attribution", authorityBean.getAttribute());
+        return result;
+    }
+
+    private HashMap<String, Object> getHonorHash(WCClubHonorBean honorBean) {
+        HashMap<String, Object> result = new HashMap<String, Object>();
+        result.put("honor_id", honorBean.getClubId());
+        result.put("honor_name", honorBean.getContent());
+        result.put("get_date", honorBean.getGetDate());
         return result;
     }
 }

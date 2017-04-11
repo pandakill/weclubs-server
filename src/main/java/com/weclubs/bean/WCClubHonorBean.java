@@ -12,7 +12,7 @@ public class WCClubHonorBean implements Serializable {
     private long honorId;
     private long clubId;
     private String content;
-    private String getDate;
+    private long getDate;
     private int isDel;
 
     private WCClubBean clubBean;
@@ -41,11 +41,11 @@ public class WCClubHonorBean implements Serializable {
         this.content = content;
     }
 
-    public String getGetDate() {
+    public long getGetDate() {
         return getDate;
     }
 
-    public void setGetDate(String getDate) {
+    public void setGetDate(long getDate) {
         this.getDate = getDate;
     }
 
