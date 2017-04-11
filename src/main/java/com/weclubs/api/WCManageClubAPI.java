@@ -258,6 +258,10 @@ class WCManageClubAPI {
             newDepartments = (String) requestData.get("new_department");
         }
 
+        if (StringUtils.isEmpty(selected) && StringUtils.isEmpty(newDepartments)) {
+            log.info("社团 id = 【" + clubId + "】删除所有部门");
+        }
+
         mClubResponsibilityService.setNewDepartmentsByClubId(clubId, selected, newDepartments);
 
         HashMap<String, Object> result = new HashMap<String, Object>();
@@ -374,6 +378,38 @@ class WCManageClubAPI {
 
         HashMap<String, Object> result = new HashMap<String, Object>();
         result.put("honor", resultArray);
+        return WCResultData.getSuccessData(result);
+    }
+
+    @RequestMapping(value = "/edit_club_honor")
+    public WCResultData addClubHonor(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        check = mSecurityService.checkTokenAvailable(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        if (requestData == null || requestData.size() == 0) {
+            check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        long clubId = 0;
+        if (requestData.get("club_id") instanceof String) {
+            clubId = Long.parseLong((String) requestData.get("club_id"));
+        } else if (requestData.get("club_id") instanceof Integer) {
+            clubId = (Integer) requestData.get("club_id");
+        }
+
+        ArrayList<HashMap<String, Object>> honorList = (ArrayList<HashMap<String, Object>>) requestData.get("honor");
+
+        HashMap<String, Object> result = new HashMap<String, Object>();
         return WCResultData.getSuccessData(result);
     }
 
