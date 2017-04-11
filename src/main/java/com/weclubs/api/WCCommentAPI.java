@@ -89,7 +89,7 @@ class WCCommentAPI {
         result.put("content", model.getContent());
         result.put("source_type", sourceType);
         result.put("source_id", model.getSourceId());
-        result.put("status", model.getStatus());
+        result.put("create_date", model.getCreateDate());
 
         result.put("student_id", model.getStudentId());
         result.put("student_name", model.getStudentName());

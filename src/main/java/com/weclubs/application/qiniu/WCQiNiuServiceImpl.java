@@ -17,7 +17,7 @@ class WCQiNiuServiceImpl implements WCIQiNiuService {
 
         HashMap<String, Object> result = new HashMap<String, Object>();
         result.put("domain", "http://on633pcgq.bkt.clouddn.com/");
-        result.put("avatar", "?imageMogr2/auto-orient/gravity/Center/crop/400x400/format/webp/blur/1x0/quality/90|imageslim");
+        result.put("avatar_config", "?imageMogr2/auto-orient/gravity/Center/crop/400x400/format/webp/blur/1x0/quality/90|imageslim");
 
         return result;
     }
