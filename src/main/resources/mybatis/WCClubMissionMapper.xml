@@ -75,7 +75,7 @@
         <result property="avatarUrl" column="avatar_url" />
         <result property="clubId" column="club_id" />
         <result property="parentId" column="parent_id" />
-        <result property="chlidCount" column="child_count" />
+        <result property="childCount" column="child_count" />
     </resultMap>
 
     <!-- 创建社团任务实体 -->

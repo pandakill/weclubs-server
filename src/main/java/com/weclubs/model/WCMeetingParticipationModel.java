@@ -19,8 +19,8 @@ public class WCMeetingParticipationModel implements Serializable{
     private int status;
     private int isLeader;
     private String comment;
-    private String createDate;
-    private String signDate;
+    private long createDate;
+    private long signDate;
     private int isSign;
 
     public long getStudentId() {
@@ -87,19 +87,19 @@ public class WCMeetingParticipationModel implements Serializable{
         this.comment = comment;
     }
 
-    public String getCreateDate() {
+    public long getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(String createDate) {
+    public void setCreateDate(long createDate) {
         this.createDate = createDate;
     }
 
-    public String getSignDate() {
+    public long getSignDate() {
         return signDate;
     }
 
-    public void setSignDate(String signDate) {
+    public void setSignDate(long signDate) {
         this.signDate = signDate;
     }
 
