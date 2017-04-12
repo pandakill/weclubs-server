@@ -271,7 +271,7 @@ class WCDynamicAPI {
                     child.put("mission_id", missionBaseModel.getMissionId());
                     child.put("content", missionBaseModel.getAttribution());
                     child.put("finish", missionBaseModel.getStatus() == 2 ? 1 : 0);
-                    child.put("has_child", missionBaseModel.getChlidCount() > 0 ? 1 : 0);
+                    child.put("has_child", missionBaseModel.getChildCount() > 0 ? 1 : 0);
 
                     childMissions.add(child);
                 }
