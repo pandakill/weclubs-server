@@ -93,6 +93,7 @@ public class WCTokenServiceImpl implements WCITokenService {
         }
 
         if (StringUtils.isEmpty(token)) {
+            logger.info("token：" + tokenBean.getToken());
             logger.error("token为空");
             return false;
         }
@@ -101,6 +102,7 @@ public class WCTokenServiceImpl implements WCITokenService {
         String[] tokenDecode = decodeToken.split("_date=");
         if (tokenDecode.length != 2) {
             logger.info("token被篡改：解密的token为：" + Arrays.toString(tokenDecode));
+            logger.info("token：" + tokenBean.getToken());
             return false;
         }
         long tokenDate;
@@ -108,12 +110,14 @@ public class WCTokenServiceImpl implements WCITokenService {
             tokenDate = Long.parseLong(tokenDecode[1]);
         } catch (Exception e) {
             logger.info("token被篡改：时间戳格式有误.");
+            logger.info("token：" + tokenBean.getToken());
             return false;
         }
 
         if (tokenBean.getCreateDate() != tokenDate) {
             logger.info("token.getCreateDate().getTime = " + tokenBean.getCreateDate() + "; tokenDate = " + tokenDate);
             logger.info("token被篡改：时间戳与数据库匹配不正确.");
+            logger.info("token：" + tokenBean.getToken());
             return false;
         }
 
