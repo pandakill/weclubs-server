@@ -183,15 +183,15 @@
           miss.`club_id`, miss.`parent_id`, relation.`status`,
         (SELECT COUNT(*) FROM `t_student_mission_relation` relation, `t_club_mission` mission
          WHERE relation.`mission_id` = mission.`mission_id`
-         AND mission.`parent_id` = miss.`mission_id`
-         AND relation.`student_id` = #{studentId})
+         AND mission.`parent_id` = miss.`mission_id`)
         AS child_count
         FROM `t_student` student, `t_club_mission` miss, `t_student_mission_relation` relation
-        WHERE student.`student_id` = relation.`student_id`
-        AND miss.`mission_id` = relation.`mission_id`
+--         WHERE student.`student_id` = relation.`student_id`
+        WHERE miss.`mission_id` = relation.`mission_id`
         AND miss.`parent_id` = #{missionId}
         AND student.`student_id` = #{studentId}
         AND relation.`is_del` = 0
+        GROUP BY miss.`mission_id`
     </select>
 
 </mapper>
