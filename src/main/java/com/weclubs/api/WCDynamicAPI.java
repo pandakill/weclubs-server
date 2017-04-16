@@ -259,7 +259,7 @@ class WCDynamicAPI {
                 }
             }
             result = getTodoHash(relationBean, dynamicType, detailBean);
-            result.put("leaders", leaderHash);
+            result.put("leader", leaderHash);
         } else if (Constants.TODO_MISSION.equals(dynamicType)) {
             detailBean = mMissionService.getMissionDetailById(dynamicId);
             detailBean.setChildMissonDetails(mMissionService.getChildMissionDetailByMissionIdWithStudent(studentId, dynamicId));
