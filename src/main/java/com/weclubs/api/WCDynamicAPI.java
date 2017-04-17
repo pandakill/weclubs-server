@@ -255,6 +255,7 @@ class WCDynamicAPI {
                     hash.put("department_name", studentForClubModel.getDepartmentName());
                     hash.put("job_name", studentForClubModel.getJobName());
                     hash.put("mobile", studentForClubModel.getMobile());
+                    hash.put("avatar_url", studentForClubModel.getAvatarUrl());
                     leaderHash.add(hash);
                 }
             }
