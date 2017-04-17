@@ -124,6 +124,7 @@ public class WCTokenServiceImpl implements WCITokenService {
         long currentTime = System.currentTimeMillis();
         if (currentTime - tokenDate >= TOKEN_AVAILABLE_TIME) {
             logger.info("token超时失效.");
+            logger.info("token：" + tokenBean.getToken());
             return false;
         }
 

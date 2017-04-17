@@ -381,7 +381,7 @@ class WCManageClubAPI {
         return WCResultData.getSuccessData(result);
     }
 
-    @RequestMapping(value = "/edit_club_honor")
+    @RequestMapping(value = "/add_club_honor")
     public WCResultData addClubHonor(@RequestBody WCRequestModel requestModel) {
 
         WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
@@ -408,8 +408,48 @@ class WCManageClubAPI {
         }
 
         ArrayList<HashMap<String, Object>> honorList = (ArrayList<HashMap<String, Object>>) requestData.get("honor");
+        if (honorList == null || honorList.size() == 0) {
+            log.error("addClubHonor：添加部门荣誉失败");
+            check = WCHttpStatus.FAIL_REQUEST;
+            check.msg = "荣誉列表不能为空";
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        mClubService.addClubHonor(clubId, honorList);
 
         HashMap<String, Object> result = new HashMap<String, Object>();
+        return WCResultData.getSuccessData(result);
+    }
+
+    @RequestMapping(value = "/edit_club_introduction")
+    public WCResultData editClubIntroduction(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        check = mSecurityService.checkTokenAvailable(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        if (requestData == null || requestData.size() == 0) {
+            check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        long clubId = 0;
+        if (requestData.get("club_id") instanceof String) {
+            clubId = Long.parseLong((String) requestData.get("club_id"));
+        } else if (requestData.get("club_id") instanceof Integer) {
+            clubId = (Integer) requestData.get("club_id");
+        }
+
+
+
+        HashMap<String, Object> result = new HashMap<>();
         return WCResultData.getSuccessData(result);
     }
 

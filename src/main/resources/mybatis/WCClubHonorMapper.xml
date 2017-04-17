@@ -14,7 +14,7 @@
     <!-- 创建社团荣誉实体 -->
     <insert id="createClubHonor" parameterType="com.weclubs.bean.WCClubHonorBean">
         INSERT INTO T_CLUB_HONOR(`CLUB_ID`, `CONTENT`, `GET_DATE`)
-        VALUES (#{clubId}, #{content}, #{getDate}
+        VALUES (#{clubId}, #{content}, #{getDate})
     </insert>
 
     <!-- 更新社团荣誉对象 -->
@@ -38,5 +38,16 @@
         WHERE `CLUB_ID` = #{clubId}
         AND `IS_DEL` = 0
     </select>
+
+    <insert id ="createHonorByList" keyProperty="clubHonorId" useGeneratedKeys="true" parameterType="List" >
+        INSERT INTO `t_club_honor`
+        (`club_id`, `content`, `get_date`)
+        VALUES
+           <foreach collection ="list" item="honor" index="index" separator =",">
+               (
+               #{honor.clubId}, #{honor.content}, #{honor.getDate}
+               )
+           </foreach >
+    </insert >
 
 </mapper>

@@ -19,4 +19,6 @@ public interface WCClubHonorMapper {
     void deleteClubHonorById(@Param("clubHonorId") long clubHonorId);
 
     List<WCClubHonorBean> getClubHonorsByClubId(@Param("clubId") long clubId);
+
+    void createHonorByList(@Param("list") List<WCClubHonorBean> clubHonorBean);
 }

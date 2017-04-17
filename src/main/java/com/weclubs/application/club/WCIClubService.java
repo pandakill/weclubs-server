@@ -7,6 +7,7 @@ import com.weclubs.model.WCManageClubModel;
 import com.weclubs.model.WCMyClubModel;
 import com.weclubs.model.WCStudentForClubModel;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -41,4 +42,12 @@ public interface WCIClubService {
      * @return  返回该学生具有管理权限的社团
      */
     List<WCManageClubModel> getMyManageClubs(long studentId);
+
+    /**
+     * 批量添加社团荣誉列表
+     *
+     * @param clubId    社团id
+     * @param honorList 荣誉列表键值对
+     */
+    void addClubHonor(long clubId, List<HashMap<String, Object>> honorList);
 }

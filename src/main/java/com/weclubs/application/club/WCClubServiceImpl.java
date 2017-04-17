@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -298,5 +299,36 @@ public class WCClubServiceImpl implements WCIClubService {
         }
 
         return resultClubs;
+    }
+
+    @Override
+    public void addClubHonor(long clubId, List<HashMap<String, Object>> honorList) {
+
+        if (clubId <= 0) {
+            log.error("addClubHonor：clubId不能小于扥估0");
+            return;
+        }
+
+        if (honorList == null || honorList.size() == 0) {
+            log.error("addClubHonor：荣誉列表不能为空");
+            return;
+        }
+
+        List<WCClubHonorBean> list = new ArrayList<>();
+        for (HashMap<String, Object> result : honorList) {
+            WCClubHonorBean honorBean = new WCClubHonorBean();
+            honorBean.setClubId(clubId);
+            honorBean.setContent((String) result.get("content"));
+            long getDate = 0;
+            if (result.get("get_date") instanceof String) {
+                getDate = Long.parseLong((String) result.get("get_date"));
+            } else if (result.get("get_date") instanceof Long) {
+                getDate = (Long) result.get("get_date");
+            }
+            honorBean.setGetDate(getDate);
+            list.add(honorBean);
+        }
+
+        mClubHonorMapper.createHonorByList(list);
     }
 }
