@@ -480,7 +480,16 @@ class WCManageClubAPI {
             clubId = (Integer) requestData.get("club_id");
         }
 
+        String introduction = (String) requestData.get("introduction");
 
+        WCClubBean clubBean = mClubService.getClubInfoById(clubId);
+        if (clubBean == null) {
+            check = WCHttpStatus.FAIL_REQUEST;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        clubBean.setIntroduction(introduction);
+        mClubService.updateClub(clubBean);
 
         HashMap<String, Object> result = new HashMap<>();
         return WCResultData.getSuccessData(result);

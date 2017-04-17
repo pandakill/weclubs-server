@@ -134,10 +134,10 @@
 
     <!-- 更新社团实体信息 -->
     <update id="updateClub" parameterType="com.weclubs.bean.WCClubBean">
-        UPDATE `T_STUDENT`
+        UPDATE `T_CLUB`
         SET `SCHOOL_ID` = #{schoolId}, `NAME` = #{name}, `INTRODUCTION` = #{introduction},
          `AVATAR_URL` = #{avatarUrl}, `IS_AUTH` = #{isAuth}, `LEVEL` = #{level},
-         `STATUS` = #{status}, `CHECK_COUNT` = #{checkCount}
+         `STATUS` = #{status}, `CHECK_COUNT` = #{checkCount}, `slogan` = #{slogan}
         WHERE `club_id` = #{clubId}
     </update>
 
