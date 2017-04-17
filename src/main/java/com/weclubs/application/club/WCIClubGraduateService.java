@@ -42,4 +42,13 @@ public interface WCIClubGraduateService {
      * @param jobId 职位id
      */
     WCHttpStatus updateClubCurrentGraduateStudentJob(long clubId, long studentId, long jobId);
+
+    /**
+     * 删除学生，从某个社团的当前届中
+     *
+     * @param clubId    社团id
+     * @param studentId 学生id
+     * @return  删除结果
+     */
+    WCHttpStatus deleteStudentFromClubCurrentGraduate(long clubId, long studentId);
 }

@@ -9,6 +9,10 @@ import java.io.Serializable;
  */
 public class WCStudentClubGraduateRelationBean implements Serializable {
 
+    public static int STATUS_ALREADY_EXIT = 0;  // 已经退出社团
+    public static int STATUS_STILL_IN = 1;  // 仍在社团
+    public static int STATUS_REFUSE_JOIN = 2;   // 被拒绝加入该社团
+
     private long stuCluGraRelId;
     private long graduateId;
     private long studentId;

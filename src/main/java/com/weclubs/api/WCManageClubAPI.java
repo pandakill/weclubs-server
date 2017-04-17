@@ -597,6 +597,33 @@ class WCManageClubAPI {
         return WCResultData.getHttpStatusData(check, null);
     }
 
+    @RequestMapping(value = "/delete_student")
+    public WCResultData deleteStudent(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        check = mSecurityService.checkTokenAvailable(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        if (requestData == null || requestData.size() == 0) {
+            check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        long clubId = WCCommonUtil.getLongData(requestData.get("club_id"));
+        long studentId = WCCommonUtil.getLongData(requestData.get("student_id"));
+
+        check = mClubGraduateService.deleteStudentFromClubCurrentGraduate(clubId, studentId);
+
+        return WCResultData.getHttpStatusData(check, null);
+    }
+
     private HashMap<String, Object> getMyManageClub(WCManageClubModel manageClubModel) {
 
         HashMap<String, Object> result = new HashMap<String, Object>();

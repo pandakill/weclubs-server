@@ -149,6 +149,16 @@ class WCClubGraduateServiceImpl implements WCIClubGraduateService {
         }
 
         WCStudentClubGraduateRelationBean graduateRelationBean = mClubGraduateMapper.getStudentGraduateRelationByCurrentClubId(studentId, clubId);
+        if (graduateRelationBean == null) {
+            log.error("updateClubCurrentGraduateStudentJob：该学生尚未加入该社团");
+            check.msg = "该学生尚未加入该社团";
+            return check;
+        }
+        if (graduateRelationBean.getStatus() != WCStudentClubGraduateRelationBean.STATUS_REFUSE_JOIN) {
+            log.error("updateClubCurrentGraduateStudentJob：管理员尚未同意该学生加入社团");
+            check.msg = "管理员尚未同意该学生加入社团";
+            return check;
+        }
         graduateRelationBean.setDepartmentId(departmentId);
 
         mClubGraduateMapper.updateStudentClubGraduateRelation(graduateRelationBean);
@@ -201,10 +211,56 @@ class WCClubGraduateServiceImpl implements WCIClubGraduateService {
         }
 
         WCStudentClubGraduateRelationBean graduateRelationBean = mClubGraduateMapper.getStudentGraduateRelationByCurrentClubId(studentId, clubId);
+        if (graduateRelationBean == null) {
+            log.error("updateClubCurrentGraduateStudentJob：该学生尚未加入该社团");
+            check.msg = "该学生尚未加入该社团";
+            return check;
+        }
+        if (graduateRelationBean.getStatus() != WCStudentClubGraduateRelationBean.STATUS_REFUSE_JOIN) {
+            log.error("updateClubCurrentGraduateStudentJob：管理员尚未同意该学生加入社团");
+            check.msg = "管理员尚未同意该学生加入社团";
+            return check;
+        }
         graduateRelationBean.setJobId(jobId);
 
         mClubGraduateMapper.updateStudentClubGraduateRelation(graduateRelationBean);
         check = WCHttpStatus.SUCCESS;
+        return check;
+    }
+
+    @Override
+    public WCHttpStatus deleteStudentFromClubCurrentGraduate(long clubId, long studentId) {
+
+        WCHttpStatus check = WCHttpStatus.FAIL_REQUEST;
+
+        if (clubId <= 0) {
+            log.error("updateClubCurrentGraduateStudentJob：club_id 不能小于等于0");
+            check.msg = "club_id 不能小于等于0";
+            return check;
+        }
+
+        if (studentId <= 0) {
+            log.error("updateClubCurrentGraduateStudentJob：student_id 不能小于等于0");
+            check.msg = "student_id 不能小于等于0";
+            return check;
+        }
+
+        WCStudentClubGraduateRelationBean graduateRelationBean = mClubGraduateMapper.getStudentGraduateRelationByCurrentClubId(studentId, clubId);
+        if (graduateRelationBean == null) {
+            log.error("updateClubCurrentGraduateStudentJob：该学生尚未加入该社团");
+            check.msg = "该学生尚未加入该社团";
+            return check;
+        }
+        if (graduateRelationBean.getStatus() != WCStudentClubGraduateRelationBean.STATUS_REFUSE_JOIN) {
+            log.error("updateClubCurrentGraduateStudentJob：管理员尚未同意该学生加入社团");
+            check.msg = "管理员尚未同意该学生加入社团";
+            return check;
+        }
+
+        graduateRelationBean.setIsDel(1);
+        mClubGraduateMapper.updateStudentClubGraduateRelation(graduateRelationBean);
+        check = WCHttpStatus.SUCCESS;
+
         return check;
     }
 }
