@@ -77,4 +77,21 @@
         VALUES (#{graduateId}, #{studentId}, #{superAdmin}, #{status})
     </insert>
 
+    <select id="getStudentGraduateRelationByCurrentClubId" resultMap="studentClubRelationMap">
+        SELECT *
+        FROM `t_student_club_graduate_relation` relation, `t_club_graduate` graduate
+        WHERE relation.`student_id` = #{studentId}
+        AND graduate.`club_id` = #{clubId}
+        AND graduate.`club_graduate_id` = relation.`graduate_id`
+        AND relation.`is_del` = 0
+        AND graduate.`is_current` = 1
+    </select>
+
+    <update id="updateStudentClubGraduateRelation" parameterType="com.weclubs.bean.WCStudentClubGraduateRelationBean">
+        UPDATE `t_student_club_graduate_relation`
+        SET `status` = #{status}, `department_id` = #{departmentId}, `job_id` = #{jobId},
+         `super_admin` = #{superAdmin}, `is_del` = #{isDel}
+        WHERE `stu_clu_gra_rel_id` = #{stuCluGraRelId}
+    </update>
+
 </mapper>

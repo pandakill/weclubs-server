@@ -1,5 +1,6 @@
 package com.weclubs.api;
 
+import com.weclubs.application.club.WCIClubGraduateService;
 import com.weclubs.application.club.WCIClubService;
 import com.weclubs.application.club_responsibility.WCIClubResponsibilityService;
 import com.weclubs.application.school.WCISchoolService;
@@ -9,6 +10,7 @@ import com.weclubs.bean.*;
 import com.weclubs.model.WCManageClubModel;
 import com.weclubs.model.request.WCRequestModel;
 import com.weclubs.model.response.WCResultData;
+import com.weclubs.util.WCCommonUtil;
 import com.weclubs.util.WCHttpStatus;
 import com.weclubs.util.WCRequestParamsUtil;
 import org.apache.log4j.Logger;
@@ -40,16 +42,19 @@ class WCManageClubAPI {
     private WCISchoolService mSchoolService;
     private WCIUserService mUserService;
     private WCIClubResponsibilityService mClubResponsibilityService;
+    private WCIClubGraduateService mClubGraduateService;
 
     @Autowired
     public WCManageClubAPI(WCIUserService mUserService, WCISchoolService mSchoolService,
                            WCISecurityService mSecurityService, WCIClubService mClubService,
-                           WCIClubResponsibilityService mClubResponsibilityService) {
+                           WCIClubResponsibilityService mClubResponsibilityService,
+                           WCIClubGraduateService graduateService) {
         this.mUserService = mUserService;
         this.mSchoolService = mSchoolService;
         this.mSecurityService = mSecurityService;
         this.mClubService = mClubService;
         this.mClubResponsibilityService = mClubResponsibilityService;
+        this.mClubGraduateService = graduateService;
     }
 
     @RequestMapping(value = "/get_my_club")
@@ -534,6 +539,62 @@ class WCManageClubAPI {
 
         HashMap<String, Object> result = new HashMap<>();
         return WCResultData.getSuccessData(result);
+    }
+
+    @RequestMapping(value = "/set_student_department")
+    public WCResultData setStudentDepartment(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        check = mSecurityService.checkTokenAvailable(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        if (requestData == null || requestData.size() == 0) {
+            check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        long clubId = WCCommonUtil.getLongData(requestData.get("club_id"));
+        long studentId = WCCommonUtil.getLongData(requestData.get("student_id"));
+        long departmentId = WCCommonUtil.getLongData(requestData.get("department_id"));
+
+        check = mClubGraduateService.updateClubCurrentGraduateStudentDepartment(clubId, studentId, departmentId);
+
+        return WCResultData.getHttpStatusData(check, null);
+    }
+
+    @RequestMapping(value = "/set_student_job")
+    public WCResultData setStudentJob(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        check = mSecurityService.checkTokenAvailable(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        if (requestData == null || requestData.size() == 0) {
+            check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        long clubId = WCCommonUtil.getLongData(requestData.get("club_id"));
+        long studentId = WCCommonUtil.getLongData(requestData.get("student_id"));
+        long jobId = WCCommonUtil.getLongData(requestData.get("job_id"));
+
+        check = mClubGraduateService.updateClubCurrentGraduateStudentJob(clubId, studentId, jobId);
+
+        return WCResultData.getHttpStatusData(check, null);
     }
 
     private HashMap<String, Object> getMyManageClub(WCManageClubModel manageClubModel) {

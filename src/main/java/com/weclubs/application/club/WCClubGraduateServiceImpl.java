@@ -1,11 +1,17 @@
 package com.weclubs.application.club;
 
+import com.weclubs.application.club_responsibility.WCIClubResponsibilityService;
+import com.weclubs.bean.WCClubDepartmentBean;
 import com.weclubs.bean.WCClubGraduateBean;
+import com.weclubs.bean.WCClubJobBean;
 import com.weclubs.bean.WCStudentClubGraduateRelationBean;
 import com.weclubs.mapper.WCClubGraduateMapper;
+import com.weclubs.util.WCHttpStatus;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * 社团届数服务的实现类
@@ -13,12 +19,19 @@ import org.springframework.stereotype.Service;
  * Created by fangzanpan on 2017/3/8.
  */
 @Service(value = "clubGraduateService")
-public class WCClubGraduateServiceImpl implements WCIClubGraduateService {
+class WCClubGraduateServiceImpl implements WCIClubGraduateService {
 
     private Logger log = Logger.getLogger(WCClubGraduateServiceImpl.class);
 
-    @Autowired
+    private WCIClubResponsibilityService mClubResponsibilityService;
     private WCClubGraduateMapper mClubGraduateMapper;
+
+    @Autowired
+    public WCClubGraduateServiceImpl(WCIClubResponsibilityService mClubResponsibilityService,
+                                     WCClubGraduateMapper mClubGraduateMapper) {
+        this.mClubResponsibilityService = mClubResponsibilityService;
+        this.mClubGraduateMapper = mClubGraduateMapper;
+    }
 
     public void createClubGraduate(WCClubGraduateBean clubGraduateBean) {
 
@@ -89,5 +102,109 @@ public class WCClubGraduateServiceImpl implements WCIClubGraduateService {
             return;
         }
         mClubGraduateMapper.createStuCluGraRelation(relationBean);
+    }
+
+    @Override
+    public WCHttpStatus updateClubCurrentGraduateStudentDepartment(long clubId, long studentId, long departmentId) {
+
+        WCHttpStatus check = WCHttpStatus.FAIL_REQUEST;
+
+        if (clubId <= 0) {
+            log.error("updateCurrentClubGraduateStudent：clubId不能小于等于0");
+            check.msg = "club_id 不能小于等于0";
+            return check;
+        }
+
+        if (studentId <= 0) {
+            log.error("updateCurrentClubGraduateStudent：studentId不能小于等于0");
+            check.msg = "student_id 不能小于等于0";
+            return check;
+        }
+
+        if (departmentId <= 0) {
+            log.error("updateCurrentClubGraduateStudent：departmentId不能小于等于0");
+            check.msg = "department_id 不能小于等于0";
+            return check;
+        }
+
+        List<WCClubDepartmentBean> departments = mClubResponsibilityService.getDepartmentsByClubId(clubId, true);
+        if (departments == null || departments.size() == 0) {
+            log.error("updateClubCurrentGraduateStudentDepartment：该社团尚未设置部门");
+            check.msg = "该社团尚未设置部门";
+            return check;
+        }
+
+        boolean isIncluded = false;
+        for (WCClubDepartmentBean department : departments) {
+            if (department.getDepartmentId() == departmentId) {
+                isIncluded = true;
+                break;
+            }
+        }
+
+        if (!isIncluded) {
+            log.error("updateClubCurrentGraduateStudentDepartment：该社团尚未设置部门");
+            check.msg = "该社团尚未设置部门";
+            return check;
+        }
+
+        WCStudentClubGraduateRelationBean graduateRelationBean = mClubGraduateMapper.getStudentGraduateRelationByCurrentClubId(studentId, clubId);
+        graduateRelationBean.setDepartmentId(departmentId);
+
+        mClubGraduateMapper.updateStudentClubGraduateRelation(graduateRelationBean);
+        check = WCHttpStatus.SUCCESS;
+        return check;
+    }
+
+    @Override
+    public WCHttpStatus updateClubCurrentGraduateStudentJob(long clubId, long studentId, long jobId) {
+
+        WCHttpStatus check = WCHttpStatus.FAIL_REQUEST;
+
+        if (clubId <= 0) {
+            log.error("updateClubCurrentGraduateStudentJob：club_id 不能小于等于0");
+            check.msg = "club_id 不能小于等于0";
+            return check;
+        }
+
+        if (studentId <= 0) {
+            log.error("updateClubCurrentGraduateStudentJob：student_id 不能小于等于0");
+            check.msg = "student_id 不能小于等于0";
+            return check;
+        }
+
+        if (jobId <= 0) {
+            log.error("updateClubCurrentGraduateStudentJob：job_id 不能小于等于0");
+            check.msg = "job_id 不能小于等于0";
+            return check;
+        }
+
+        List<WCClubJobBean> jobs = mClubResponsibilityService.getJobsByClubId(clubId);
+        if (jobs == null || jobs.size() == 0) {
+            log.error("updateClubCurrentGraduateStudentJob：该社团尚未设置职位");
+            check.msg = "该社团尚未设置职位";
+            return check;
+        }
+
+        boolean isIncluded = false;
+        for (WCClubJobBean job : jobs) {
+            if (job.getJobId() == jobId) {
+                isIncluded = true;
+                break;
+            }
+        }
+
+        if (!isIncluded) {
+            log.error("updateClubCurrentGraduateStudentJob：该社团尚未设置职位");
+            check.msg = "该社团尚未设置职位";
+            return check;
+        }
+
+        WCStudentClubGraduateRelationBean graduateRelationBean = mClubGraduateMapper.getStudentGraduateRelationByCurrentClubId(studentId, clubId);
+        graduateRelationBean.setJobId(jobId);
+
+        mClubGraduateMapper.updateStudentClubGraduateRelation(graduateRelationBean);
+        check = WCHttpStatus.SUCCESS;
+        return check;
     }
 }
