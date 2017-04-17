@@ -495,6 +495,47 @@ class WCManageClubAPI {
         return WCResultData.getSuccessData(result);
     }
 
+    @RequestMapping(value = "/edit_club_slogan")
+    public WCResultData editClubSlogan(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        check = mSecurityService.checkTokenAvailable(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        if (requestData == null || requestData.size() == 0) {
+            check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        long clubId = 0;
+        if (requestData.get("club_id") instanceof String) {
+            clubId = Long.parseLong((String) requestData.get("club_id"));
+        } else if (requestData.get("club_id") instanceof Integer) {
+            clubId = (Integer) requestData.get("club_id");
+        }
+
+        WCClubBean clubBean = mClubService.getClubInfoById(clubId);
+        if (clubBean == null) {
+            check = WCHttpStatus.FAIL_REQUEST;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        String slogan = (String) requestData.get("slogan");
+
+        clubBean.setSlogan(slogan);
+        mClubService.updateClub(clubBean);
+
+        HashMap<String, Object> result = new HashMap<>();
+        return WCResultData.getSuccessData(result);
+    }
+
     private HashMap<String, Object> getMyManageClub(WCManageClubModel manageClubModel) {
 
         HashMap<String, Object> result = new HashMap<String, Object>();
