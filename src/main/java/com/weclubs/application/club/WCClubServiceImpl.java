@@ -331,4 +331,42 @@ public class WCClubServiceImpl implements WCIClubService {
 
         mClubHonorMapper.createHonorByList(list);
     }
+
+    @Override
+    public void updateClubHonor(List<HashMap<String, Object>> honorList) {
+
+        if (honorList == null || honorList.size() == 0) {
+            log.error("updateClubHonor：更新荣誉列表失败，不允许荣誉列表为空");
+            return;
+        }
+
+        List<WCClubHonorBean> honorBeanList = new ArrayList<>();
+        for (HashMap<String, Object> result : honorList) {
+            WCClubHonorBean honorBean = new WCClubHonorBean();
+            honorBean.setContent((String) result.get("content"));
+
+            long clubId = 0;
+            if (result.get("club_id") instanceof String) {
+                clubId = Long.parseLong((String) result.get("club_id"));
+            } else if (result.get("club_id") instanceof Integer) {
+                clubId = (Integer) result.get("club_id");
+            }
+            honorBean.setClubId(clubId);
+
+            long getDate = 0;
+            if (result.get("get_date") instanceof String) {
+                getDate = Long.parseLong((String) result.get("get_date"));
+            } else if (result.get("get_date") instanceof Long) {
+                getDate = (Long) result.get("get_date");
+            }
+            honorBean.setGetDate(getDate);
+
+            honorBeanList.add(honorBean);
+        }
+        log.info("updateClubHonor：荣誉实体列表为 -- " + honorList.toString());
+
+        for (WCClubHonorBean honorBean : honorBeanList) {
+            mClubHonorMapper.updateClubHonor(honorBean);
+        }
+    }
 }

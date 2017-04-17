@@ -50,4 +50,11 @@ public interface WCIClubService {
      * @param honorList 荣誉列表键值对
      */
     void addClubHonor(long clubId, List<HashMap<String, Object>> honorList);
+
+    /**
+     * 更新社团荣誉列表
+     *
+     * @param honorList 社团荣誉列表键值对
+     */
+    void updateClubHonor(List<HashMap<String, Object>> honorList);
 }

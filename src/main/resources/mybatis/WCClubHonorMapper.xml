@@ -19,9 +19,9 @@
 
     <!-- 更新社团荣誉对象 -->
     <update id="updateClubHonor" parameterType="com.weclubs.bean.WCClubHonorBean">
-        UPDATE `T_CLUB_HONOR`
-        SET `CONTENT` = #{content}, `GET_DATE` = #{getDate}, `IS_DEL` = #{isDel}
-        WHERE `HONOR_ID` = #{honorId}
+        UPDATE `t_club_honor`
+        SET `content` = #{content}, `get_date` = #{getDate}, `is_del` = #{isDel}
+        WHERE `honor_id` = #{honorId}
     </update>
 
     <!-- 根据 id 删除社团荣誉实体对象，实际是将 is_del 设置为 1 -->
