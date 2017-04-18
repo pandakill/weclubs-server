@@ -70,4 +70,12 @@ public interface WCINotificationService {
      * @return  如果发布成功则返回 {@link WCHttpStatus#SUCCESS}
      */
     WCHttpStatus publicNotify(long sponsorId, String content, long clubId, String students);
+
+    /**
+     * 获取我发布的通知详情
+     *
+     * @param notificationId    通知id
+     * @return  返回该通知的实体
+     */
+    WCSponsorNotifyModel getMyNotificationDetailById(long notificationId);
 }

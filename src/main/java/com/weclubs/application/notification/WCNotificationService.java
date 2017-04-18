@@ -268,4 +268,23 @@ class WCNotificationService implements WCINotificationService {
         check = WCHttpStatus.SUCCESS;
         return check;
     }
+
+    @Override
+    public WCSponsorNotifyModel getMyNotificationDetailById(long notificationId) {
+
+        if (notificationId <= 0) {
+            log.error("getMyNotificationDetailById：notificationId 不能小于等于0");
+            return null;
+        }
+
+        WCClubMissionBean missionBean = getNotificationDetailById(notificationId);
+        WCSponsorNotifyModel sponsorNotifyModel = new WCSponsorNotifyModel(missionBean);
+
+        List<WCStudentMissionRelationBean> total = getNotifyRelationByNotifyId(sponsorNotifyModel.getMissionId());
+        List<WCStudentMissionRelationBean> unread = getUnConfirmNotifyRelationByNotifyId(sponsorNotifyModel.getMissionId());
+        sponsorNotifyModel.setTotalCount(total == null ? 0 : total.size());
+        sponsorNotifyModel.setUnreadCount(unread == null ? 0 : unread.size());
+
+        return sponsorNotifyModel;
+    }
 }

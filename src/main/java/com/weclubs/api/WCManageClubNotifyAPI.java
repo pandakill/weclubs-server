@@ -110,6 +110,34 @@ class WCManageClubNotifyAPI {
         return WCResultData.getHttpStatusData(check, null);
     }
 
+    @RequestMapping(value = "/get_my_notify_detail")
+    public WCResultData getMyNotifyDetail(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        check = mSecurityService.checkTokenAvailable(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        if (requestData == null || requestData.size() == 0) {
+            check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        long notifyId = WCCommonUtil.getLongData(requestData.get("notify_id"));
+
+        WCSponsorNotifyModel notifyModel = mNotificationService.getMyNotificationDetailById(notifyId);
+
+        HashMap<String, Object> result = getNotifyHash(notifyModel);
+
+        return WCResultData.getSuccessData(result);
+    }
+
     private HashMap<String, Object> getNotifyHash(WCSponsorNotifyModel notifyModel) {
         HashMap<String, Object> result = new HashMap<>();
         result.put("club_id", notifyModel.getClubId());

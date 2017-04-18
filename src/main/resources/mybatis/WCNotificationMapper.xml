@@ -7,7 +7,7 @@
         <id property="missionId" column="mission_id" />
         <result property="clubId" column="club_id" />
         <result property="attribution" column="attribution" />
-        <result property="graduate" column="graduate_id" />
+        <result property="graduateId" column="graduate_id" />
         <result property="type" column="type" />
         <result property="parentId" column="parentId" />
         <result property="address" column="address" />
@@ -92,10 +92,11 @@
     <!-- 根据通知 notificationId 获取通知详情 -->
     <select id="getNotificationById" resultMap="notificationMap">
         SELECT *
-        FROM `T_CLUB_MISSION`
-        WHERE `mission_id` = #{notificationId}
-        AND `TYPE` = 0
-        AND `IS_DEL` = 0
+        FROM `T_CLUB_MISSION` mission, `t_club` club
+        WHERE mission.`mission_id` = #{notificationId}
+        AND mission.`club_id` = club.`club_id`
+        AND mission.`TYPE` = 0
+        AND mission.`IS_DEL` = 0
     </select>
 
     <!-- 根据社团 clubId 获取该社团的所有未删除的通知 -->

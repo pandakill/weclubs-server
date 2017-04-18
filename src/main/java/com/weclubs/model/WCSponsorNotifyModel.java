@@ -9,6 +9,28 @@ import com.weclubs.bean.WCClubMissionBean;
  */
 public class WCSponsorNotifyModel extends WCClubMissionBean {
 
+    public WCSponsorNotifyModel(){}
+
+    public WCSponsorNotifyModel(WCClubMissionBean missionBean) {
+        setMissionId(missionBean.getMissionId());
+        setClubId(missionBean.getClubId());
+        setAttribution(missionBean.getAttribution());
+        setGraduateId(missionBean.getGraduateId());
+        setType(missionBean.getType());
+        setParentId(missionBean.getParentId());
+        setAddress(missionBean.getAddress());
+        setDeadline(missionBean.getDeadline());
+        setSponsorId(missionBean.getSponsorId());
+        setCreateDate(missionBean.getCreateDate());
+        setIsDel(missionBean.getIsDel());
+
+        setClubBean(missionBean.getClubBean());
+        setParentMissionBean(missionBean.getParentMissionBean());
+        setSponsorStudentBean(missionBean.getSponsorStudentBean());
+        setChildMissions(missionBean.getChildMissions());
+        setChildMissonDetails(missionBean.getChildMissonDetails());
+    }
+
     private long unreadCount;
     private long totalCount;
 
