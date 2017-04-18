@@ -131,7 +131,7 @@ class WCManageClubMeetingAPI {
         }
 
         HashMap<String, Object> result = getSponsorMeetingHash(meetingModel);
-        result.put("leaders", leaderHash);
+        result.put("leader", leaderHash);
         return WCResultData.getSuccessData(result);
     }
 
