@@ -241,4 +241,31 @@ class WCClubMeetingService implements WCIClubMeetingService {
 
         return mMeetingMapper.getSignRelationByMeetingId(meetingId);
     }
+
+    @Override
+    public WCSponsorMeetingModel getSponsorMeetingDetail(long meetingId) {
+
+        if (meetingId <= 0) {
+            log.error("getSponsorMeetingDetail：meetingId 不能小于等于0");
+            return null;
+        }
+
+        WCClubMissionBean missionBean = getMeetingDetailById(meetingId);
+        if (missionBean == null) {
+            log.error("getSponsorMeetingDetail：找不到meetingId = 【" + meetingId + "】的会议");
+            return null;
+        }
+
+        WCSponsorMeetingModel meetingModel = new WCSponsorMeetingModel(missionBean);
+
+        List<WCStudentMissionRelationBean> total = getMeetingRelationByMeetingId(meetingModel.getMissionId());
+        List<WCStudentMissionRelationBean> unConfirm = getUnConfirmMeetingRelationByMeetingId(meetingModel.getMissionId());
+        List<WCStudentMissionRelationBean> alreadySign = getAlreadySignRelationByMeetingId(meetingModel.getMissionId());
+
+        meetingModel.setTotalCount(total == null ? 0 : total.size());
+        meetingModel.setUnConfirmCount(unConfirm == null ? 0 : unConfirm.size());
+        meetingModel.setSignCount(alreadySign == null ? 0 : alreadySign.size());
+
+        return meetingModel;
+    }
 }

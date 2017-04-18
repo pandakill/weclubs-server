@@ -24,7 +24,7 @@ public interface WCMeetingMapper {
 
     void changeMeetingStatus(@Param("meetingId") long meetingId, int status);
 
-    WCClubMissionBean getMeetingById(@Param("meetingId") long neetingId);
+    WCClubMissionBean getMeetingById(@Param("meetingId") long meetingId);
 
     List<WCClubMissionBean> getMeetingsByClubId(@Param("clubId") long clubId);
 

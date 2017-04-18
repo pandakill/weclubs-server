@@ -8,6 +8,7 @@ import com.weclubs.bean.WCClubBean;
 import com.weclubs.model.WCSponsorMeetingModel;
 import com.weclubs.model.request.WCRequestModel;
 import com.weclubs.model.response.WCResultData;
+import com.weclubs.util.WCCommonUtil;
 import com.weclubs.util.WCHttpStatus;
 import com.weclubs.util.WCRequestParamsUtil;
 import org.apache.log4j.Logger;
@@ -80,6 +81,32 @@ class WCManageClubMeetingAPI {
         HashMap<String, Object> result = new HashMap<>();
         result.put("meeting", resultArray);
         result.put("has_more", pageInfo.isHasNextPage() ? 1 : 0);
+        return WCResultData.getSuccessData(result);
+    }
+
+    @RequestMapping(value = "/get_my_meeting_detail")
+    public WCResultData getMyMeetingDetail(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        check = mSecurityService.checkTokenAvailable(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        if (requestData == null || requestData.size() == 0) {
+            check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        long meetingId = WCCommonUtil.getLongData(requestData.get("meeting_id"));
+        WCSponsorMeetingModel meetingModel = mClubMeetingService.getSponsorMeetingDetail(meetingId);
+
+        HashMap<String, Object> result = getSponsorMeetingHash(meetingModel);
         return WCResultData.getSuccessData(result);
     }
 

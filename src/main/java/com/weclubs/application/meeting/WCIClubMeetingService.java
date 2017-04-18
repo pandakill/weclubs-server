@@ -78,4 +78,13 @@ public interface WCIClubMeetingService {
      * @return  学生关系列表
      */
     List<WCStudentMissionRelationBean> getAlreadySignRelationByMeetingId(long meetingId);
+
+    /**
+     * 获取签到的详情（发布者角度的详情）
+     *
+     * @param meetingId 会议id
+     *
+     * @return  会议详情
+     */
+    WCSponsorMeetingModel getSponsorMeetingDetail(long meetingId);
 }
