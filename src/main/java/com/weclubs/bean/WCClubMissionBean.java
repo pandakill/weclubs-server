@@ -21,6 +21,7 @@ public class WCClubMissionBean implements Serializable {
     private String attribution;
     private long graduateId;
     private int type;
+    private int signType;
     private long parentId;
     private String address;
     private long deadline;
@@ -74,6 +75,14 @@ public class WCClubMissionBean implements Serializable {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    public int getSignType() {
+        return signType;
+    }
+
+    public void setSignType(int signType) {
+        this.signType = signType;
     }
 
     public long getParentId() {
@@ -172,6 +181,7 @@ public class WCClubMissionBean implements Serializable {
                 ", attribution='" + attribution + '\'' +
                 ", graduateId=" + graduateId +
                 ", type=" + type +
+                ", signType=" + signType +
                 ", parentId=" + parentId +
                 ", address='" + address + '\'' +
                 ", deadline=" + deadline +

@@ -3,6 +3,7 @@ package com.weclubs.mapper;
 import com.weclubs.bean.WCClubMissionBean;
 import com.weclubs.bean.WCStudentMissionRelationBean;
 import com.weclubs.model.WCMeetingParticipationModel;
+import com.weclubs.model.WCSponsorMeetingModel;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -47,4 +48,39 @@ public interface WCMeetingMapper {
     List<WCStudentMissionRelationBean> getMeetingLeader(@Param("meetingId") long meetingId);
 
     List<WCMeetingParticipationModel> getMeetingParticipation(@Param("meetingId") long meetingId);
+
+    /**
+     * 获取发布者的会议列表
+     *
+     * @param sponsorId 发布者id
+     * @return  会议列表
+     */
+    List<WCSponsorMeetingModel> getMeetingBySponsor(@Param("sponsorId") long sponsorId);
+
+    /**
+     * 获取未确认的会议列表关系
+     *
+     * @param meetingId 会议id
+     *
+     * @return  未确认的会议列表关系
+     */
+    List<WCStudentMissionRelationBean> getUnConfirmMeetingRelationByMeetingId(@Param("meetingId") long meetingId);
+
+    /**
+     * 获取某个会议所有的会议列表关系
+     *
+     * @param meetingId 会议Id
+     *
+     * @return  所有的会议列表关系
+     */
+    List<WCStudentMissionRelationBean> getMeetingRelationByMeetingId(@Param("meetingId") long meetingId);
+
+    /**
+     * 获取某个会议已经签到的会议关系列表
+     *
+     * @param meetingId 会议id
+     *
+     * @return  已经签到的会议关系列表
+     */
+    List<WCStudentMissionRelationBean> getSignRelationByMeetingId(@Param("meetingId") long meetingId);
 }

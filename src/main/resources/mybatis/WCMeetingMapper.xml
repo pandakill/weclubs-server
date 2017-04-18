@@ -14,6 +14,7 @@
         <result property="sponsorId" column="sponsor_id" />
         <result property="createDate" column="create_date" />
         <result property="isDel" column="is_del" />
+        <result property="signType" column="sign_type" />
 
         <association property="clubBean" javaType="com.weclubs.bean.WCClubBean">
             <id property="clubId" column="club_id" />
@@ -26,6 +27,12 @@
             <result property="status" column="status" />
             <result property="checkCount" column="check_count" />
         </association>
+    </resultMap>
+
+    <resultMap id="sponsorMeetingMap" extends="meetingMap" type="com.weclubs.model.WCSponsorMeetingModel" >
+        <result property="totalCount" column="total_count" />
+        <result property="unConfirmCount" column="unconfirm_count" />
+        <result property="signCount" column="sign_count" />
     </resultMap>
 
     <resultMap id="studentMeetingMap" type="com.weclubs.bean.WCStudentMissionRelationBean">
@@ -243,6 +250,50 @@
         ON
         ca.`student_id` = relation.`student_id`
         GROUP BY relation.`stu_mis_rel_id`
+    </select>
+
+    <select id="getMeetingBySponsor" resultMap="sponsorMeetingMap" resultType="list">
+        SELECT *
+        FROM `T_CLUB_MISSION` club_mission, `t_club` club
+        WHERE club_mission.`IS_DEL` = 0
+        AND club_mission.`TYPE` = 2
+        AND club_mission.`sponsor_id` = #{sponsorId}
+        AND club.`club_id` = club_mission.`club_id`
+    </select>
+
+    <select id="getUnConfirmMeetingRelationByMeetingId" resultMap="sponsorMeetingMap" resultType="list">
+        SELECT *
+        FROM `t_student_mission_relation` relation, `t_club_mission` club_mission
+        WHERE club_mission.`IS_DEL` = 0
+        AND club_mission.`TYPE` = 2
+        AND club_mission.`mission_id` = #{meetingId}
+        AND club_mission.`mission_id` = relation.`mission_id`
+        AND relation.`status` = 0
+        AND relation.`is_del` = 0
+    </select>
+
+    <select id="getMeetingRelationByMeetingId" resultMap="sponsorMeetingMap" resultType="list">
+        SELECT *
+        FROM `t_student_mission_relation` relation, `t_club_mission` club_mission, `t_student` student
+        WHERE club_mission.`IS_DEL` = 0
+        AND club_mission.`TYPE` = 2
+        AND club_mission.`mission_id` = #{meetingId}
+        AND club_mission.`mission_id` = relation.`mission_id`
+        AND student.`student_id` = relation.`student_id`
+        AND relation.`is_del` = 0
+        ORDER BY relation.`status`
+    </select>
+
+    <select id="getSignRelationByMeetingId" resultMap="sponsorMeetingMap" resultType="list">
+        SELECT *
+        FROM `t_student_mission_relation` relation, `t_club_mission` club_mission
+        WHERE club_mission.`IS_DEL` = 0
+        AND club_mission.`TYPE` = 2
+        AND club_mission.`mission_id` = #{meetingId}
+        AND club_mission.`mission_id` = relation.`mission_id`
+        AND relation.`is_del` = 0
+        AND relation.`is_sign` = 1
+        ORDER BY relation.`status`
     </select>
 
 </mapper>

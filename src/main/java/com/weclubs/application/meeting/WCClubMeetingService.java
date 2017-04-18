@@ -6,6 +6,7 @@ import com.weclubs.bean.WCStudentBean;
 import com.weclubs.bean.WCStudentMissionRelationBean;
 import com.weclubs.mapper.WCMeetingMapper;
 import com.weclubs.model.WCMeetingParticipationModel;
+import com.weclubs.model.WCSponsorMeetingModel;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,7 @@ import java.util.List;
  * Created by fangzanpan on 2017/3/9.
  */
 @Service("clubMeetingService")
-public class WCClubMeetingService implements WCIClubMeetingService {
+class WCClubMeetingService implements WCIClubMeetingService {
 
     private Logger log = Logger.getLogger(WCClubMeetingService.class);
 
@@ -182,5 +183,62 @@ public class WCClubMeetingService implements WCIClubMeetingService {
         }
 
         return mMeetingMapper.getMeetingParticipation(meetingId);
+    }
+
+    @Override
+    public List<WCSponsorMeetingModel> getMeetingBySponsor(long sponsorId) {
+
+        if (sponsorId <= 0) {
+            log.error("getNotifyBySponsor：sponsorId 不能小于等于0。");
+            return null;
+        }
+
+        List<WCSponsorMeetingModel> meetingModelList = mMeetingMapper.getMeetingBySponsor(sponsorId);
+        if (meetingModelList != null && meetingModelList.size() > 0) {
+            for (WCSponsorMeetingModel meetingModel : meetingModelList) {
+                List<WCStudentMissionRelationBean> total = getMeetingRelationByMeetingId(meetingModel.getMissionId());
+                List<WCStudentMissionRelationBean> unConfirm = getUnConfirmMeetingRelationByMeetingId(meetingModel.getMissionId());
+                List<WCStudentMissionRelationBean> alreadySign = getAlreadySignRelationByMeetingId(meetingModel.getMissionId());
+
+                meetingModel.setTotalCount(total == null ? 0 : total.size());
+                meetingModel.setUnConfirmCount(unConfirm == null ? 0 : unConfirm.size());
+                meetingModel.setSignCount(alreadySign == null ? 0 : alreadySign.size());
+            }
+        }
+
+        return meetingModelList;
+    }
+
+    @Override
+    public List<WCStudentMissionRelationBean> getUnConfirmMeetingRelationByMeetingId(long meetingId) {
+
+        if (meetingId <= 0) {
+            log.error("getUnConfirmMeetingRelationByMeetingId：meetingId 不能小于等于0");
+            return null;
+        }
+
+        return mMeetingMapper.getUnConfirmMeetingRelationByMeetingId(meetingId);
+    }
+
+    @Override
+    public List<WCStudentMissionRelationBean> getMeetingRelationByMeetingId(long meetingId) {
+
+        if (meetingId <= 0) {
+            log.error("getMeetingRelationByMeetingId：meetingId 不能小于等于0");
+            return null;
+        }
+
+        return mMeetingMapper.getMeetingRelationByMeetingId(meetingId);
+    }
+
+    @Override
+    public List<WCStudentMissionRelationBean> getAlreadySignRelationByMeetingId(long meetingId) {
+
+        if (meetingId <= 0) {
+            log.error("getAlreadySignRelationByMeetingId：meetingId 不能小于等于0");
+            return null;
+        }
+
+        return mMeetingMapper.getSignRelationByMeetingId(meetingId);
     }
 }
