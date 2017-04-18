@@ -50,6 +50,22 @@
             <result property="createDate" column="create_date" />
             <result property="isDel" column="is_del" />
         </association>
+
+        <association property="studentBean" javaType="com.weclubs.bean.WCStudentBean">
+            <id property="studentId" column="student_id" />
+            <result property="schoolId" column="school_id" />
+            <result property="mobile" column="mobile" />
+            <result property="nickName" column="nick_name" />
+            <result property="realName" column="real_name" />
+            <result property="password" column="password" />
+            <result property="avatarUrl" column="avatar_url" />
+            <result property="birthday" column="birthday" />
+            <result property="qrcordUrl" column="qrcode_url" />
+            <result property="className" column="class_name" />
+            <result property="graduateYear" column="graduate_year" />
+            <result property="status" column="status" />
+            <result property="isDel" column="is_del" />
+        </association>
     </resultMap>
 
     <resultMap id="sponsorNotifyMap" extends="notificationMap" type="com.weclubs.model.WCSponsorNotifyModel">
@@ -183,12 +199,14 @@
 
     <select id="getRelationByNotifyId" resultMap="studentNotificationMap" resultType="List">
         SELECT *
-        FROM `t_student_mission_relation` relation, `t_club_mission` club_mission
+        FROM `t_student_mission_relation` relation, `t_club_mission` club_mission, `t_student` student
         WHERE club_mission.`IS_DEL` = 0
         AND club_mission.`TYPE` = 0
         AND club_mission.`mission_id` = #{notifyId}
         AND club_mission.`mission_id` = relation.`mission_id`
+        AND student.`student_id` = relation.`student_id`
         AND relation.`is_del` = 0
+        ORDER BY relation.`status`
     </select>
 
     <select id="getUnConfirmRelationByNotifyId" resultMap="studentNotificationMap" resultType="List">

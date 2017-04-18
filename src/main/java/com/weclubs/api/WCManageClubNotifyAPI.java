@@ -4,6 +4,8 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.weclubs.application.notification.WCINotificationService;
 import com.weclubs.application.security.WCISecurityService;
+import com.weclubs.bean.WCStudentBean;
+import com.weclubs.bean.WCStudentMissionRelationBean;
 import com.weclubs.model.WCSponsorNotifyModel;
 import com.weclubs.model.request.WCRequestModel;
 import com.weclubs.model.response.WCResultData;
@@ -138,6 +140,50 @@ class WCManageClubNotifyAPI {
         return WCResultData.getSuccessData(result);
     }
 
+    @RequestMapping(value = "/get_notify_check_status")
+    public WCResultData getNotifyCheckStatus(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        check = mSecurityService.checkTokenAvailable(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        if (requestData == null || requestData.size() == 0) {
+            check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        long notifyId = WCCommonUtil.getLongData(requestData.get("notify_id"));
+
+        List<WCStudentMissionRelationBean> relationBeanList = mNotificationService.getNotifyRelationByNotifyId(notifyId);
+        long unreadCount = 0;
+        long totalCount = 0;
+        ArrayList<HashMap<String, Object>> relationHash = new ArrayList<>();
+        if (relationBeanList != null && relationBeanList.size() > 0) {
+            totalCount = relationBeanList.size();
+            for (WCStudentMissionRelationBean relationBean : relationBeanList) {
+                HashMap<String, Object> hash = getStudentNotifyRelationHash(relationBean);
+                relationHash.add(hash);
+
+                if (relationBean.getStatus() == 0) {
+                    unreadCount ++;
+                }
+            }
+        }
+
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("unread_count", unreadCount);
+        result.put("total_count", totalCount);
+        result.put("confirm_status", relationHash);
+        return WCResultData.getSuccessData(result);
+    }
+
     private HashMap<String, Object> getNotifyHash(WCSponsorNotifyModel notifyModel) {
         HashMap<String, Object> result = new HashMap<>();
         result.put("club_id", notifyModel.getClubId());
@@ -151,6 +197,24 @@ class WCManageClubNotifyAPI {
         result.put("dynamic_type", "notify");
         result.put("unread_count", notifyModel.getUnreadCount());
         result.put("total_count", notifyModel.getTotalCount());
+
+        return result;
+    }
+
+    private HashMap<String, Object> getStudentNotifyRelationHash(WCStudentMissionRelationBean relationBean) {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("student_id", relationBean.getStudentId());
+
+        WCStudentBean studentBean = relationBean.getStudentBean();
+        result.put("student_avatar", studentBean != null ? studentBean.getAvatarUrl() : null);
+        result.put("student_name", studentBean != null ? studentBean.getRealName() : null);
+
+        result.put("is_confirm", relationBean.getStatus() == 0 ? 0 : 1);
+        if (relationBean.getSignDate() > 0) {
+            result.put("create_date", relationBean.getSignDate());
+        } else {
+            result.put("create_date", relationBean.getCreateDate());
+        }
 
         return result;
     }
