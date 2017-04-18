@@ -7,6 +7,7 @@
         <id property="missionId" column="mission_id" />
         <result property="clubId" column="club_id" />
         <result property="attribution" column="attribution" />
+        <result property="graduate" column="graduate_id" />
         <result property="type" column="type" />
         <result property="parentId" column="parentId" />
         <result property="address" column="address" />
@@ -57,10 +58,11 @@
     </resultMap>
 
     <!-- 创建通知实体 -->
-    <insert id="createNotification" parameterType="com.weclubs.bean.WCClubMissionBean">
-        INSERT INTO T_CLUB_MISSION(`CLUB_ID`, `ATTRIBUTION`, `TYPE`,
-         `PARENT_ID`, `ADDRESS`,  `DEADLINE`, `IS_DEL`)
-        VALUES (#{clubId}, #{attribution}, #{type}, #{parentId}, #{address}, #{deadline}, #{isDel})
+    <insert id="createNotification" keyProperty="missionId" useGeneratedKeys="true" parameterType="com.weclubs.bean.WCClubMissionBean">
+        INSERT INTO T_CLUB_MISSION(`CLUB_ID`, `ATTRIBUTION`, `TYPE`, `graduate_id`, `sponsor_id`,
+         `PARENT_ID`, `ADDRESS`, `create_date`, `deadline`, `IS_DEL`)
+        VALUES (#{clubId}, #{attribution}, #{type}, #{graduateId}, #{sponsorId},
+         #{parentId}, #{address}, #{createDate}, #{deadline}, #{isDel})
     </insert>
 
     <!-- 更新通知对象 -->
@@ -198,5 +200,16 @@
         AND relation.`is_del` = 0
         AND relation.`status` = 0
     </select>
+
+    <insert id="createStudentRelation" parameterType="List">
+        INSERT INTO `t_student_mission_relation`
+        (`mission_id`, `student_id`, `create_date`, `status`, `is_del`, `is_leader`)
+        VALUES
+        <foreach collection="relations" index="index" item="item" separator=",">
+            (
+            #{item.missionId}, #{item.studentId}, #{item.createDate}, 0, 0, #{item.isLeader}
+            )
+        </foreach>
+    </insert>
 
 </mapper>

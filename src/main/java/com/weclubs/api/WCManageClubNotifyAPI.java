@@ -81,6 +81,35 @@ class WCManageClubNotifyAPI {
         return WCResultData.getSuccessData(result);
     }
 
+    @RequestMapping(value = "/public_notify")
+    public WCResultData publicNotify(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        check = mSecurityService.checkTokenAvailable(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        if (requestData == null || requestData.size() == 0) {
+            check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        long sponsorId = WCRequestParamsUtil.getUserId(requestModel);
+        String content = (String) requestData.get("content");
+        String students = (String) requestData.get("students");
+        long clubId = WCCommonUtil.getLongData(requestData.get("club_id"));
+
+        check = mNotificationService.publicNotify(sponsorId, content, clubId, students);
+
+        return WCResultData.getHttpStatusData(check, null);
+    }
+
     private HashMap<String, Object> getNotifyHash(WCSponsorNotifyModel notifyModel) {
         HashMap<String, Object> result = new HashMap<>();
         result.put("club_id", notifyModel.getClubId());

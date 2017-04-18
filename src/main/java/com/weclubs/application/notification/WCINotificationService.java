@@ -3,6 +3,7 @@ package com.weclubs.application.notification;
 import com.weclubs.bean.WCClubMissionBean;
 import com.weclubs.bean.WCStudentMissionRelationBean;
 import com.weclubs.model.WCSponsorNotifyModel;
+import com.weclubs.util.WCHttpStatus;
 
 import java.util.List;
 
@@ -57,4 +58,16 @@ public interface WCINotificationService {
      * @return  所有的学生关系列表
      */
     List<WCStudentMissionRelationBean> getNotifyRelationByNotifyId(long notifyId);
+
+    /**
+     * 发布新通知
+     *
+     * @param sponsorId 发布者id（即学生id或者userId）
+     * @param content   通知内容
+     * @param clubId    通知的社团id
+     * @param students  接收通知的学生id字符串（如：1,2,4,21）
+     *
+     * @return  如果发布成功则返回 {@link WCHttpStatus#SUCCESS}
+     */
+    WCHttpStatus publicNotify(long sponsorId, String content, long clubId, String students);
 }

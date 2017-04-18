@@ -62,4 +62,11 @@ public interface WCNotificationMapper {
      * @return  学生关系列表
      */
     List<WCStudentMissionRelationBean> getUnConfirmRelationByNotifyId(@Param("notifyId") long notifyId);
+
+    /**
+     * 批量添加学生对应关系
+     *
+     * @param relations 学生、通知之间的关系列表
+     */
+    void createStudentRelation(@Param("relations") List<WCStudentMissionRelationBean> relations);
 }

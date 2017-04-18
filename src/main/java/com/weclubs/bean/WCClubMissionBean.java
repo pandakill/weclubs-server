@@ -12,9 +12,14 @@ import java.util.List;
  */
 public class WCClubMissionBean implements Serializable {
 
+    public static int TYPE_NOTIFY = 0;  // 通知类型
+    public static int TYPE_MISSION = 1; // 任务类型
+    public static int TYPE_MEETING = 2; // 会议类型
+
     private long missionId;
     private long clubId;
     private String attribution;
+    private long graduateId;
     private int type;
     private long parentId;
     private String address;
@@ -53,6 +58,14 @@ public class WCClubMissionBean implements Serializable {
 
     public void setAttribution(String attribution) {
         this.attribution = attribution;
+    }
+
+    public long getGraduateId() {
+        return graduateId;
+    }
+
+    public void setGraduateId(long graduateId) {
+        this.graduateId = graduateId;
     }
 
     public int getType() {
@@ -157,12 +170,13 @@ public class WCClubMissionBean implements Serializable {
                 "missionId=" + missionId +
                 ", clubId=" + clubId +
                 ", attribution='" + attribution + '\'' +
+                ", graduateId=" + graduateId +
                 ", type=" + type +
                 ", parentId=" + parentId +
                 ", address='" + address + '\'' +
-                ", deadline='" + deadline + '\'' +
+                ", deadline=" + deadline +
                 ", sponsorId=" + sponsorId +
-                ", createDate='" + createDate + '\'' +
+                ", createDate=" + createDate +
                 ", isDel=" + isDel +
                 ", clubBean=" + clubBean +
                 ", parentMissionBean=" + parentMissionBean +

@@ -1,15 +1,17 @@
 package com.weclubs.application.notification;
 
+import com.weclubs.application.club.WCIClubGraduateService;
 import com.weclubs.application.user.WCIUserService;
-import com.weclubs.bean.WCClubMissionBean;
-import com.weclubs.bean.WCStudentBean;
-import com.weclubs.bean.WCStudentMissionRelationBean;
+import com.weclubs.bean.*;
 import com.weclubs.mapper.WCNotificationMapper;
 import com.weclubs.model.WCSponsorNotifyModel;
+import com.weclubs.util.WCHttpStatus;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,6 +26,8 @@ class WCNotificationService implements WCINotificationService {
 
     private WCNotificationMapper mNotificationMapper;
     private WCIUserService mUserService;
+    @Autowired
+    private WCIClubGraduateService mClubGraduateService;
 
     @Autowired
     public WCNotificationService(WCIUserService mUserService, WCNotificationMapper mNotificationMapper) {
@@ -160,8 +164,8 @@ class WCNotificationService implements WCINotificationService {
         List<WCSponsorNotifyModel> notifyModelList = mNotificationMapper.getNotifyBySponsor(sponsorId);
         if (notifyModelList != null && notifyModelList.size() > 0) {
             for (WCSponsorNotifyModel sponsorNotifyModel : notifyModelList) {
-                List<WCStudentMissionRelationBean> total = mNotificationMapper.getRelationByNotifyId(sponsorNotifyModel.getMissionId());
-                List<WCStudentMissionRelationBean> unread =mNotificationMapper.getUnConfirmRelationByNotifyId(sponsorNotifyModel.getMissionId());
+                List<WCStudentMissionRelationBean> total = getNotifyRelationByNotifyId(sponsorNotifyModel.getMissionId());
+                List<WCStudentMissionRelationBean> unread = getUnConfirmNotifyRelationByNotifyId(sponsorNotifyModel.getMissionId());
                 sponsorNotifyModel.setTotalCount(total == null ? 0 : total.size());
                 sponsorNotifyModel.setUnreadCount(unread == null ? 0 : unread.size());
             }
@@ -178,11 +182,90 @@ class WCNotificationService implements WCINotificationService {
             return null;
         }
 
-        return null;
+        return mNotificationMapper.getUnConfirmRelationByNotifyId(notifyId);
     }
 
     @Override
     public List<WCStudentMissionRelationBean> getNotifyRelationByNotifyId(long notifyId) {
-        return null;
+
+        if (notifyId <= 0) {
+            log.error("getNotifyRelationByNotifyId：notifyId 不能小于等于0。");
+            return null;
+        }
+
+        return mNotificationMapper.getRelationByNotifyId(notifyId);
+    }
+
+    @Override
+    public WCHttpStatus publicNotify(long sponsorId, String content, long clubId, String students) {
+
+        WCHttpStatus check = WCHttpStatus.FAIL_REQUEST;
+
+        if (sponsorId <= 0) {
+            log.error("publicNotify：sponsorId 不能小于等于0");
+            check.msg = "sponsorId 不能小于等于0";
+            return check;
+        }
+
+        if (clubId <= 0) {
+            log.error("publicNotify：clubId 不能小于等于0");
+            check.msg = "clubId 不能小于等于0";
+            return check;
+        }
+
+        if (StringUtils.isEmpty(students)) {
+            log.error("publicNotify：students 不能为空");
+            check.msg = "students 不能为空";
+            return check;
+        }
+
+        String[] ids = students.split(",");
+        if (ids.length < 1) {
+            log.error("publicNotify：至少需要有一个通知学生");
+            check.msg = "至少需要有一个通知学生";
+            return check;
+        }
+
+        WCClubGraduateBean graduateBean = mClubGraduateService.getCurrentClubGraduate(clubId);
+        if (graduateBean == null) {
+            log.error("publicNotify：找不到该社团");
+            check.msg = "找不到该社团";
+            return check;
+        }
+
+        WCStudentClubGraduateRelationBean graduateRelationBean
+                = mClubGraduateService.getStudentClubGraduationRelationByGraduateId(sponsorId, graduateBean.getClubGraduateId());
+        if (graduateRelationBean == null) {
+            log.error("publicNotify：发布者不属于该社团");
+            check.msg = "发布者不属于该社团";
+            return check;
+        }
+
+        WCClubMissionBean notifyBean = new WCClubMissionBean();
+        notifyBean.setAttribution(content);
+        notifyBean.setSponsorId(sponsorId);
+        notifyBean.setClubId(clubId);
+        notifyBean.setCreateDate(System.currentTimeMillis());
+        notifyBean.setType(WCClubMissionBean.TYPE_NOTIFY);
+        notifyBean.setParentId(0);
+        notifyBean.setIsDel(0);
+        notifyBean.setGraduateId(graduateBean.getClubGraduateId());
+
+        mNotificationMapper.createNotification(notifyBean);
+
+        List<WCStudentMissionRelationBean> relations = new ArrayList<>();
+        for (String id : ids) {
+            WCStudentMissionRelationBean relationBean = new WCStudentMissionRelationBean();
+            relationBean.setMissionId(notifyBean.getMissionId());
+            relationBean.setStudentId(Long.parseLong(id));
+            relationBean.setCreateDate(notifyBean.getCreateDate());
+
+            relations.add(relationBean);
+        }
+
+        mNotificationMapper.createStudentRelation(relations);
+
+        check = WCHttpStatus.SUCCESS;
+        return check;
     }
 }
