@@ -2,10 +2,13 @@ package com.weclubs.api;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.weclubs.application.club.WCIClubService;
 import com.weclubs.application.meeting.WCIClubMeetingService;
 import com.weclubs.application.security.WCISecurityService;
 import com.weclubs.bean.WCClubBean;
+import com.weclubs.bean.WCStudentBean;
 import com.weclubs.model.WCSponsorMeetingModel;
+import com.weclubs.model.WCStudentForClubModel;
 import com.weclubs.model.request.WCRequestModel;
 import com.weclubs.model.response.WCResultData;
 import com.weclubs.util.WCCommonUtil;
@@ -36,11 +39,14 @@ class WCManageClubMeetingAPI {
 
     private WCISecurityService mSecurityService;
     private WCIClubMeetingService mClubMeetingService;
+    private WCIClubService mClubService;
 
     @Autowired
-    public WCManageClubMeetingAPI(WCIClubMeetingService mClubMeetingService, WCISecurityService mSecurityService) {
+    public WCManageClubMeetingAPI(WCIClubMeetingService mClubMeetingService, WCISecurityService mSecurityService,
+                                  WCIClubService clubService) {
         this.mClubMeetingService = mClubMeetingService;
         this.mSecurityService = mSecurityService;
+        this.mClubService = clubService;
     }
 
     @RequestMapping(value = "/get_my_meeting")
@@ -106,9 +112,30 @@ class WCManageClubMeetingAPI {
         long meetingId = WCCommonUtil.getLongData(requestData.get("meeting_id"));
         WCSponsorMeetingModel meetingModel = mClubMeetingService.getSponsorMeetingDetail(meetingId);
 
+
+        List<WCStudentBean> leaders = mClubMeetingService.getMeetingLeaderByMeetingId(meetingId);
+        List<HashMap<String, Object>> leaderHash = new ArrayList<HashMap<String, Object>>();
+        if (leaders != null && leaders.size() > 0) {
+            for (WCStudentBean leader : leaders) {
+                HashMap<String, Object> hash = new HashMap<String, Object>();
+                WCStudentForClubModel studentForClubModel
+                        = mClubService.getClubStudentByStudentId(leader.getStudentId(), meetingModel.getClubId());
+                hash.put("student_id", studentForClubModel.getStudentId());
+                hash.put("student_name", studentForClubModel.getRealName());
+                hash.put("department_name", studentForClubModel.getDepartmentName());
+                hash.put("job_name", studentForClubModel.getJobName());
+                hash.put("mobile", studentForClubModel.getMobile());
+                hash.put("avatar_url", studentForClubModel.getAvatarUrl());
+                leaderHash.add(hash);
+            }
+        }
+
         HashMap<String, Object> result = getSponsorMeetingHash(meetingModel);
+        result.put("leaders", leaderHash);
         return WCResultData.getSuccessData(result);
     }
+
+    @RequestMapping(value = "/")
 
     private HashMap<String, Object> getSponsorMeetingHash(WCSponsorMeetingModel meetingModel) {
         HashMap<String, Object> result = new HashMap<>();
