@@ -45,4 +45,37 @@ public class WCCommonUtil {
             }
         }
     }
+
+    /**
+     * 获取 int 型数据
+     *
+     * @param object    需要转换的数据
+     *
+     * @return  int 类型的结果
+     */
+    public static int getIntegerData(Object object) {
+        if (object == null) {
+            return 0;
+        }
+
+        if (object instanceof Integer) {
+            return (Integer) object;
+        } else if (object instanceof String) {
+            try {
+                return Integer.parseInt((String) object);
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+                return 0;
+            }
+        } else {
+            try {
+                // 尝试直接转换成字符类型直接强转
+                return Integer.parseInt((String) object);
+            } catch (NumberFormatException e) {
+                log.error("getIntegerData：无法转换成 int 类型，object = 【" + object.toString() + "】");
+                e.printStackTrace();
+                return 0;
+            }
+        }
+    }
 }

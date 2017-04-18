@@ -135,7 +135,39 @@ class WCManageClubMeetingAPI {
         return WCResultData.getSuccessData(result);
     }
 
-    @RequestMapping(value = "/")
+    @RequestMapping(value = "/public_meeting")
+    public WCResultData publicMeeting(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        check = mSecurityService.checkTokenAvailable(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        if (requestData == null || requestData.size() == 0) {
+            check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        long sponsorId = WCRequestParamsUtil.getUserId(requestModel);
+        String content = (String) requestData.get("content");
+        String address = (String) requestData.get("address");
+        long deadline = WCCommonUtil.getLongData(requestData.get("deadline"));
+        int needSign = WCCommonUtil.getIntegerData(requestData.get("need_sign"));
+        String leader = (String) requestData.get("leader");
+        String participation = (String) requestData.get("participation");
+        long clubId = WCCommonUtil.getLongData(requestData.get("club_id"));
+
+        check = mClubMeetingService.publicMeeting(sponsorId, content, address,
+                deadline, needSign, leader, participation, clubId);
+
+        return WCResultData.getHttpStatusData(check, null);
+    }
 
     private HashMap<String, Object> getSponsorMeetingHash(WCSponsorMeetingModel meetingModel) {
         HashMap<String, Object> result = new HashMap<>();

@@ -83,4 +83,11 @@ public interface WCMeetingMapper {
      * @return  已经签到的会议关系列表
      */
     List<WCStudentMissionRelationBean> getSignRelationByMeetingId(@Param("meetingId") long meetingId);
+
+    /**
+     * 批量添加学生对应关系
+     *
+     * @param relations 学生、通知之间的关系列表
+     */
+    void createStudentRelation(@Param("relations") List<WCStudentMissionRelationBean> relations);
 }

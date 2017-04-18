@@ -1,15 +1,20 @@
 package com.weclubs.application.meeting;
 
+import com.weclubs.application.club.WCIClubGraduateService;
 import com.weclubs.application.user.WCIUserService;
+import com.weclubs.bean.WCClubGraduateBean;
 import com.weclubs.bean.WCClubMissionBean;
 import com.weclubs.bean.WCStudentBean;
 import com.weclubs.bean.WCStudentMissionRelationBean;
 import com.weclubs.mapper.WCMeetingMapper;
 import com.weclubs.model.WCMeetingParticipationModel;
 import com.weclubs.model.WCSponsorMeetingModel;
+import com.weclubs.util.WCCommonUtil;
+import com.weclubs.util.WCHttpStatus;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,11 +31,14 @@ class WCClubMeetingService implements WCIClubMeetingService {
 
     private WCMeetingMapper mMeetingMapper;
     private WCIUserService mUserService;
+    private WCIClubGraduateService mClubGraduateService;
 
     @Autowired
-    public WCClubMeetingService(WCIUserService mUserService, WCMeetingMapper mMeetingMapper) {
+    public WCClubMeetingService(WCIUserService mUserService, WCMeetingMapper mMeetingMapper,
+                                WCIClubGraduateService graduateService) {
         this.mUserService = mUserService;
         this.mMeetingMapper = mMeetingMapper;
+        this.mClubGraduateService = graduateService;
     }
 
     public void createMeeting(WCClubMissionBean meetingBean) {
@@ -267,5 +275,119 @@ class WCClubMeetingService implements WCIClubMeetingService {
         meetingModel.setSignCount(alreadySign == null ? 0 : alreadySign.size());
 
         return meetingModel;
+    }
+
+    @Override
+    public WCHttpStatus publicMeeting(long sponsorId, String content, String address, long deadline, int needSign,
+                                      String leaders, String participation, long clubId) {
+
+        WCHttpStatus check = WCHttpStatus.FAIL_REQUEST;
+
+        if (sponsorId <= 0) {
+            check.msg = "sponsor_id 不能小于等于0";
+            log.error("publicMeeting：" + check.msg);
+            return check;
+        }
+
+        if (StringUtils.isEmpty(content)) {
+            check.msg = "会议简介内容不能为空";
+            log.error("publicMeeting：" + check.msg);
+            return check;
+        }
+
+        if (StringUtils.isEmpty(address)) {
+            check.msg = "会议举办地点不能为空";
+            log.error("publicMeeting：" + check.msg);
+            return check;
+        }
+
+        if (clubId <= 0) {
+            check.msg = "clubId 不能小于等于0";
+            log.error("publicMeeting：" + check.msg);
+            return check;
+        }
+
+        if (deadline <= 0 || String.valueOf(deadline).length() != 13) {
+            check.msg = "会议举办时间格式不对";
+            log.error("publicMeeting：" + check.msg);
+            return check;
+        }
+
+        String[] leadersId = null;
+        if (!StringUtils.isEmpty(leaders)) {
+            leadersId = leaders.split(",");
+        }
+
+        if (needSign == 1 && (leadersId == null || leadersId.length <= 0)) {
+            check.msg = "签到负责人不能为空";
+            log.error("publicMeeting：" + check.msg);
+            return check;
+        } else if (needSign == 1 && leaders.length() >= 5) {
+            check.msg = "签到负责人只能小于等于5位";
+            log.error("publicMeeting：" + check.msg + ";当前签到负责人为：" + leaders);
+            return check;
+        }
+
+        String[] participationId = null;
+        if (!StringUtils.isEmpty(participation)) {
+            participationId = participation.split(",");
+        }
+
+        if (participationId == null || participationId.length <= 0) {
+            check.msg = "会议参与人员不能为空";
+            log.error("publicMeeting：" + check.msg);
+            return check;
+        }
+
+        WCClubGraduateBean graduateBean = mClubGraduateService.getCurrentClubGraduate(clubId);
+        if (graduateBean == null) {
+            check.msg = "找不到该社团";
+            log.error("publicMeeting：" + check.msg + "-【" + clubId + "】");
+            return check;
+        }
+
+        WCClubMissionBean meeting = new WCClubMissionBean();
+        meeting.setClubId(clubId);
+        meeting.setGraduateId(graduateBean.getClubGraduateId());
+        meeting.setSponsorId(sponsorId);
+        meeting.setDeadline(deadline);
+        meeting.setSignType(needSign == 0 ? 0 : 1);
+        meeting.setCreateDate(System.currentTimeMillis());
+        meeting.setAddress(address);
+        meeting.setAttribution(content);
+        meeting.setIsDel(0);
+        meeting.setType(2);
+
+        mMeetingMapper.createMeeting(meeting);
+
+        List<WCStudentMissionRelationBean> relationBeanList = new ArrayList<>();
+        for (String s : participationId) {
+            WCStudentMissionRelationBean relationBean = new WCStudentMissionRelationBean();
+
+            relationBean.setStudentId(WCCommonUtil.getLongData(s));
+            relationBean.setCreateDate(meeting.getCreateDate());
+            relationBean.setMissionId(meeting.getMissionId());
+
+            relationBean.setIsLeader(0);
+            if (needSign == 1) {
+                for (String leader : leadersId) {
+                    if (s.equals(leader)) {
+                        relationBean.setIsLeader(1);
+                        break;
+                    }
+                }
+            }
+
+            relationBean.setStatus(0);
+            relationBean.setIsSign(0);
+            relationBean.setIsDel(0);
+
+            relationBeanList.add(relationBean);
+        }
+
+        mMeetingMapper.createStudentRelation(relationBeanList);
+
+        check = WCHttpStatus.SUCCESS;
+        return check;
     }
 }

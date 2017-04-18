@@ -5,6 +5,7 @@ import com.weclubs.bean.WCStudentBean;
 import com.weclubs.bean.WCStudentMissionRelationBean;
 import com.weclubs.model.WCMeetingParticipationModel;
 import com.weclubs.model.WCSponsorMeetingModel;
+import com.weclubs.util.WCHttpStatus;
 
 import java.util.List;
 
@@ -87,4 +88,21 @@ public interface WCIClubMeetingService {
      * @return  会议详情
      */
     WCSponsorMeetingModel getSponsorMeetingDetail(long meetingId);
+
+    /**
+     * 发布新的会议
+     *
+     * @param sponsorId 发起者id
+     * @param content   会议通知内容
+     * @param address   会议举办地儿
+     * @param deadline  会议开始时间
+     * @param needSign  是否需要签到
+     * @param leaders   签到负责人id，例如：1,4
+     * @param participation 会议参与人员id，例如：1,2,34,5
+     * @param clubId    发布的社团id
+     *
+     * @return  发布成功则返回 {@link WCHttpStatus#SUCCESS}
+     */
+    WCHttpStatus publicMeeting(long sponsorId, String content, String address, long deadline, int needSign,
+                               String leaders, String participation, long clubId);
 }
