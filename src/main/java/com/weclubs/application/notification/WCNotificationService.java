@@ -5,6 +5,7 @@ import com.weclubs.bean.WCClubMissionBean;
 import com.weclubs.bean.WCStudentBean;
 import com.weclubs.bean.WCStudentMissionRelationBean;
 import com.weclubs.mapper.WCNotificationMapper;
+import com.weclubs.model.WCSponsorNotifyModel;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,14 +18,18 @@ import java.util.List;
  * Created by fangzanpan on 2017/3/9.
  */
 @Service("notificationService")
-public class WCNotificationService implements WCINotificationService {
+class WCNotificationService implements WCINotificationService {
 
     private Logger log = Logger.getLogger(WCNotificationService.class);
 
-    @Autowired
     private WCNotificationMapper mNotificationMapper;
-    @Autowired
     private WCIUserService mUserService;
+
+    @Autowired
+    public WCNotificationService(WCIUserService mUserService, WCNotificationMapper mNotificationMapper) {
+        this.mUserService = mUserService;
+        this.mNotificationMapper = mNotificationMapper;
+    }
 
     public void createNotification(WCClubMissionBean notificationBean) {
 
@@ -142,5 +147,42 @@ public class WCNotificationService implements WCINotificationService {
         }
 
         return mNotificationMapper.getUnConfirmNotificationByClubId(studentId);
+    }
+
+    @Override
+    public List<WCSponsorNotifyModel> getNotifyBySponsor(long sponsorId) {
+
+        if (sponsorId <= 0) {
+            log.error("getNotifyBySponsor：sponsorId 不能小于等于0。");
+            return null;
+        }
+
+        List<WCSponsorNotifyModel> notifyModelList = mNotificationMapper.getNotifyBySponsor(sponsorId);
+        if (notifyModelList != null && notifyModelList.size() > 0) {
+            for (WCSponsorNotifyModel sponsorNotifyModel : notifyModelList) {
+                List<WCStudentMissionRelationBean> total = mNotificationMapper.getRelationByNotifyId(sponsorNotifyModel.getMissionId());
+                List<WCStudentMissionRelationBean> unread =mNotificationMapper.getUnConfirmRelationByNotifyId(sponsorNotifyModel.getMissionId());
+                sponsorNotifyModel.setTotalCount(total == null ? 0 : total.size());
+                sponsorNotifyModel.setUnreadCount(unread == null ? 0 : unread.size());
+            }
+        }
+
+        return notifyModelList;
+    }
+
+    @Override
+    public List<WCStudentMissionRelationBean> getUnConfirmNotifyRelationByNotifyId(long notifyId) {
+
+        if (notifyId <= 0) {
+            log.error("getUnConfirmNotifyRelationByNotifyId：notifyId 不能小于等于0。");
+            return null;
+        }
+
+        return null;
+    }
+
+    @Override
+    public List<WCStudentMissionRelationBean> getNotifyRelationByNotifyId(long notifyId) {
+        return null;
     }
 }

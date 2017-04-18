@@ -51,6 +51,11 @@
         </association>
     </resultMap>
 
+    <resultMap id="sponsorNotifyMap" extends="notificationMap" type="com.weclubs.model.WCSponsorNotifyModel">
+        <result property="unreadCount" column="unread_count" />
+        <result property="totalCount" column="total_count" />
+    </resultMap>
+
     <!-- 创建通知实体 -->
     <insert id="createNotification" parameterType="com.weclubs.bean.WCClubMissionBean">
         INSERT INTO T_CLUB_MISSION(`CLUB_ID`, `ATTRIBUTION`, `TYPE`,
@@ -160,6 +165,38 @@
         AND club_mission.`TYPE` = 0
         AND club_mission.`STATUS` = 0
         AND school.`school_id` = #{schoolId}
+    </select>
+
+    <select id="getNotifyBySponsor" resultMap="sponsorNotifyMap" resultType="List">
+        SELECT club_mission.`mission_id`, club_mission.`club_id`, club_mission.`attribution`,
+         club_mission.`type`, club_mission.`deadline`, club_mission.`create_date`, club_mission.`is_del`,
+         club_mission.`sponsor_id`, club.`name`, club.`status`, club.`avatar_url`, club.`slogan`, club.`level`, club.`school_id`
+        FROM `t_club` club, `t_club_mission` club_mission
+        WHERE club_mission.`IS_DEL` = 0
+        AND club_mission.`TYPE` = 0
+        AND club.`club_id` = club_mission.`club_id`
+        AND club_mission.`sponsor_id` = #{sponsorId}
+    </select>
+
+    <select id="getRelationByNotifyId" resultMap="studentNotificationMap" resultType="List">
+        SELECT *
+        FROM `t_student_mission_relation` relation, `t_club_mission` club_mission
+        WHERE club_mission.`IS_DEL` = 0
+        AND club_mission.`TYPE` = 0
+        AND club_mission.`mission_id` = #{notifyId}
+        AND club_mission.`mission_id` = relation.`mission_id`
+        AND relation.`is_del` = 0
+    </select>
+
+    <select id="getUnConfirmRelationByNotifyId" resultMap="studentNotificationMap" resultType="List">
+        SELECT *
+        FROM `t_student_mission_relation` relation, `t_club_mission` club_mission
+        WHERE club_mission.`IS_DEL` = 0
+        AND club_mission.`TYPE` = 0
+        AND club_mission.`mission_id` = #{notifyId}
+        AND club_mission.`mission_id` = relation.`mission_id`
+        AND relation.`is_del` = 0
+        AND relation.`status` = 0
     </select>
 
 </mapper>

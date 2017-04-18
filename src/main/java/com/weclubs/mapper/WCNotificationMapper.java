@@ -2,6 +2,7 @@ package com.weclubs.mapper;
 
 import com.weclubs.bean.WCClubMissionBean;
 import com.weclubs.bean.WCStudentMissionRelationBean;
+import com.weclubs.model.WCSponsorNotifyModel;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -36,4 +37,29 @@ public interface WCNotificationMapper {
     List<WCStudentMissionRelationBean> getUnConfirmNotificationsByStudentId(@Param("studentId") long studentId);
 
     List<WCClubMissionBean> getUnConfirmNotificationsBySchoolId(@Param("schoolId") long schoolId);
+
+    /**
+     * 根据发布者id获取该发布者的所有通知
+     *
+     * @param sponsorId 发布者id（即学生id）
+     *
+     * @return  通知列表
+     */
+    List<WCSponsorNotifyModel> getNotifyBySponsor(@Param("sponsorId") long sponsorId);
+
+    /**
+     * 获取该通知的所有学生关系
+     *
+     * @param notifyId  通知id
+     * @return  学生关系列表
+     */
+    List<WCStudentMissionRelationBean> getRelationByNotifyId(@Param("notifyId") long notifyId);
+
+    /**
+     * 获取该通知的所有未确认的学生关系
+     *
+     * @param notifyId  通知id
+     * @return  学生关系列表
+     */
+    List<WCStudentMissionRelationBean> getUnConfirmRelationByNotifyId(@Param("notifyId") long notifyId);
 }
