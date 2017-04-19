@@ -13,31 +13,37 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.weclubs.util.WCCommonUtil.getLongData;
+
 /**
- * 活动相关的 API
+ * 社团活动的管理 API 接口文件
  *
- * Created by fangzanpan on 2017/3/28.
+ * Created by fangzanpan on 2017/4/19.
  */
 @RestController
-@RequestMapping(value = "/activity")
-class WCActivityAPI {
+@RequestMapping(value = "/manage/club_activity")
+class WCManageClubActivityAPI {
 
-    private Logger log = Logger.getLogger(WCActivityAPI.class);
+    private Logger log = Logger.getLogger(WCManageClubActivityAPI.class);
 
-    @Autowired
     private WCISecurityService mSecurityService;
-    @Autowired
     private WCIActivityService mActivityService;
 
-    @RequestMapping(value = "/get_club_activities", method = RequestMethod.POST)
-    public WCResultData getClubActivities(@RequestBody WCRequestModel requestModel) {
+
+    @Autowired
+    public WCManageClubActivityAPI(WCISecurityService mSecurityService, WCIActivityService mActivityService) {
+        this.mSecurityService = mSecurityService;
+        this.mActivityService = mActivityService;
+    }
+
+    @RequestMapping(value = "/get_my_activity")
+    public WCResultData getMyActivity(@RequestBody WCRequestModel requestModel) {
 
         WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
         if (check != WCHttpStatus.SUCCESS) {
@@ -53,64 +59,26 @@ class WCActivityAPI {
         if (requestData == null || requestData.size() == 0) {
             check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
             return WCResultData.getHttpStatusData(check, null);
-        }
-
-        long clubId = 0;
-        if (requestData.get("club_id") instanceof String) {
-            clubId = Long.parseLong((String) requestData.get("club_id"));
-        } else if (requestData.get("club_id") instanceof Integer) {
-            clubId = (Integer) requestData.get("club_id");
         }
 
         int pageNo = WCRequestParamsUtil.getPageNo(requestModel);
         int pageSize = WCRequestParamsUtil.getPageSize(requestModel);
+        long sponsorId = getLongData(requestData.get("sponsor_id"));
 
         PageHelper.startPage(pageNo, pageSize);
-        List<WCActivityDetailBaseModel> activities = mActivityService.getActivitiesByCurrentClub(clubId);
-        PageInfo<WCActivityDetailBaseModel> pageInfo = new PageInfo<WCActivityDetailBaseModel>(activities);
-        List<HashMap<String, Object>> activityHashs = new ArrayList<HashMap<String, Object>>();
+        List<WCActivityDetailBaseModel> activityList = mActivityService.getManageClubBySponsorId(sponsorId);
+        PageInfo<WCActivityDetailBaseModel> pageInfo = new PageInfo<>(activityList);
+
+        ArrayList<HashMap<String, Object>> resultArray = new ArrayList<>();
         if (pageInfo.getList() != null && pageInfo.getList().size() > 0) {
             for (WCActivityDetailBaseModel activityDetailBaseModel : pageInfo.getList()) {
                 HashMap<String, Object> hash = getClubDetailBaseInfo(activityDetailBaseModel);
-
-                activityHashs.add(hash);
+                resultArray.add(hash);
             }
         }
 
-        HashMap<String, Object> result = new HashMap<String, Object>();
-        result.put("activity", activityHashs);
-        result.put("has_more", pageInfo.isHasNextPage() ? 1 : 0);
-        return WCResultData.getSuccessData(result);
-    }
-
-    @RequestMapping(value = "/get_activity_detail")
-    public WCResultData getActivityDetail(@RequestBody WCRequestModel requestModel) {
-
-        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
-        if (check != WCHttpStatus.SUCCESS) {
-            return WCResultData.getHttpStatusData(check, null);
-        }
-
-        check = mSecurityService.checkTokenAvailable(requestModel);
-        if (check != WCHttpStatus.SUCCESS) {
-            return WCResultData.getHttpStatusData(check, null);
-        }
-
-        HashMap requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
-        if (requestData == null || requestData.size() == 0) {
-            check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
-            return WCResultData.getHttpStatusData(check, null);
-        }
-
-        long activityId = 0;
-        if (requestData.get("activity_id") instanceof String) {
-            activityId = Long.parseLong((String) requestData.get("activity_id"));
-        } else if (requestData.get("activity_id") instanceof Integer) {
-            activityId = (Integer) requestData.get("activity_id");
-        }
-
-        WCActivityDetailBaseModel activityDetailBaseModel = mActivityService.getActivityDetail(activityId);
-        HashMap<String, Object> result = getClubDetailBaseInfo(activityDetailBaseModel);
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("activity", resultArray);
         return WCResultData.getSuccessData(result);
     }
 

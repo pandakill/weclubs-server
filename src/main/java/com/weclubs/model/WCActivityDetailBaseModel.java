@@ -16,6 +16,7 @@ public class WCActivityDetailBaseModel implements Serializable {
     private String address;
     private int allowApply;
     private int allowPreApply;
+    private int activityType;
 
     private long applyDeadline;
     private long holdDate;
@@ -30,6 +31,7 @@ public class WCActivityDetailBaseModel implements Serializable {
 
     private long clubId;
     private String clubName;
+    private String clubAvatar;
 
     private int isDel;
 
@@ -87,6 +89,14 @@ public class WCActivityDetailBaseModel implements Serializable {
 
     public void setAllowPreApply(int allowPreApply) {
         this.allowPreApply = allowPreApply;
+    }
+
+    public int getActivityType() {
+        return activityType;
+    }
+
+    public void setActivityType(int activityType) {
+        this.activityType = activityType;
     }
 
     public long getApplyDeadline() {
@@ -169,6 +179,14 @@ public class WCActivityDetailBaseModel implements Serializable {
         this.clubName = clubName;
     }
 
+    public String getClubAvatar() {
+        return clubAvatar;
+    }
+
+    public void setClubAvatar(String clubAvatar) {
+        this.clubAvatar = clubAvatar;
+    }
+
     public int getIsDel() {
         return isDel;
     }
@@ -187,6 +205,7 @@ public class WCActivityDetailBaseModel implements Serializable {
                 ", address='" + address + '\'' +
                 ", allowApply=" + allowApply +
                 ", allowPreApply=" + allowPreApply +
+                ", activityType=" + activityType +
                 ", applyDeadline=" + applyDeadline +
                 ", holdDate=" + holdDate +
                 ", holdDeadline=" + holdDeadline +
@@ -197,6 +216,7 @@ public class WCActivityDetailBaseModel implements Serializable {
                 ", favorCount=" + favorCount +
                 ", clubId=" + clubId +
                 ", clubName='" + clubName + '\'' +
+                ", clubAvatar='" + clubAvatar + '\'' +
                 ", isDel=" + isDel +
                 '}';
     }

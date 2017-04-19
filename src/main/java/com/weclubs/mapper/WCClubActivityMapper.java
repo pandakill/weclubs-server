@@ -21,4 +21,6 @@ public interface WCClubActivityMapper {
     List<WCActivityDetailBaseModel> getActivitiesByCurrentClubId(@Param("clubId") long clubId);
 
     WCActivityDetailBaseModel getActivityDetail(@Param("activityId") long activityId);
+
+    List<WCActivityDetailBaseModel> getActivitiesBySponsorId(@Param("sponsorId") long sponsorId);
 }
