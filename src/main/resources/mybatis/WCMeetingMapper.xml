@@ -102,7 +102,8 @@
     <!-- 更新通知对象 -->
     <update id="updateMeeting" parameterType="com.weclubs.bean.WCClubMissionBean">
         UPDATE `T_CLUB_MISSION`
-        SET `ATTRIBUTION` = #{attribution}, `ADDRESS` = #{address}, `DEADLINE` = #{deadline}
+        SET `ATTRIBUTION` = #{attribution}, `ADDRESS` = #{address}, `DEADLINE` = #{deadline},
+        `sign_type` = #{signType}, `club_id`= #{clubId}
         WHERE `mission_id` = #{missionId}
     </update>
 
@@ -264,7 +265,7 @@
         AND club.`club_id` = club_mission.`club_id`
     </select>
 
-    <select id="getUnConfirmMeetingRelationByMeetingId" resultMap="sponsorMeetingMap" resultType="list">
+    <select id="getUnConfirmMeetingRelationByMeetingId" resultMap="studentMeetingMap" resultType="list">
         SELECT *
         FROM `t_student_mission_relation` relation, `t_club_mission` club_mission
         WHERE club_mission.`IS_DEL` = 0
@@ -275,7 +276,7 @@
         AND relation.`is_del` = 0
     </select>
 
-    <select id="getMeetingRelationByMeetingId" resultMap="sponsorMeetingMap" resultType="list">
+    <select id="getMeetingRelationByMeetingId" resultMap="studentMeetingMap" resultType="list">
         SELECT *
         FROM `t_student_mission_relation` relation, `t_club_mission` club_mission, `t_student` student
         WHERE club_mission.`IS_DEL` = 0
@@ -287,7 +288,7 @@
         ORDER BY relation.`status`
     </select>
 
-    <select id="getSignRelationByMeetingId" resultMap="sponsorMeetingMap" resultType="list">
+    <select id="getSignRelationByMeetingId" resultMap="studentMeetingMap" resultType="list">
         SELECT *
         FROM `t_student_mission_relation` relation, `t_club_mission` club_mission
         WHERE club_mission.`IS_DEL` = 0
@@ -309,5 +310,19 @@
             )
         </foreach>
     </insert>
+
+    <update id="updateStudentRelationList" parameterType="List">
+        <foreach collection="relations" index="index" item="item" separator=";">
+            UPDATE `t_student_mission_relation`
+            SET `is_leader` = #{item.isLeader}
+            WHERE `stu_mis_rel_id` = #{item.stuMisRelId}
+        </foreach>
+    </update>
+
+    <update id="updateStudentRelation" parameterType="com.weclubs.bean.WCStudentMissionRelationBean">
+        UPDATE `t_student_mission_relation`
+        SET `is_leader` = #{isLeader}
+        WHERE `stu_mis_rel_id` = #{stuMisRelId}
+    </update>
 
 </mapper>

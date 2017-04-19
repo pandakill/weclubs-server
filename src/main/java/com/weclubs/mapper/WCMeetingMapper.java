@@ -90,4 +90,18 @@ public interface WCMeetingMapper {
      * @param relations 学生、通知之间的关系列表
      */
     void createStudentRelation(@Param("relations") List<WCStudentMissionRelationBean> relations);
+
+    /**
+     * 批量更新学生对应关系
+     *
+     * @param relations 学生、通知之间的关系列表
+     */
+    void updateStudentRelationList(@Param("relations") List<WCStudentMissionRelationBean> relations);
+
+    /**
+     * 单个更新学生对应关系
+     *
+     * @param relation 学生、通知之间的关系
+     */
+    void updateStudentRelation(WCStudentMissionRelationBean relation);
 }

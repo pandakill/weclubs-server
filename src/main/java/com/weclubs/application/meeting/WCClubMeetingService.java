@@ -322,7 +322,7 @@ class WCClubMeetingService implements WCIClubMeetingService {
             check.msg = "签到负责人不能为空";
             log.error("publicMeeting：" + check.msg);
             return check;
-        } else if (needSign == 1 && leaders.length() >= 5) {
+        } else if (needSign == 1 && leadersId.length >= 5) {
             check.msg = "签到负责人只能小于等于5位";
             log.error("publicMeeting：" + check.msg + ";当前签到负责人为：" + leaders);
             return check;
@@ -388,6 +388,103 @@ class WCClubMeetingService implements WCIClubMeetingService {
         mMeetingMapper.createStudentRelation(relationBeanList);
 
         check = WCHttpStatus.SUCCESS;
+        return check;
+    }
+
+    @Override
+    public WCHttpStatus editMeeting(String content, String address, long deadline, int needSign,
+                                    String leaders, long clubId, long meetingId) {
+
+
+        WCHttpStatus check = WCHttpStatus.FAIL_REQUEST;
+
+        if (meetingId <= 0) {
+            check.msg = "meeting_id 不能小于等于0";
+            log.error("publicMeeting：" + check.msg);
+            return check;
+        }
+
+        if (StringUtils.isEmpty(content)) {
+            check.msg = "会议简介内容不能为空";
+            log.error("publicMeeting：" + check.msg);
+            return check;
+        }
+
+        if (StringUtils.isEmpty(address)) {
+            check.msg = "会议举办地点不能为空";
+            log.error("publicMeeting：" + check.msg);
+            return check;
+        }
+
+        if (clubId <= 0) {
+            check.msg = "clubId 不能小于等于0";
+            log.error("publicMeeting：" + check.msg);
+            return check;
+        }
+
+        if (deadline <= 0 || String.valueOf(deadline).length() != 13) {
+            check.msg = "会议举办时间格式不对";
+            log.error("publicMeeting：" + check.msg);
+            return check;
+        }
+
+        String[] leadersId = null;
+        if (!StringUtils.isEmpty(leaders)) {
+            leadersId = leaders.split(",");
+        }
+
+        if (needSign == 1 && (leadersId == null || leadersId.length <= 0)) {
+            check.msg = "签到负责人不能为空";
+            log.error("publicMeeting：" + check.msg);
+            return check;
+        } else if (needSign == 1 && leadersId.length >= 5) {
+            check.msg = "签到负责人只能小于等于5位";
+            log.error("publicMeeting：" + check.msg + ";当前签到负责人为：" + leaders);
+            return check;
+        }
+
+        WCClubGraduateBean graduateBean = mClubGraduateService.getCurrentClubGraduate(clubId);
+        if (graduateBean == null) {
+            check.msg = "找不到该社团";
+            log.error("publicMeeting：" + check.msg + "-【" + clubId + "】");
+            return check;
+        }
+
+        WCClubMissionBean meeting = getMeetingDetailById(meetingId);
+        if (meeting == null) {
+            check.msg = "找不到该会议【" + meetingId + "】";
+            log.error("publicMeeting：" + check.msg);
+            return check;
+        }
+
+        meeting.setAttribution(content);
+        meeting.setAddress(address);
+        meeting.setDeadline(deadline);
+        meeting.setSignType(needSign == 0 ? 0 : 1);
+        meeting.setClubId(clubId);
+
+        mMeetingMapper.updateMeeting(meeting);
+
+        List<WCStudentMissionRelationBean> relationBeanList = mMeetingMapper.getMeetingRelationByMeetingId(meetingId);
+
+        for (WCStudentMissionRelationBean relationBean : relationBeanList) {
+            relationBean.setIsLeader(0);
+        }
+
+        if (needSign == 1) {
+            for (WCStudentMissionRelationBean relationBean : relationBeanList) {
+                for (String id : leadersId) {
+                    if (relationBean.getStudentId() == WCCommonUtil.getLongData(id)) {
+                        relationBean.setIsLeader(1);
+                        break;
+                    }
+                }
+                mMeetingMapper.updateStudentRelation(relationBean);
+            }
+        }
+
+        check = WCHttpStatus.SUCCESS;
+
         return check;
     }
 }

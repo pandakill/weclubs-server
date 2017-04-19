@@ -105,4 +105,20 @@ public interface WCIClubMeetingService {
      */
     WCHttpStatus publicMeeting(long sponsorId, String content, String address, long deadline, int needSign,
                                String leaders, String participation, long clubId);
+
+    /**
+     * 发布新的会议
+     *
+     * @param content   会议通知内容
+     * @param address   会议举办地儿
+     * @param deadline  会议开始时间
+     * @param needSign  是否需要签到
+     * @param leaders   签到负责人id，例如：1,4
+     * @param clubId    发布的社团id
+     * @param meetingId 会议id
+     *
+     * @return  发布成功则返回 {@link WCHttpStatus#SUCCESS}
+     */
+    WCHttpStatus editMeeting(String content, String address, long deadline, int needSign,
+                               String leaders, long clubId, long meetingId);
 }
