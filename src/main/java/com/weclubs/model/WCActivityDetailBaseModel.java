@@ -228,6 +228,7 @@ public class WCActivityDetailBaseModel implements Serializable {
         result.put("hold_deadline", getHoldDeadline());
         result.put("allow_apply", getAllowApply());
         result.put("allow_pre_apply", getAllowPreApply());
+        result.put("activity_type", getActivityType());
 
         result.put("stop_apply", WCCommonUtil.isExpire(getApplyDeadline()) ? 1 : 0);
         result.put("stop_activity", WCCommonUtil.isExpire(getHoldDeadline()) ? 1 : 0);
