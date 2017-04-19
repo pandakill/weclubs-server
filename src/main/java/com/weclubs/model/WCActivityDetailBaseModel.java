@@ -1,6 +1,9 @@
 package com.weclubs.model;
 
+import com.weclubs.util.WCCommonUtil;
+
 import java.io.Serializable;
+import java.util.HashMap;
 
 /**
  * 活动详情基本类
@@ -22,8 +25,6 @@ public class WCActivityDetailBaseModel implements Serializable {
     private long holdDate;
     private long holdDeadline;
     private long createDate;
-
-    private int applyStop;
 
     private long commentCount;
     private long loveCount;
@@ -131,14 +132,6 @@ public class WCActivityDetailBaseModel implements Serializable {
         this.createDate = createDate;
     }
 
-    public int getApplyStop() {
-        return applyStop;
-    }
-
-    public void setApplyStop(int applyStop) {
-        this.applyStop = applyStop;
-    }
-
     public long getCommentCount() {
         return commentCount;
     }
@@ -210,7 +203,6 @@ public class WCActivityDetailBaseModel implements Serializable {
                 ", holdDate=" + holdDate +
                 ", holdDeadline=" + holdDeadline +
                 ", createDate=" + createDate +
-                ", applyStop=" + applyStop +
                 ", commentCount=" + commentCount +
                 ", loveCount=" + loveCount +
                 ", favorCount=" + favorCount +
@@ -219,5 +211,31 @@ public class WCActivityDetailBaseModel implements Serializable {
                 ", clubAvatar='" + clubAvatar + '\'' +
                 ", isDel=" + isDel +
                 '}';
+    }
+
+    public HashMap<String, Object> getClubDetailBaseInfo() {
+        HashMap<String, Object> result = new HashMap<>();
+
+        result.put("club_id", getClubId());
+        result.put("club_name", getClubName());
+        result.put("club_avatar", getClubAvatar());
+
+        result.put("activity_id", getActivityId());
+        result.put("activity_name", getActivityName());
+        result.put("attribution", getAttribution());
+        result.put("apply_deadline", getApplyDeadline());
+        result.put("hold_date", getHoldDate());
+        result.put("hold_deadline", getHoldDeadline());
+        result.put("allow_apply", getAllowApply());
+        result.put("allow_pre_apply", getAllowPreApply());
+
+        result.put("stop_apply", WCCommonUtil.isExpire(getApplyDeadline()) ? 1 : 0);
+        result.put("stop_activity", WCCommonUtil.isExpire(getHoldDeadline()) ? 1 : 0);
+
+        result.put("comment_count", getCommentCount());
+        result.put("love_count", getLoveCount());
+        result.put("favor_count", getFavorCount());
+
+        return result;
     }
 }

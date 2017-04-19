@@ -71,7 +71,7 @@ class WCActivityAPI {
         List<HashMap<String, Object>> activityHashs = new ArrayList<HashMap<String, Object>>();
         if (pageInfo.getList() != null && pageInfo.getList().size() > 0) {
             for (WCActivityDetailBaseModel activityDetailBaseModel : pageInfo.getList()) {
-                HashMap<String, Object> hash = getClubDetailBaseInfo(activityDetailBaseModel);
+                HashMap<String, Object> hash = activityDetailBaseModel.getClubDetailBaseInfo();
 
                 activityHashs.add(hash);
             }
@@ -110,30 +110,7 @@ class WCActivityAPI {
         }
 
         WCActivityDetailBaseModel activityDetailBaseModel = mActivityService.getActivityDetail(activityId);
-        HashMap<String, Object> result = getClubDetailBaseInfo(activityDetailBaseModel);
+        HashMap<String, Object> result = activityDetailBaseModel.getClubDetailBaseInfo();
         return WCResultData.getSuccessData(result);
-    }
-
-    private HashMap<String, Object> getClubDetailBaseInfo(WCActivityDetailBaseModel detailBaseModel) {
-        HashMap<String, Object> result = new HashMap<String, Object>();
-
-        result.put("club_id", detailBaseModel.getClubId());
-        result.put("club_name", detailBaseModel.getClubName());
-        result.put("club_avatar", detailBaseModel.getClubAvatar());
-
-        result.put("activity_id", detailBaseModel.getActivityId());
-        result.put("activity_name", detailBaseModel.getActivityName());
-        result.put("attribution", detailBaseModel.getAttribution());
-        result.put("apply_deadline", detailBaseModel.getApplyDeadline());
-        result.put("hold_date", detailBaseModel.getHoldDate());
-        result.put("hold_deadline", detailBaseModel.getHoldDeadline());
-        result.put("allow_apply", detailBaseModel.getAllowApply());
-        result.put("allow_pre_apply", detailBaseModel.getAllowPreApply());
-
-        result.put("comment_count", detailBaseModel.getCommentCount());
-        result.put("love_count", detailBaseModel.getLoveCount());
-        result.put("favor_count", detailBaseModel.getFavorCount());
-
-        return result;
     }
 }

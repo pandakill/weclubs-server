@@ -78,4 +78,15 @@ public class WCCommonUtil {
             }
         }
     }
+
+    /**
+     * 判断传入的时间与当前时间比较是否已经过期
+     *
+     * @param date  需要判断的时间戳
+     *
+     * @return  {@code true} 已经过期； {@code false} 仍未过期
+     */
+    public static boolean isExpire(long date) {
+        return System.currentTimeMillis() >= date;
+    }
 }

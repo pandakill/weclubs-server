@@ -27,7 +27,7 @@
     <select id="getActivitiesByCurrentClubId" resultMap="activityBaseMap" resultType="list" >
         SELECT activity.`club_activity_id` AS `activity_id`, activity.`name` AS `activity_name`, activity.`attribution`,
         activity.`poster_url`,  activity.`address`, activity.`allow_apply`, activity.`allow_pre_apply`,
-        activity.`apply_deadline`, activity.`hold_date`, activity.`hold_deadline`, activity.`is_del`,
+        activity.`apply_deadline`, activity.`hold_date`, activity.`hold_deadline`, activity.`is_del`, activity.`activity_type`,
         club.`club_id`, club.`name` AS `club_name`, club.`avatar_url` AS `club_avatar`
         FROM `t_club_activity` activity, `t_club` club
         WHERE activity.`club_id` = club.`club_id`
@@ -37,7 +37,7 @@
     <select id="getActivityDetail" resultMap="activityBaseMap" resultType="com.weclubs.model.WCActivityDetailBaseModel">
         SELECT activity.`club_activity_id` AS `activity_id`, activity.`name` AS `activity_name`, activity.`attribution`,
         activity.`poster_url`,  activity.`address`, activity.`allow_apply`, activity.`allow_pre_apply`,
-        activity.`apply_deadline`, activity.`hold_date`, activity.`hold_deadline`, activity.`is_del`,
+        activity.`apply_deadline`, activity.`hold_date`, activity.`hold_deadline`, activity.`is_del`, activity.`activity_type`,
         club.`club_id`, club.`name` AS `club_name`, club.`avatar_url` AS `club_avatar`
         FROM `t_club_activity` activity, `t_club` club
         WHERE activity.`club_id` = club.`club_id`
@@ -48,7 +48,7 @@
     <select id="getActivitiesBySponsorId" resultMap="activityBaseMap" resultType="list" >
         SELECT activity.`club_activity_id` AS `activity_id`, activity.`name` AS `activity_name`, activity.`attribution`,
         activity.`poster_url`,  activity.`address`, activity.`allow_apply`, activity.`allow_pre_apply`,
-        activity.`apply_deadline`, activity.`hold_date`, activity.`hold_deadline`, activity.`is_del`,
+        activity.`apply_deadline`, activity.`hold_date`, activity.`hold_deadline`, activity.`is_del`, activity.`activity_type`,
         club.`club_id`, club.`name` AS `club_name`, club.`avatar_url` AS `club_avatar`
         FROM `t_club_activity` activity, `t_club` club
         WHERE activity.`club_id` = club.`club_id`
