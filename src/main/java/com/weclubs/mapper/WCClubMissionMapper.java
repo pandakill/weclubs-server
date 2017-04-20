@@ -58,4 +58,14 @@ public interface WCClubMissionMapper {
      * @param relations 学生、通知之间的关系列表
      */
     void createStudentRelation(@Param("relations") List<WCStudentMissionRelationBean> relations);
+
+    /**
+     * 根据任务 id 获取学生任务关系列表
+     * 【包括学生实体、是否有任务项、学生任务关系】
+     *
+     * @param missionId 任务id
+     *
+     * @return  某个任务关系列表
+     */
+    List<WCStudentMissionRelationBean> getMissionRelationsByMissionId(@Param("missionId") long missionId);
 }

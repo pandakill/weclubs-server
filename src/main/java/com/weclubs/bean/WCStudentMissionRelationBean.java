@@ -1,5 +1,7 @@
 package com.weclubs.bean;
 
+import com.google.gson.Gson;
+
 import java.io.Serializable;
 
 /**
@@ -22,6 +24,8 @@ public class WCStudentMissionRelationBean implements Serializable {
 
     private WCStudentBean studentBean;
     private WCClubMissionBean clubMissionBean;
+
+    private long childMissionCount;
 
     public long getStuMisRelId() {
         return stuMisRelId;
@@ -119,21 +123,17 @@ public class WCStudentMissionRelationBean implements Serializable {
         this.clubMissionBean = clubMissionBean;
     }
 
+    public long getChildMissionCount() {
+        return childMissionCount;
+    }
+
+    public void setChildMissionCount(long childMissionCount) {
+        this.childMissionCount = childMissionCount;
+    }
+
     @Override
     public String toString() {
-        return "WCStudentMissionRelationBean{" +
-                "stuMisRelId=" + stuMisRelId +
-                ", studentId=" + studentId +
-                ", missionId=" + missionId +
-                ", isLeader=" + isLeader +
-                ", status=" + status +
-                ", isSign=" + isSign +
-                ", comment='" + comment + '\'' +
-                ", createDate='" + createDate + '\'' +
-                ", signDate='" + signDate + '\'' +
-                ", isDel=" + isDel +
-                ", studentBean=" + studentBean +
-                ", clubMissionBean=" + clubMissionBean +
-                '}';
+        Gson gson = new Gson();
+        return gson.toJson(this);
     }
 }

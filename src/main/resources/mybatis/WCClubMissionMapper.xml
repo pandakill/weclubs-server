@@ -51,6 +51,19 @@
         </association>
     </resultMap>
 
+    <resultMap id="missionRelationWithStudentMap" extends="studentMissionMap" type="com.weclubs.bean.WCStudentMissionRelationBean">
+
+        <result property="childMissionCount" column="child_mission_count" />
+
+        <association property="studentBean" javaType="com.weclubs.bean.WCStudentBean">
+            <id property="studentId" column="student_id" />
+            <result property="mobile" column="mobile" />
+            <result property="realName" column="real_name" />
+            <result property="nickName" column="nick_name" />
+            <result property="avatarUrl" column="avatar_url" />
+        </association>
+    </resultMap>
+
     <!-- 学生实体映射 map，不包含学校信息 -->
     <resultMap id="studentMap" type="com.weclubs.bean.WCStudentBean">
         <id property="studentId" column="student_id" />
@@ -118,8 +131,9 @@
     <!-- 根据社团任务 clubMissionId 获取社团任务 -->
     <select id="getClubMissionById" resultMap="clubMissionMap">
         SELECT *
-        FROM `T_CLUB_MISSION`
-        WHERE `mission_id` = #{clubMissionId}
+        FROM `T_CLUB_MISSION` mission, `t_club` club
+        WHERE mission.`mission_id` = #{clubMissionId}
+        AND club.`club_id` = mission.`club_id`
         AND `TYPE` = 1
         AND `IS_DEL` = 0
     </select>
@@ -243,5 +257,15 @@
             )
         </foreach>
     </insert>
+
+    <select id="getMissionRelationsByMissionId" resultMap="missionRelationWithStudentMap">
+        SELECT relation.`mission_id`, relation.`status`, relation.`comment`, relation.`create_date`, relation.`is_del`,
+        student.`student_id`, student.`mobile`, student.`real_name`, student.`nick_name`, student.`avatar_url`,
+        (SELECT COUNT(*) FROM `t_club_mission` WHERE `parent_id` = relation.`mission_id` AND `sponsor_id` = student.`student_id`) AS `child_mission_count`
+        FROM `t_student_mission_relation` relation, `t_student` student
+        WHERE relation.`student_id` = student.`student_id`
+        AND relation.`mission_id` = #{missionId}
+        AND relation.`is_del` = 0
+    </select>
 
 </mapper>

@@ -63,4 +63,14 @@ public interface WCIClubMissionService {
      * @return  如果发布成功，返回 {@link WCHttpStatus#SUCCESS}
      */
     WCHttpStatus publicMission(HashMap<String, Object> requestData);
+
+    /**
+     * 根据任务 id 获取学生任务关系列表
+     * 【包括学生实体、是否有任务项、学生任务关系】
+     *
+     * @param missionId 任务id
+     *
+     * @return  某个任务关系列表
+     */
+    List<WCStudentMissionRelationBean> getMissionRelationsByMissionId(long missionId);
 }

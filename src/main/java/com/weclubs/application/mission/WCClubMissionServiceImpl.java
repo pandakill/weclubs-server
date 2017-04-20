@@ -377,4 +377,15 @@ class WCClubMissionServiceImpl implements WCIClubMissionService {
 
         return check;
     }
+
+    @Override
+    public List<WCStudentMissionRelationBean> getMissionRelationsByMissionId(long missionId) {
+
+        if (missionId == 0) {
+            log.error("getMissionRelationsByMissionId：missionId 不能小于等于0");
+            return null;
+        }
+
+        return mClubMissionMapper.getMissionRelationsByMissionId(missionId);
+    }
 }
