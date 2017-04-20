@@ -1,5 +1,6 @@
 package com.weclubs.application.activity;
 
+import com.weclubs.bean.WCStudentActivityRelationBean;
 import com.weclubs.model.WCActivityDetailBaseModel;
 import com.weclubs.util.WCHttpStatus;
 
@@ -34,4 +35,13 @@ public interface WCIActivityService {
      * @return  如果发布成功，则返回 {@link WCHttpStatus#SUCCESS}
      */
     WCHttpStatus publicActivity(HashMap<String, Object> requestData);
+
+    /**
+     * 获取活动的签到\报名数据
+     *
+     * @param activityId    活动id
+     *
+     * @return  返回该活动的签到数据列表
+     */
+    List<WCStudentActivityRelationBean> getSignData(long activityId);
 }

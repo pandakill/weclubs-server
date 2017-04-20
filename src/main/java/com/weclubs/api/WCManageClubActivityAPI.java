@@ -4,9 +4,11 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.weclubs.application.activity.WCIActivityService;
 import com.weclubs.application.security.WCISecurityService;
+import com.weclubs.bean.WCStudentActivityRelationBean;
 import com.weclubs.model.WCActivityDetailBaseModel;
 import com.weclubs.model.request.WCRequestModel;
 import com.weclubs.model.response.WCResultData;
+import com.weclubs.util.WCCommonUtil;
 import com.weclubs.util.WCHttpStatus;
 import com.weclubs.util.WCRequestParamsUtil;
 import org.apache.log4j.Logger;
@@ -105,5 +107,39 @@ class WCManageClubActivityAPI {
         check = mActivityService.publicActivity(requestData);
 
         return WCResultData.getHttpStatusData(check, null);
+    }
+
+    @RequestMapping(value = "/get_sign_data", method = RequestMethod.POST)
+    public WCResultData getSignData(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        check = mSecurityService.checkTokenAvailable(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        if (requestData == null || requestData.size() == 0) {
+            check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        long activityId = WCCommonUtil.getLongData(requestData.get("activity_id"));
+
+        List<WCStudentActivityRelationBean> relationList = mActivityService.getSignData(activityId);
+        ArrayList<HashMap<String, Object>> resultArray = new ArrayList<>();
+        if (relationList != null && relationList.size() > 0) {
+            for (WCStudentActivityRelationBean relationBean : relationList) {
+                resultArray.add(relationBean.getSignData());
+            }
+        }
+
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("sign_data", resultArray);
+        return WCResultData.getSuccessData(result);
     }
 }

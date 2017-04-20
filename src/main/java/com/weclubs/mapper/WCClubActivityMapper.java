@@ -46,4 +46,13 @@ public interface WCClubActivityMapper {
      * @param relations 关系列表
      */
     void createStudentActivityRelation(@Param("list")List<WCStudentActivityRelationBean> relations);
+
+    /**
+     * 根据活动id获取学生参与活动详情列表
+     *
+     * @param activityId    活动id
+     *
+     * @return  参与详情列表
+     */
+    List<WCStudentActivityRelationBean> getActivityRelationList(@Param("activityId") long activityId);
 }

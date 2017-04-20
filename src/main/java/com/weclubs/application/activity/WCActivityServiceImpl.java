@@ -264,4 +264,15 @@ class WCActivityServiceImpl implements WCIActivityService {
 
         return check;
     }
+
+    @Override
+    public List<WCStudentActivityRelationBean> getSignData(long activityId) {
+
+        if (activityId <= 0) {
+            log.error("getSignData：activityId 不能小于等于0");
+            return null;
+        }
+
+        return mActivityMapper.getActivityRelationList(activityId);
+    }
 }

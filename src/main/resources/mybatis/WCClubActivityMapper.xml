@@ -23,6 +23,25 @@
 
         <result property="isDel" column="is_del" />
     </resultMap>
+
+    <resultMap id="studentRelationMap" type="com.weclubs.bean.WCStudentActivityRelationBean">
+        <id property="stuActRelId" column="stu_act_rel_id" />
+        <result property="activityId" column="activity_id" />
+        <result property="studentId" column="student_id" />
+        <result property="isApply" column="is_apply" />
+        <result property="isSign" column="is_sign" />
+        <result property="isDel" column="is_del" />
+        <result property="createDate" column="create_date" />
+        <result property="signDate" column="sign_date" />
+        <result property="applyDate" column="apply_date" />
+
+        <association property="studentBean" javaType="com.weclubs.bean.WCStudentBean">
+            <id property="studentId" column="student_id" />
+            <result property="realName" column="real_name" />
+            <result property="avatarUrl" column="avatar_url" />
+            <result property="mobile" column="mobile" />
+        </association>
+    </resultMap>
     
     <select id="getActivitiesByCurrentClubId" resultMap="activityBaseMap" resultType="list" >
         SELECT activity.`club_activity_id` AS `activity_id`, activity.`name` AS `activity_name`, activity.`attribution`,
@@ -83,5 +102,15 @@
             )
         </foreach>
     </insert>
+
+    <select id="getActivityRelationList" resultMap="studentRelationMap">
+        SELECT student.`student_id`, student.`real_name`, student.`avatar_url`, student.`mobile`,
+        relaiton.`stu_act_rel_id`, relaiton.`activity_id`, relaiton.`is_apply`, relaiton.`is_sign`, relaiton.`is_del`,
+        relaiton.`create_date`, relaiton.`sign_date`, relaiton.`apply_date`
+        FROM `t_student` student, `t_student_activity_relation` relaiton
+        WHERE student.`student_id` = relaiton.`student_id`
+        AND relaiton.`activity_id` = #{activityId}
+        AND relaiton.`is_del` = 0
+    </select>
 
 </mapper>
