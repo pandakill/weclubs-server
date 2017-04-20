@@ -139,7 +139,7 @@ class WCClubAPI {
         return WCResultData.getSuccessData(result);
     }
 
-    @RequestMapping(value = "/get_clubs_by_owner")
+//    @RequestMapping(value = "/get_clubs_by_owner")
     public WCResultData getClubsByOwner(@RequestBody WCRequestModel requestModel) {
 
         WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
