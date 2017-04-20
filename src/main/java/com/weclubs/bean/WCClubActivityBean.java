@@ -9,15 +9,22 @@ import java.io.Serializable;
  */
 public class WCClubActivityBean implements Serializable {
 
+    public static int TYPE_SCHOOL_PUBLIC = 1;   //  校级公开活动
+    public static int TYPE_CLUB_PRIVATE = 2;    //  组织内部私有活动
+
     private long clubActivityId;
     private long clubId;
     private String name;
+    private String attribution;
+    private int activityType;
+    private int needSign;
     private String address;
     private String posterUrl;
-    private long applyDeadline;
+    private long holdDate;
     private long holdDeadline;
     private int allowApply;
     private int allowPreApply;
+    private long applyDeadline;
     private String recordComment;
     private String recordPicUrl;
     private int checkCount;
@@ -51,6 +58,30 @@ public class WCClubActivityBean implements Serializable {
         this.name = name;
     }
 
+    public String getAttribution() {
+        return attribution;
+    }
+
+    public void setAttribution(String attribution) {
+        this.attribution = attribution;
+    }
+
+    public int getActivityType() {
+        return activityType;
+    }
+
+    public void setActivityType(int activityType) {
+        this.activityType = activityType;
+    }
+
+    public int getNeedSign() {
+        return needSign;
+    }
+
+    public void setNeedSign(int needSign) {
+        this.needSign = needSign;
+    }
+
     public String getAddress() {
         return address;
     }
@@ -65,6 +96,14 @@ public class WCClubActivityBean implements Serializable {
 
     public void setPosterUrl(String posterUrl) {
         this.posterUrl = posterUrl;
+    }
+
+    public long getHoldDate() {
+        return holdDate;
+    }
+
+    public void setHoldDate(long holdDate) {
+        this.holdDate = holdDate;
     }
 
     public long getApplyDeadline() {
@@ -161,17 +200,21 @@ public class WCClubActivityBean implements Serializable {
                 "clubActivityId=" + clubActivityId +
                 ", clubId=" + clubId +
                 ", name='" + name + '\'' +
+                ", attribution='" + attribution + '\'' +
+                ", activityType=" + activityType +
+                ", needSign=" + needSign +
                 ", address='" + address + '\'' +
                 ", posterUrl='" + posterUrl + '\'' +
-                ", applyDeadline='" + applyDeadline + '\'' +
-                ", holdDeadline='" + holdDeadline + '\'' +
+                ", holdDate=" + holdDate +
+                ", holdDeadline=" + holdDeadline +
                 ", allowApply=" + allowApply +
                 ", allowPreApply=" + allowPreApply +
+                ", applyDeadline=" + applyDeadline +
                 ", recordComment='" + recordComment + '\'' +
                 ", recordPicUrl='" + recordPicUrl + '\'' +
                 ", checkCount=" + checkCount +
                 ", sponsorId=" + sponsorId +
-                ", createDate='" + createDate + '\'' +
+                ", createDate=" + createDate +
                 ", isDel=" + isDel +
                 ", clubBean=" + clubBean +
                 '}';

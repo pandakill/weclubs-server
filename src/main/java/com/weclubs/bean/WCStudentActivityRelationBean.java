@@ -13,6 +13,7 @@ public class WCStudentActivityRelationBean implements Serializable {
     private long activityId;
     private long studentId;
     private int isApply;
+    private int isSign;
     private int isDel;
 
     private WCStudentBean studentBean;
@@ -50,6 +51,14 @@ public class WCStudentActivityRelationBean implements Serializable {
         this.isApply = isApply;
     }
 
+    public int getIsSign() {
+        return isSign;
+    }
+
+    public void setIsSign(int isSign) {
+        this.isSign = isSign;
+    }
+
     public int getIsDel() {
         return isDel;
     }
@@ -81,6 +90,7 @@ public class WCStudentActivityRelationBean implements Serializable {
                 ", activityId=" + activityId +
                 ", studentId=" + studentId +
                 ", isApply=" + isApply +
+                ", isSign=" + isSign +
                 ", isDel=" + isDel +
                 ", studentBean=" + studentBean +
                 ", clubActivityBean=" + clubActivityBean +

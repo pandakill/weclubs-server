@@ -1,13 +1,22 @@
 package com.weclubs.application.activity;
 
+import com.weclubs.application.club.WCIClubService;
 import com.weclubs.application.comment.WCICommentService;
+import com.weclubs.bean.WCClubActivityBean;
+import com.weclubs.bean.WCClubBean;
+import com.weclubs.bean.WCStudentActivityRelationBean;
 import com.weclubs.mapper.WCClubActivityMapper;
 import com.weclubs.model.WCActivityDetailBaseModel;
 import com.weclubs.model.WCCommentDetailModel;
+import com.weclubs.util.WCCommonUtil;
+import com.weclubs.util.WCHttpStatus;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -20,10 +29,17 @@ class WCActivityServiceImpl implements WCIActivityService {
 
     private Logger log = Logger.getLogger(WCActivityServiceImpl.class);
 
-    @Autowired
     private WCClubActivityMapper mActivityMapper;
-    @Autowired
     private WCICommentService mCommentService;
+    private WCIClubService mClubService;
+
+    @Autowired
+    public WCActivityServiceImpl(WCClubActivityMapper mActivityMapper, WCICommentService mCommentService,
+                                 WCIClubService clubService) {
+        this.mActivityMapper = mActivityMapper;
+        this.mCommentService = mCommentService;
+        this.mClubService = clubService;
+    }
 
     public List<WCActivityDetailBaseModel> getActivitiesByCurrentClub(long clubId) {
 
@@ -82,5 +98,170 @@ class WCActivityServiceImpl implements WCIActivityService {
         }
 
         return activities;
+    }
+
+    @Override
+    public WCHttpStatus publicActivity(HashMap<String, Object> requestData) {
+
+        WCHttpStatus check = WCHttpStatus.FAIL_REQUEST;
+
+        int activityType = WCCommonUtil.getIntegerData(requestData.get("activity_type"));
+        String activityName = (String) requestData.get("activity_name");
+        String attribution = (String) requestData.get("attribution");
+        String address = (String) requestData.get("address");
+        long holdDate = WCCommonUtil.getLongData(requestData.get("hold_date"));
+        long holdDeadline = WCCommonUtil.getLongData(requestData.get("hold_deadline"));
+        String posterUrl = (String) requestData.get("poster_url");
+        int needSign = WCCommonUtil.getIntegerData(requestData.get("need_sign"));
+        long clubId = WCCommonUtil.getLongData(requestData.get("club_id"));
+        long sponsorId = WCCommonUtil.getLongData(requestData.get("user_id"));
+
+        if (StringUtils.isEmpty(activityName)) {
+            check.msg = "活动标题不能为空";
+            log.error("publicActivity：" + check.msg);
+            return check;
+        }
+
+        if (StringUtils.isEmpty(attribution)) {
+            check.msg = "活动介绍不能为空";
+            log.error("publicActivity：" + check.msg);
+            return check;
+        }
+
+        if (StringUtils.isEmpty(address)) {
+            check.msg = "地址不能为空";
+            log.error("publicActivity：" + check.msg);
+            return check;
+        }
+
+        if (holdDate == 0 || String.valueOf(holdDate).length() != 13) {
+            check.msg = "活动举办日期格式错误";
+            log.error("publicActivity：" + check.msg);
+            return check;
+        }
+
+        if (holdDeadline == 0 || String.valueOf(holdDeadline).length() != 13) {
+            check.msg = "活动截止日期格式错误";
+            log.error("publicActivity：" + check.msg);
+            return check;
+        }
+
+        if (holdDeadline < holdDate) {
+            check.msg = "活动举办截止时间不能早于举办开始时间";
+            log.error("publicActivity：" + check.msg);
+            return check;
+        }
+
+        if (needSign != 0 && needSign != 1) {
+            check.msg = "需要签到字段格式错误";
+            log.error("publicActivity：" + check.msg);
+            return check;
+        }
+
+        if (clubId <= 0) {
+            check.msg = "club_id 不能小于等于0";
+            log.error("publicActivity：" + check.msg);
+            return check;
+        }
+
+        WCClubBean clubBean = mClubService.getClubInfoById(clubId);
+        if (clubBean == null) {
+            check.msg = "找不到该社团";
+            log.error("publicActivity：" + check.msg);
+            return check;
+        }
+
+        WCClubActivityBean activityBean = new WCClubActivityBean();
+        activityBean.setName(activityName);
+        activityBean.setAttribution(attribution);
+        activityBean.setAddress(address);
+        activityBean.setHoldDate(holdDate);
+        activityBean.setHoldDeadline(holdDeadline);
+        activityBean.setPosterUrl(posterUrl);
+        activityBean.setNeedSign(needSign);
+        activityBean.setClubId(clubId);
+        activityBean.setSponsorId(sponsorId);
+        activityBean.setCreateDate(System.currentTimeMillis());
+
+        if (activityType == WCClubActivityBean.TYPE_SCHOOL_PUBLIC) {    // 活动类型为校园公开活动
+            int needApply = WCCommonUtil.getIntegerData(requestData.get("need_apply"));
+
+            if (needApply != 0 && needApply != 1) {
+                check.msg = "需要预报名字段格式错误";
+                log.error("publicActivity：" + check.msg);
+                return check;
+            }
+
+            activityBean.setActivityType(activityType);
+            activityBean.setAllowPreApply(needApply);
+
+            if (needApply == 1) {
+                long applyDeadline = WCCommonUtil.getLongData(requestData.get("apply_deadline"));
+
+                if (applyDeadline == 0 || String.valueOf(applyDeadline).length() != 13) {
+                    check.msg = "报名截止日期格式错误";
+                    log.error("publicActivity：" + check.msg);
+                    return check;
+                }
+
+                if (applyDeadline > holdDeadline) {
+                    check.msg = "报名截止时间不能超过活动举办截止时间";
+                    log.error("publicActivity：" + check.msg);
+                    return check;
+                }
+
+                if (applyDeadline < holdDate) {
+                    check.msg = "报名截止时间不能早于活动举办开始时间";
+                    log.error("publicActivity：" + check.msg);
+                    return check;
+                }
+
+                activityBean.setApplyDeadline(applyDeadline);
+            }
+
+            List<WCClubActivityBean> list = new ArrayList<>();
+            list.add(activityBean);
+            mActivityMapper.createActivity(list);
+            log.info("activity = " + list.toString());
+
+            check = WCHttpStatus.SUCCESS;
+
+        } else if (activityType == WCClubActivityBean.TYPE_CLUB_PRIVATE) {  // 活动类型为组织内部活动
+
+            activityBean.setActivityType(activityType);
+
+            String invitee = (String) requestData.get("invitee");
+
+            if (StringUtils.isEmpty(invitee)) {
+                check.msg = "受邀人员不能为空";
+                log.error("publicActivity：" + check.msg);
+                return check;
+            }
+
+            String[] ids = invitee.split(",");
+            if (ids.length <= 0) {
+                check.msg = "受邀人员不能为空";
+                log.error("publicActivity：" + check.msg);
+                return check;
+            }
+
+            List<WCClubActivityBean> list = new ArrayList<>();
+            list.add(activityBean);
+            mActivityMapper.createActivity(list);
+
+            List<WCStudentActivityRelationBean> relationList = new ArrayList<>();
+            for (String id : ids) {
+                WCStudentActivityRelationBean relationBean = new WCStudentActivityRelationBean();
+                relationBean.setActivityId(list.get(0).getClubActivityId());
+                relationBean.setStudentId(Long.parseLong(id));
+
+                relationList.add(relationBean);
+            }
+            mActivityMapper.createStudentActivityRelation(relationList);
+
+            check = WCHttpStatus.SUCCESS;
+        }
+
+        return check;
     }
 }

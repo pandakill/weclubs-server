@@ -1,7 +1,9 @@
 package com.weclubs.application.activity;
 
 import com.weclubs.model.WCActivityDetailBaseModel;
+import com.weclubs.util.WCHttpStatus;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -23,4 +25,13 @@ public interface WCIActivityService {
      * @return  活动列表
      */
     List<WCActivityDetailBaseModel> getManageClubBySponsorId(long sponsorId);
+
+    /**
+     * 发布新的活动
+     *
+     * @param requestData   请求参数
+     *
+     * @return  如果发布成功，则返回 {@link WCHttpStatus#SUCCESS}
+     */
+    WCHttpStatus publicActivity(HashMap<String, Object> requestData);
 }

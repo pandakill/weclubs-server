@@ -20,6 +20,7 @@ public class WCActivityDetailBaseModel implements Serializable {
     private int allowApply;
     private int allowPreApply;
     private int activityType;
+    private int needSign;
 
     private long applyDeadline;
     private long holdDate;
@@ -98,6 +99,14 @@ public class WCActivityDetailBaseModel implements Serializable {
 
     public void setActivityType(int activityType) {
         this.activityType = activityType;
+    }
+
+    public int getNeedSign() {
+        return needSign;
+    }
+
+    public void setNeedSign(int needSign) {
+        this.needSign = needSign;
     }
 
     public long getApplyDeadline() {
@@ -199,6 +208,7 @@ public class WCActivityDetailBaseModel implements Serializable {
                 ", allowApply=" + allowApply +
                 ", allowPreApply=" + allowPreApply +
                 ", activityType=" + activityType +
+                ", needSign=" + needSign +
                 ", applyDeadline=" + applyDeadline +
                 ", holdDate=" + holdDate +
                 ", holdDeadline=" + holdDeadline +
@@ -229,6 +239,7 @@ public class WCActivityDetailBaseModel implements Serializable {
         result.put("allow_apply", getAllowApply());
         result.put("allow_pre_apply", getAllowPreApply());
         result.put("activity_type", getActivityType());
+        result.put("need_sign", getNeedSign());
 
         result.put("stop_apply", WCCommonUtil.isExpire(getApplyDeadline()) ? 1 : 0);
         result.put("stop_activity", WCCommonUtil.isExpire(getHoldDeadline()) ? 1 : 0);
