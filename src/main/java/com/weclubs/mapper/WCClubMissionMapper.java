@@ -4,6 +4,7 @@ import com.weclubs.bean.WCClubMissionBean;
 import com.weclubs.bean.WCStudentBean;
 import com.weclubs.bean.WCStudentMissionRelationBean;
 import com.weclubs.model.WCMissionBaseModel;
+import com.weclubs.model.WCSponsorMissionModel;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -41,4 +42,13 @@ public interface WCClubMissionMapper {
 
     List<WCMissionBaseModel> getChildMissionDetailListByMissionIdWithStudent(@Param("studentId") long studentId,
                                                                              @Param("missionId") long missionId);
+
+    /**
+     * 根据发布者 id 获取该发布者的所有父级任务
+     *
+     * @param sponsorId 发布者id
+     *
+     * @return  该发布者的父级任务
+     */
+    List<WCSponsorMissionModel> getMissionsBySponsorId(@Param("sponsorId") long sponsorId);
 }

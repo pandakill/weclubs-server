@@ -4,6 +4,7 @@ import com.weclubs.bean.WCClubMissionBean;
 import com.weclubs.bean.WCStudentBean;
 import com.weclubs.bean.WCStudentMissionRelationBean;
 import com.weclubs.model.WCMissionBaseModel;
+import com.weclubs.model.WCSponsorMissionModel;
 
 import java.util.List;
 
@@ -45,4 +46,13 @@ public interface WCIClubMissionService {
     List<WCStudentBean> getRelatedStudentByMissionId(long missionId);
 
     List<WCMissionBaseModel> getChildMissionDetailByMissionIdWithStudent(long studentId, long missionId);
+
+    /**
+     * 根据发布者 id 获取该发布者的任务列表
+     *
+     * @param sponsorId 发布者id
+     *
+     * @return  该发布者的任务列表
+     */
+    List<WCSponsorMissionModel> getMissionBySponsorId(long sponsorId);
 }

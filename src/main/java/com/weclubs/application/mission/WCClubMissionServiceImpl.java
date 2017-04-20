@@ -6,6 +6,7 @@ import com.weclubs.bean.WCStudentBean;
 import com.weclubs.bean.WCStudentMissionRelationBean;
 import com.weclubs.mapper.WCClubMissionMapper;
 import com.weclubs.model.WCMissionBaseModel;
+import com.weclubs.model.WCSponsorMissionModel;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,14 +19,18 @@ import java.util.List;
  * Created by fangzanpan on 2017/3/16.
  */
 @Service("clubMissionService")
-public class WCClubMissionServiceImpl implements WCIClubMissionService {
+class WCClubMissionServiceImpl implements WCIClubMissionService {
 
     private Logger log = Logger.getLogger(WCClubMissionServiceImpl.class);
 
-    @Autowired
     private WCClubMissionMapper mClubMissionMapper;
-    @Autowired
     private WCIUserService mUserService;
+
+    @Autowired
+    public WCClubMissionServiceImpl(WCIUserService mUserService, WCClubMissionMapper mClubMissionMapper) {
+        this.mUserService = mUserService;
+        this.mClubMissionMapper = mClubMissionMapper;
+    }
 
     public void createMission(WCClubMissionBean clubMissionBean) {
         if (clubMissionBean == null) {
@@ -195,5 +200,16 @@ public class WCClubMissionServiceImpl implements WCIClubMissionService {
         }
 
         return mClubMissionMapper.getChildMissionDetailListByMissionIdWithStudent(studentId, missionId);
+    }
+
+    @Override
+    public List<WCSponsorMissionModel> getMissionBySponsorId(long sponsorId) {
+
+        if (sponsorId <= 0) {
+            log.error("getMissionBySponsorId：sponsorId 不能小于等于0");
+            return null;
+        }
+
+        return mClubMissionMapper.getMissionsBySponsorId(sponsorId);
     }
 }

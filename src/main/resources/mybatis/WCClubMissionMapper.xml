@@ -78,6 +78,14 @@
         <result property="childCount" column="child_count" />
     </resultMap>
 
+    <resultMap id="sponsorMissionMap" extends="childMissionDetailMap" type="com.weclubs.model.WCSponsorMissionModel">
+        <result property="clubName" column="club_name" />
+        <result property="clubAvatar" column="club_avatar" />
+
+        <result property="unConfirmCount" column="unconfirm_count" />
+        <result property="unFinishCount" column="unfinish_count" />
+    </resultMap>
+
     <!-- 创建社团任务实体 -->
     <insert id="createClubMission" parameterType="com.weclubs.bean.WCClubMissionBean">
         INSERT INTO T_CLUB_MISSION(`CLUB_ID`, `ATTRIBUTION`, `TYPE`,
@@ -191,6 +199,30 @@
         AND miss.`parent_id` = #{missionId}
         AND student.`student_id` = #{studentId}
         AND relation.`is_del` = 0
+        GROUP BY miss.`mission_id`
+    </select>
+
+    <select id="getMissionsBySponsorId" resultMap="sponsorMissionMap" resultType="list">
+        SELECT student.`student_id`, student.`real_name` AS `student_name`, student.`avatar_url`,
+         miss.`mission_id`, miss.`attribution`, miss.`address`, miss.`create_date`, miss.`deadline`, miss.`type`,
+          miss.`club_id`, miss.`parent_id`, relation.`status`, club.`name` AS `club_name`, club.`avatar_url` AS `club_avatar`,
+        (SELECT COUNT(*) FROM `t_student_mission_relation` relation, `t_club_mission` mission
+         WHERE relation.`mission_id` = mission.`mission_id`
+         AND mission.`parent_id` = miss.`mission_id`) AS `child_count`,
+        (SELECT COUNT(*) FROM `t_student_mission_relation` relation, `t_club_mission` mission
+        WHERE relation.`mission_id` = mission.`mission_id`
+        AND mission.`parent_id` = miss.`mission_id`
+        AND relation.`status` = 0) AS `uncofirm_count`,
+        (SELECT COUNT(*) FROM `t_student_mission_relation` relation, `t_club_mission` mission
+        WHERE relation.`mission_id` = mission.`mission_id`
+        AND mission.`parent_id` = miss.`mission_id`
+        AND relation.`status` != 2) AS `unfinish_count`
+        FROM `t_student` student, `t_club_mission` miss, `t_student_mission_relation` relation, `t_club` club
+        WHERE miss.`mission_id` = relation.`mission_id`
+        AND miss.`sponsor_id` = #{sponsorId}
+        AND miss.`parent_id` = 0
+        AND relation.`is_del` = 0
+        AND miss.`type` = 1
         GROUP BY miss.`mission_id`
     </select>
 
