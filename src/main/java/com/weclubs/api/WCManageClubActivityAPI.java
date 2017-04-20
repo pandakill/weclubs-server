@@ -142,4 +142,28 @@ class WCManageClubActivityAPI {
         result.put("sign_data", resultArray);
         return WCResultData.getSuccessData(result);
     }
+
+    @RequestMapping(value = "/edit_activity")
+    public WCResultData editActivity(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        check = mSecurityService.checkTokenAvailable(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        if (requestData == null || requestData.size() == 0) {
+            check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        check = mActivityService.editActivity(requestData);
+
+        return WCResultData.getHttpStatusData(check, null);
+    }
 }

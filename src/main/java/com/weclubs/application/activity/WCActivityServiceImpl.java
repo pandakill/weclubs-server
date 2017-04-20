@@ -275,4 +275,118 @@ class WCActivityServiceImpl implements WCIActivityService {
 
         return mActivityMapper.getActivityRelationList(activityId);
     }
+
+    // TODO: 2017/4/20 暂时没有实现修改受邀人员
+    @Override
+    public WCHttpStatus editActivity(HashMap<String, Object> requestData) {
+
+        WCHttpStatus check = WCHttpStatus.FAIL_REQUEST;
+
+        long activityId = WCCommonUtil.getLongData(requestData.get("activity_id"));
+
+        WCClubActivityBean clubActivityBean = mActivityMapper.getActivityByActivityId(activityId);
+        if (clubActivityBean == null) {
+            check.msg = "找不到 id = 【" + activityId + "】的活动";
+            log.error("editActivity：" + check.msg);
+            return check;
+        }
+
+        if (requestData.containsKey("activity_name")) {
+            String activityName = (String) requestData.get("activity_name");
+
+            if (StringUtils.isEmpty(activityName)) {
+                check.msg = "活动标题不能为空";
+                log.error("editActivity：" + check.msg);
+                return check;
+            }
+
+            clubActivityBean.setName(activityName);
+        }
+
+        if (requestData.containsKey("attribution")) {
+            String attribution = (String) requestData.get("attribution");
+
+            if (StringUtils.isEmpty(attribution)) {
+                check.msg = "活动介绍不能为空";
+                log.error("editActivity：" + check.msg);
+                return check;
+            }
+
+            clubActivityBean.setAttribution(attribution);
+        }
+
+        if (requestData.containsKey("address")) {
+            String address = (String) requestData.get("address");
+
+            if (StringUtils.isEmpty(address)) {
+                check.msg = "地址不能为空";
+                log.error("editActivity：" + check.msg);
+                return check;
+            }
+
+            clubActivityBean.setAddress(address);
+        }
+
+        if (requestData.containsKey("hold_date")) {
+            long holdDate = WCCommonUtil.getLongData(requestData.get("hold_date"));
+
+            if (holdDate == 0 || String.valueOf(holdDate).length() != 13) {
+                check.msg = "活动举办日期格式错误";
+                log.error("editActivity：" + check.msg);
+                return check;
+            }
+
+            clubActivityBean.setHoldDate(holdDate);
+        }
+
+        if (requestData.containsKey("hold_deadline")) {
+            long holdDeadline = WCCommonUtil.getLongData(requestData.get("hold_deadline"));
+
+            if (holdDeadline == 0 || String.valueOf(holdDeadline).length() != 13) {
+                check.msg = "活动截止日期格式错误";
+                log.error("editActivity：" + check.msg);
+                return check;
+            }
+
+            if (holdDeadline < clubActivityBean.getHoldDate()) {
+                check.msg = "活动举办截止时间不能早于举办开始时间";
+                log.error("editActivity：" + check.msg);
+                return check;
+            }
+        }
+
+        if (requestData.containsKey("poster_url")) {
+            String posterUrl = (String) requestData.get("poster_url");
+            clubActivityBean.setPosterUrl(posterUrl);
+        }
+
+        if (requestData.containsKey("need_sign")) {
+            int needSign = WCCommonUtil.getIntegerData(requestData.get("need_sign"));
+
+            if (needSign != 0 && needSign != 1) {
+                check.msg = "需要签到字段格式错误";
+                log.error("editActivity：" + check.msg);
+                return check;
+            }
+
+            clubActivityBean.setNeedSign(needSign);
+        }
+
+        if (requestData.containsKey("need_apply")) {
+            int needApply = WCCommonUtil.getIntegerData(requestData.get("need_apply"));
+
+            if (needApply != 0 && needApply != 1) {
+                check.msg = "需要报名字段格式错误";
+                log.error("editActivity：" + check.msg);
+                return check;
+            }
+
+            clubActivityBean.setAllowPreApply(needApply);
+        }
+
+        mActivityMapper.updateActivity(clubActivityBean);
+        check = WCHttpStatus.SUCCESS;
+
+        return check;
+    }
 }

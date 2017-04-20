@@ -55,4 +55,15 @@ public interface WCClubActivityMapper {
      * @return  参与详情列表
      */
     List<WCStudentActivityRelationBean> getActivityRelationList(@Param("activityId") long activityId);
+
+    /**
+     * 根据活动id 获取活动详情
+     *
+     * @param activityId    活动id
+     *
+     * @return  返回该活动详情
+     */
+    WCClubActivityBean getActivityByActivityId(@Param("activityId") long activityId);
+
+    void updateActivity(WCClubActivityBean activityBean);
 }

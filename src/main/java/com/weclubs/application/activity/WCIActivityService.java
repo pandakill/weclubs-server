@@ -44,4 +44,13 @@ public interface WCIActivityService {
      * @return  返回该活动的签到数据列表
      */
     List<WCStudentActivityRelationBean> getSignData(long activityId);
+
+    /**
+     * 编辑活动内容
+     *
+     * @param requestData   请求参数
+     *
+     * @return  如果编辑成功，则返回 {@link WCHttpStatus#SUCCESS}
+     */
+    WCHttpStatus editActivity(HashMap<String, Object> requestData);
 }

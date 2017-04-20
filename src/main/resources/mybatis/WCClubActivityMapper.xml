@@ -2,6 +2,35 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.weclubs.mapper.WCClubActivityMapper">
 
+    <resultMap id="activityBeanMap" type="com.weclubs.bean.WCClubActivityBean">
+        <id property="clubActivityId" column="club_activity_id" />
+        <result property="name" column="activity_name" />
+        <result property="attribution" column="attribution" />
+        <result property="activityType" column="activity_type" />
+        <result property="needSign" column="need_sign" />
+        <result property="address" column="address" />
+        <result property="posterUrl" column="poster_url" />
+        <result property="holdDate" column="hold_date" />
+        <result property="holdDeadline" column="hold_deadline" />
+        <result property="allowApply" column="allow_apply" />
+        <result property="allowPreApply" column="allow_pre_apply" />
+        <result property="applyDeadline" column="apply_deadline" />
+        <result property="sponsorId" column="sponsor_id" />
+        <result property="createDate" column="create_date" />
+
+        <result property="clubId" column="club_id" />
+
+        <result property="isDel" column="is_del" />
+
+        <association property="clubBean" javaType="com.weclubs.bean.WCClubBean">
+            <id property="clubId" column="club_id" />
+            <id property="name" column="club_name" />
+            <id property="introduction" column="introduction" />
+            <id property="slogan" column="slogan" />
+            <id property="avatarUrl" column="avatar_url" />
+        </association>
+    </resultMap>
+
     <resultMap id="activityBaseMap" type="com.weclubs.model.WCActivityDetailBaseModel">
         <id property="activityId" column="activity_id" />
         <result property="activityName" column="activity_name" />
@@ -112,5 +141,24 @@
         AND relaiton.`activity_id` = #{activityId}
         AND relaiton.`is_del` = 0
     </select>
+
+    <select id="getActivityByActivityId" resultMap="activityBeanMap">
+        SELECT activity.`club_activity_id`, activity.`name` AS `activity_name`, activity.`attribution`,
+        activity.`activity_type`, activity.`need_sign`, activity.`address`, activity.`poster_url`, activity.`hold_date`,
+        activity.`hold_deadline`, activity.`allow_apply`, activity.`allow_pre_apply`, activity.`apply_deadline`,
+        activity.`sponsor_id`, activity.`create_date`, activity.`is_del`,
+        club.`club_id`, club.`name` AS `club_name`, club.`avatar_url`, club.`introduction`, club.`slogan`
+        FROM `t_club_activity` activity, `t_club` club
+        WHERE activity.`club_id` = club.`club_id`
+        AND activity.`club_activity_id` = #{activityId}
+    </select>
+
+    <update id="updateActivity" parameterType="com.weclubs.bean.WCClubActivityBean">
+        UPDATE `t_club_activity`
+        SET `name` = #{name}, `attribution` = #{attribution}, `address` = #{address}, `hold_date` = #{holdDate},
+        `hold_deadline` = #{holdDeadline}, `poster_url` = #{posterUrl}, `need_sign` = #{needSign},
+        `allow_pre_apply` = #{allowPreApply}, `apply_deadline` = #{applyDeadline}
+        WHERE `club_activity_id` = #{clubActivityId}
+    </update>
 
 </mapper>
