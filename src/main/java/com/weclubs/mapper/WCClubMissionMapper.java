@@ -17,7 +17,7 @@ import java.util.List;
  */
 public interface WCClubMissionMapper {
 
-    void createClubMission(WCClubMissionBean missionBean);
+    void createClubMission(@Param("list") List<WCClubMissionBean> missions);
 
     void updateClubMission(WCClubMissionBean missionBean);
 
@@ -51,4 +51,11 @@ public interface WCClubMissionMapper {
      * @return  该发布者的父级任务
      */
     List<WCSponsorMissionModel> getMissionsBySponsorId(@Param("sponsorId") long sponsorId);
+
+    /**
+     * 批量添加学生对应关系
+     *
+     * @param relations 学生、通知之间的关系列表
+     */
+    void createStudentRelation(@Param("relations") List<WCStudentMissionRelationBean> relations);
 }

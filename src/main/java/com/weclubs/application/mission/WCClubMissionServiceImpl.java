@@ -1,16 +1,23 @@
 package com.weclubs.application.mission;
 
+import com.weclubs.application.club.WCIClubGraduateService;
 import com.weclubs.application.user.WCIUserService;
+import com.weclubs.bean.WCClubGraduateBean;
 import com.weclubs.bean.WCClubMissionBean;
 import com.weclubs.bean.WCStudentBean;
 import com.weclubs.bean.WCStudentMissionRelationBean;
 import com.weclubs.mapper.WCClubMissionMapper;
 import com.weclubs.model.WCMissionBaseModel;
 import com.weclubs.model.WCSponsorMissionModel;
+import com.weclubs.util.WCCommonUtil;
+import com.weclubs.util.WCHttpStatus;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -25,20 +32,14 @@ class WCClubMissionServiceImpl implements WCIClubMissionService {
 
     private WCClubMissionMapper mClubMissionMapper;
     private WCIUserService mUserService;
+    private WCIClubGraduateService mClubGraudateService;
 
     @Autowired
-    public WCClubMissionServiceImpl(WCIUserService mUserService, WCClubMissionMapper mClubMissionMapper) {
+    public WCClubMissionServiceImpl(WCIUserService mUserService, WCClubMissionMapper mClubMissionMapper,
+                                    WCIClubGraduateService clubGraudateService) {
         this.mUserService = mUserService;
         this.mClubMissionMapper = mClubMissionMapper;
-    }
-
-    public void createMission(WCClubMissionBean clubMissionBean) {
-        if (clubMissionBean == null) {
-            log.error("createMission：创建任务失败，clubMissionBean不能为空");
-            return;
-        }
-
-        mClubMissionMapper.createClubMission(clubMissionBean);
+        this.mClubGraudateService = clubGraudateService;
     }
 
     public void updateMission(WCClubMissionBean clubMissionBean) {
@@ -211,5 +212,169 @@ class WCClubMissionServiceImpl implements WCIClubMissionService {
         }
 
         return mClubMissionMapper.getMissionsBySponsorId(sponsorId);
+    }
+
+    @Override
+    public WCHttpStatus publicMission(HashMap<String, Object> requestData) {
+
+        WCHttpStatus check = WCHttpStatus.FAIL_REQUEST;
+
+        String content = (String) requestData.get("content");
+        long clubId = WCCommonUtil.getLongData(requestData.get("club_id"));
+        long sponsorId = WCCommonUtil.getLongData(requestData.get("sponsor_id"));
+        long deadline = WCCommonUtil.getLongData(requestData.get("deadline"));
+        long parentId = 0;
+
+        if (requestData.containsKey("parent_id")) {
+            parentId = WCCommonUtil.getLongData(requestData.get("parent_id"));
+        }
+
+        if (StringUtils.isEmpty(content)) {
+            check.msg = "任务描述内容不能为空";
+            log.error("publicMission：" + check.msg);
+            return check;
+        }
+
+        if (clubId <= 0) {
+            check.msg = "club_id 不能小于等于0";
+            log.error("publicMission：" + check.msg);
+            return check;
+        }
+
+        WCClubGraduateBean clubGraduateBean = mClubGraudateService.getCurrentClubGraduate(clubId);
+        if (clubGraduateBean == null) {
+            check.msg = "找不到该社团";
+            log.error("publicMission：" + check.msg);
+            return check;
+        }
+
+        if (deadline <= 0 || String.valueOf(deadline).length() != 13) {
+            check.msg = "任务截止时间格式不对";
+            log.error("publicMission：" + check.msg);
+            return check;
+        }
+
+        WCClubMissionBean missionBean = new WCClubMissionBean();
+        missionBean.setAttribution(content);
+        missionBean.setDeadline(deadline);
+        missionBean.setClubId(clubId);
+        missionBean.setCreateDate(System.currentTimeMillis());
+        missionBean.setType(WCClubMissionBean.TYPE_MISSION);
+        missionBean.setSponsorId(sponsorId);
+        missionBean.setParentId(parentId);
+        missionBean.setGraduateId(clubGraduateBean.getClubGraduateId());
+
+        List<WCClubMissionBean> missionList1 = new ArrayList<>();
+        missionList1.add(missionBean);
+
+        List<HashMap<String, Object>> childHash = null;
+        String participation = null;
+        if (requestData.containsKey("child")) { // 直接填任务项的
+            childHash = (List<HashMap<String, Object>>) requestData.get("child");
+            if (childHash == null || childHash.size() == 0) {
+                check.msg = "任务项不能为空";
+                log.error("publicMission：" + check.msg);
+                return check;
+            }
+
+            for (HashMap<String, Object> result : childHash) {
+                String childContent = (String) result.get("content");
+                String childParticipation = (String) result.get("participation");
+
+                if (StringUtils.isEmpty(childContent)) {
+                    check.msg = "任务项描述内容不能为空";
+                    log.error("publicMission：" + check.msg);
+                    return check;
+                }
+
+                if (StringUtils.isEmpty(childParticipation)) {
+                    check.msg = "任务项参与者不能为空";
+                    log.error("publicMission：" + check.msg);
+                    return check;
+                }
+
+                String[] ids = childParticipation.split(",");
+
+                if (ids.length <= 0) {
+                    check.msg = "任务参与者不能为空";
+                    log.error("publicMission：" + check.msg);
+                    return check;
+                }
+            }
+
+            mClubMissionMapper.createClubMission(missionList1);
+
+            for (HashMap<String, Object> result : childHash) {
+                String childContent = (String) result.get("content");
+                String childParticipation = (String) result.get("participation");
+
+                WCClubMissionBean childMission = new WCClubMissionBean();
+                childMission.setParentId(missionList1.get(0).getMissionId());
+                childMission.setAttribution(childContent);
+                childMission.setSponsorId(sponsorId);
+                childMission.setClubId(clubId);
+                childMission.setCreateDate(missionList1.get(0).getCreateDate());
+                childMission.setDeadline(missionList1.get(0).getDeadline());
+                childMission.setGraduateId(clubGraduateBean.getClubGraduateId());
+
+                List<WCClubMissionBean> childMissionList = new ArrayList<>();
+                childMissionList.add(childMission);
+
+                String[] ids = childParticipation.split(",");
+
+                mClubMissionMapper.createClubMission(childMissionList);
+
+                List<WCStudentMissionRelationBean> relationBeanList = new ArrayList<>();
+                for (String id : ids) {
+                    WCStudentMissionRelationBean relationBean = new WCStudentMissionRelationBean();
+                    relationBean.setStatus(0);
+                    relationBean.setStudentId(Long.parseLong(id));
+                    relationBean.setMissionId(childMissionList.get(0).getMissionId());
+                    relationBean.setCreateDate(childMissionList.get(0).getCreateDate());
+
+                    relationBeanList.add(relationBean);
+                }
+
+                mClubMissionMapper.createStudentRelation(relationBeanList);
+            }
+
+            check = WCHttpStatus.SUCCESS;
+
+
+        } else if (requestData.containsKey("participation")){   // 直接填任务参与者的
+            participation = (String) requestData.get("participation");
+
+            if (StringUtils.isEmpty(participation)) {
+                check.msg = "任务参与者不能为空";
+                log.error("publicMission：" + check.msg);
+                return check;
+            }
+
+            String[] ids = participation.split(",");
+
+            if (ids.length <= 0) {
+                check.msg = "任务参与者不能为空";
+                log.error("publicMission：" + check.msg);
+                return check;
+            }
+
+            mClubMissionMapper.createClubMission(missionList1);
+
+            List<WCStudentMissionRelationBean> relationBeanList = new ArrayList<>();
+            for (String id : ids) {
+                WCStudentMissionRelationBean relationBean = new WCStudentMissionRelationBean();
+                relationBean.setStatus(0);
+                relationBean.setStudentId(Long.parseLong(id));
+                relationBean.setMissionId(missionList1.get(0).getMissionId());
+                relationBean.setCreateDate(missionList1.get(0).getCreateDate());
+
+                relationBeanList.add(relationBean);
+            }
+
+            mClubMissionMapper.createStudentRelation(relationBeanList);
+            check = WCHttpStatus.SUCCESS;
+        }
+
+        return check;
     }
 }

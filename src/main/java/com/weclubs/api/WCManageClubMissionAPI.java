@@ -78,4 +78,28 @@ class WCManageClubMissionAPI {
         result.put("has_more", pageInfo.isHasNextPage() ? 1 : 0);
         return WCResultData.getSuccessData(result);
     }
+
+    @RequestMapping(value = "/public_mission")
+    public WCResultData publicMission(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        check = mSecurityService.checkTokenAvailable(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        if (requestData == null || requestData.size() == 0) {
+            check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        check = mClubMissionService.publicMission(requestData);
+
+        return WCResultData.getHttpStatusData(check, null);
+    }
 }

@@ -5,7 +5,9 @@ import com.weclubs.bean.WCStudentBean;
 import com.weclubs.bean.WCStudentMissionRelationBean;
 import com.weclubs.model.WCMissionBaseModel;
 import com.weclubs.model.WCSponsorMissionModel;
+import com.weclubs.util.WCHttpStatus;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -14,8 +16,6 @@ import java.util.List;
  * Created by fangzanpan on 2017/3/16.
  */
 public interface WCIClubMissionService {
-
-    void createMission(WCClubMissionBean clubMissionBean);
 
     void updateMission(WCClubMissionBean clubMissionBean);
 
@@ -55,4 +55,12 @@ public interface WCIClubMissionService {
      * @return  该发布者的任务列表
      */
     List<WCSponsorMissionModel> getMissionBySponsorId(long sponsorId);
+
+    /**
+     * 发布一条新的任务
+     *
+     * @param requestData   请求参数
+     * @return  如果发布成功，返回 {@link WCHttpStatus#SUCCESS}
+     */
+    WCHttpStatus publicMission(HashMap<String, Object> requestData);
 }

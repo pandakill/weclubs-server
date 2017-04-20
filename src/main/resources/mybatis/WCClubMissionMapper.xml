@@ -87,10 +87,17 @@
     </resultMap>
 
     <!-- 创建社团任务实体 -->
-    <insert id="createClubMission" parameterType="com.weclubs.bean.WCClubMissionBean">
-        INSERT INTO T_CLUB_MISSION(`CLUB_ID`, `ATTRIBUTION`, `TYPE`,
-         `PARENT_ID`, `ADDRESS`,  `DEADLINE`, `IS_DEL`)
-        VALUES (#{clubId}, #{attribution}, #{type}, #{parentId}, #{address}, #{deadline}, #{isDel})
+    <insert id="createClubMission" useGeneratedKeys="true" keyProperty="missionId" parameterType="List">
+        INSERT INTO `T_CLUB_MISSION`
+        (`CLUB_ID`, `ATTRIBUTION`, `TYPE`, `PARENT_ID`, `ADDRESS`,  `DEADLINE`, `IS_DEL`, `sponsor_id`, `create_date`,
+        `graduate_id`)
+        VALUES
+        <foreach collection="list" index="index" item="item">
+            (
+            #{item.clubId}, #{item.attribution}, 1, #{item.parentId}, #{item.address},
+            #{item.deadline}, 0, #{item.sponsorId}, #{item.createDate}, #{item.graduateId}
+            )
+        </foreach>
     </insert>
 
     <!-- 更新社团任务对象 -->
@@ -225,5 +232,16 @@
         AND miss.`type` = 1
         GROUP BY miss.`mission_id`
     </select>
+
+    <insert id="createStudentRelation" parameterType="List">
+        INSERT INTO `t_student_mission_relation`
+        (`mission_id`, `student_id`, `create_date`, `status`, `is_del`, `is_leader`, `is_sign`)
+        VALUES
+        <foreach collection="relations" index="index" item="item" separator=",">
+            (
+            #{item.missionId}, #{item.studentId}, #{item.createDate}, 0, 0, #{item.isLeader}, 0
+            )
+        </foreach>
+    </insert>
 
 </mapper>
