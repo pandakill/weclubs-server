@@ -13,7 +13,7 @@
 
     <!-- 创建社团荣誉实体 -->
     <insert id="createClubHonor" parameterType="com.weclubs.bean.WCClubHonorBean">
-        INSERT INTO T_CLUB_HONOR(`CLUB_ID`, `CONTENT`, `GET_DATE`)
+        INSERT INTO `t_club_honor`(`club_id`, `content`, `get_date`)
         VALUES (#{clubId}, #{content}, #{getDate})
     </insert>
 
@@ -26,17 +26,17 @@
 
     <!-- 根据 id 删除社团荣誉实体对象，实际是将 is_del 设置为 1 -->
     <update id="deleteClubHonorById">
-        UPDATE `T_CLUB_HONOR`
-        SET `IS_DEL` = 1
-        WHERE `HONOR_ID` = #{clubHonorId}
+        UPDATE `t_club_honor`
+        SET `is_del` = 1
+        WHERE `honor_id` = #{clubHonorId}
     </update>
 
     <!-- 根据社团 id 获取当前社团的荣誉墙 -->
     <select id="getClubHonorsByClubId" resultMap="clubHonorMap" resultType="List">
         SELECT *
-        FROM `T_CLUB_HONOR`
-        WHERE `CLUB_ID` = #{clubId}
-        AND `IS_DEL` = 0
+        FROM `t_club_honor`
+        WHERE `club_id` = #{clubId}
+        AND `is_del` = 0
     </select>
 
     <insert id ="createHonorByList" keyProperty="clubHonorId" useGeneratedKeys="true" parameterType="List" >

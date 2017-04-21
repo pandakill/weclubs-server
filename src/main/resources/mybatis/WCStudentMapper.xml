@@ -50,64 +50,64 @@
 
     <select id="getStudentsBySchool" resultMap="studentWithSchoolMap" resultType="List">
         SELECT *
-        FROM `T_STUDENT`
-        WHERE `SCHOOL_ID` = #{schoolId}
+        FROM `t_student`
+        WHERE `school_id` = #{schoolId}
     </select>
 
     <!-- 查找当前届社团的所有学生 -->
     <select id="getStudentsByCurrentClub" resultMap="studentWithSchoolMap" resultType="List">
         SELECT *
-        FROM `T_STUDENT` student, `T_STUDENT_CLUB_GRADUATE_RELATION` student_club_graduate, `T_CLUB` club,
-        `T_CLUB_GRADUATE` club_graduate
+        FROM `t_student` student, `t_student_club_graduate_relation` student_club_graduate, `t_club` club,
+        `t_club_graduate` club_graduate
         WHERE club.`club_id` = #{clubId}
-        AND club.`club_id` = club_graduate.`CLUB_ID`
-        AND student.`student_id` = student_club_graduate.`STUDENT_ID`
+        AND club.`club_id` = club_graduate.`club_id`
+        AND student.`student_id` = student_club_graduate.`student_id`
         AND student_club_graduate.`graduate_id` = club_graduate.`club_graduate_id`
-        AND club_graduate.`IS_CURRENT` = 1
+        AND club_graduate.`is_current` = 1
     </select>
 
     <!-- 根据 graduateId 查找某一届社团的所有学生 -->
     <select id="getStudentsByClubGraduate" resultMap="studentWithSchoolMap" resultType="List">
         SELECT *
-        FROM `T_STUDENT` student, `T_CLUB_GRADUATE` club_graduate, `T_CLUB` club
-        WHERE club_graduate.`CLUB_ID` = club.`club_id`
+        FROM `t_student`, `t_club_graduate` club_graduate, `t_club` club
+        WHERE club_graduate.`club_id` = club.`club_id`
         AND club_graduate.`club_graduate_id` = #{graduateId}
     </select>
 
     <!-- 根据 studentId 获取学生信息 -->
     <select id="getStudentById" resultMap="studentWithSchoolMap" resultType="com.weclubs.bean.WCClubBean">
         SELECT *
-        FROM `T_STUDENT`
+        FROM `t_student`
         WHERE `student_id` = #{studentId}
     </select>
 
     <!-- 根据学生手机号码获取学生信息 -->
     <select id="getStudentByMobile" resultMap="studentWithSchoolMap" resultType="com.weclubs.bean.WCClubBean">
         SELECT *
-        FROM `T_STUDENT`
-        WHERE `MOBILE` = #{mobile}
+        FROM `t_student`
+        WHERE `mobile` = #{mobile}
     </select>
 
     <!-- 根据手机号码创建一个学生账号 -->
     <insert id="createStudent" useGeneratedKeys="true" keyProperty="studentId" parameterType="com.weclubs.bean.WCStudentBean">
-        INSERT INTO T_STUDENT(`MOBILE`, `PASSWORD`)
+        INSERT INTO `t_student`(`mobile`, `password`)
         VALUES (#{mobile}, #{password})
     </insert>
 
     <!-- 更新学生信息 -->
     <update id="updateStudent" parameterType="com.weclubs.bean.WCStudentBean">
-        UPDATE `T_STUDENT`
-        SET `SCHOOL_ID` = #{schoolId}, `MOBILE` = #{mobile}, `NICK_NAME` = #{nickName},
-         `REAL_NAME` = #{real_name}, `PASSWORD` = #{password}, `AVATAR_URL` = #{avatarUrl},
-         `BIRTHDAY` = #{birthday}, `QRCORD_URL` = #{qrcordUrl}, `CLASS_NAME` = #{className},
-         `GRADUATE_YEAR` = #{graduateYear}, `STATUS` = #{status}, `IS_DEL` = #{isDel}
+        UPDATE `t_student`
+        SET `school_id` = #{schoolId}, `mobile` = #{mobile}, `nick_name` = #{nickName},
+         `real_name` = #{real_name}, `password` = #{password}, `avatar_url` = #{avatarUrl},
+         `birthday` = #{birthday}, `qrcord_url` = #{qrcordUrl}, `class_name` = #{className},
+         `graduate_year` = #{graduateYear}, `status` = #{status}, `is_del` = #{isDel}
         WHERE `student_id` = #{id}
     </update>
 
     <!-- 更新学生密码 -->
     <update id="updateStudentPassword">
-        UPDATE `T_STUDENT`
-        SET `PASSWORD` = #{password}
+        UPDATE `t_student`
+        SET `password` = #{password}
         WHERE `student_id` = #{studentId}
     </update>
 </mapper>

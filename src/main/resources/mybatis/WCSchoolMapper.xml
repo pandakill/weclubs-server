@@ -10,25 +10,25 @@
     </resultMap>
 
     <insert id="createSchool" useGeneratedKeys="true" keyProperty="id" parameterType="String">
-        INSERT INTO t_school(`name`, `parent_id` `is_del`)
+        INSERT INTO `t_school`(`name`, `parent_id` `is_del`)
         VALUES (#{name}, 0, 0)
     </insert>
 
     <insert id="createCollege" useGeneratedKeys="true" keyProperty="id" parameterType="String">
-        INSERT INTO t_school(`name`, `parent_id` `is_del`)
+        INSERT INTO `t_school`(`name`, `parent_id` `is_del`)
         VALUES (#{name}, #{schoolId}, 0)
     </insert>
 
     <update id="updateSchool" parameterType="com.weclubs.bean.WCSchoolBean">
-        INSERT INTO t_school(`name`, `parent_id`)
-        VALUES (#{name}, #{parentId})
+        UPDATE `t_school`
+        SET `name` = #{name}, `parent_id` = #{parentId}
         WHERE `school_id` = #{schoolId}
         AND `parent_id` == 0
     </update>
 
     <update id="updateCollege" parameterType="com.weclubs.bean.WCSchoolBean">
-        INSERT INTO t_school(`name`, `parent_id`)
-        VALUES (#{name}, #{parentId})
+        UPDATE `t_school`
+        SET `name` = #{name}, `parent_id` = #{parentId}
         WHERE `school_id` = #{schoolId}
         AND `parent_id` != 0
     </update>

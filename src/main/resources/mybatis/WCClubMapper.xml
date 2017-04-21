@@ -100,44 +100,44 @@
 
     <!-- 根据社团 id 查找社团信息 -->
     <select id="getClubById" resultMap="clubWithSchoolMap">
-        SELECT * FROM `T_CLUB`
-        WHERE `CLUB_ID` = #{clubId}
+        SELECT * FROM `t_club`
+        WHERE `club_id` = #{clubId}
     </select>
 
     <!-- 查找审核通过的所有社团 -->
     <select id="getClubsBySchoolId" resultType="List" resultMap="clubMap">
-        SELECT * FROM `T_CLUB` club, `T_SCHOOL` school
-        WHERE school.`SCHOOL_ID` = #{schoolId}
-        AND club.`SCHOOL_ID` = school.`school_id`
-        AND club.`STATUS` = 1
+        SELECT * FROM `t_club` club, `t_school` school
+        WHERE school.`school_id` = #{schoolId}
+        AND club.`school_id` = school.`school_id`
+        AND club.`status` = 1
     </select>
 
     <!-- 根据学生 id 查找该学生当前加入的所有社团实体列表 -->
     <select id="getClubsByStudentId" resultType="List" resultMap="clubMap">
-        SELECT * FROM `T_CLUB` club, `T_STUDENT_CLUB_GRADUATE_RELATION` student_club,
-        `T_CLUB_GRADUATE` club_graduate
-        WHERE student_club.`STUDENT_ID` = #{studentId}
+        SELECT * FROM `t_club` club, `t_student_club_graduate_relation` student_club,
+        `t_club_graduate` club_graduate
+        WHERE student_club.`student_id` = #{studentId}
         AND club_graduate.`club_id` = club.`club_id`
         AND club_graduate.`is_current` = 1
         AND club_graduate.`club_graduate_id` = student_club.`graduate_id`
         AND student_club.`is_del` = 0
-        AND club.`STATUS` = 1
+        AND club.`status` = 1
     </select>
 
     <!-- 创建社团实体 -->
     <insert id="createClub" useGeneratedKeys="true" keyProperty="clubId" parameterType="com.weclubs.bean.WCClubBean">
-        INSERT INTO T_CLUB(`SCHOOL_ID`, `NAME`, `INTRODUCTION`, `AVATAR_URL`,
-         `IS_AUTH`, `LEVEL`, `STATUS`, `CHECK_COUNT`)
+        INSERT INTO `t_club`(`school_id`, `name`, `introduction`, `avatar_url`,
+         `is_auth`, `level`, `status`, `check_count`)
         VALUES (#{schoolId}, #{name}, #{introduction}, #{avatarUrl},
          #{isAuth}, #{level}, #{status}, #{checkCount})
     </insert>
 
     <!-- 更新社团实体信息 -->
     <update id="updateClub" parameterType="com.weclubs.bean.WCClubBean">
-        UPDATE `T_CLUB`
-        SET `SCHOOL_ID` = #{schoolId}, `NAME` = #{name}, `INTRODUCTION` = #{introduction},
-         `AVATAR_URL` = #{avatarUrl}, `IS_AUTH` = #{isAuth}, `LEVEL` = #{level},
-         `STATUS` = #{status}, `CHECK_COUNT` = #{checkCount}, `slogan` = #{slogan}
+        UPDATE `t_club`
+        SET `school_id` = #{schoolId}, `name` = #{name}, `introduction` = #{introduction},
+         `avatar_url` = #{avatarUrl}, `is_auth` = #{isAuth}, `level` = #{level},
+         `status` = #{status}, `check_count` = #{checkCount}, `slogan` = #{slogan}
         WHERE `club_id` = #{clubId}
     </update>
 
