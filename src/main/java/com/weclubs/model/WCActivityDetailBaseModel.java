@@ -2,6 +2,7 @@ package com.weclubs.model;
 
 import com.weclubs.util.WCCommonUtil;
 
+import java.io.ObjectInput;
 import java.io.Serializable;
 import java.util.HashMap;
 
@@ -224,7 +225,7 @@ public class WCActivityDetailBaseModel implements Serializable {
     }
 
     public HashMap<String, Object> getClubDetailBaseInfo() {
-        HashMap<String, Object> result = new HashMap<>();
+        HashMap<String, Object> result = new HashMap<String, Object>();
 
         result.put("club_id", getClubId());
         result.put("club_name", getClubName());

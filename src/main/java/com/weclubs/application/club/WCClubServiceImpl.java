@@ -301,7 +301,6 @@ public class WCClubServiceImpl implements WCIClubService {
         return resultClubs;
     }
 
-    @Override
     public void addClubHonor(long clubId, List<HashMap<String, Object>> honorList) {
 
         if (clubId <= 0) {
@@ -314,7 +313,7 @@ public class WCClubServiceImpl implements WCIClubService {
             return;
         }
 
-        List<WCClubHonorBean> list = new ArrayList<>();
+        List<WCClubHonorBean> list = new ArrayList<WCClubHonorBean>();
         for (HashMap<String, Object> result : honorList) {
             WCClubHonorBean honorBean = new WCClubHonorBean();
             honorBean.setClubId(clubId);
@@ -332,7 +331,6 @@ public class WCClubServiceImpl implements WCIClubService {
         mClubHonorMapper.createHonorByList(list);
     }
 
-    @Override
     public void updateClubHonor(List<HashMap<String, Object>> honorList) {
 
         if (honorList == null || honorList.size() == 0) {
@@ -340,7 +338,7 @@ public class WCClubServiceImpl implements WCIClubService {
             return;
         }
 
-        List<WCClubHonorBean> honorBeanList = new ArrayList<>();
+        List<WCClubHonorBean> honorBeanList = new ArrayList<WCClubHonorBean>();
         for (HashMap<String, Object> result : honorList) {
             WCClubHonorBean honorBean = new WCClubHonorBean();
             honorBean.setContent((String) result.get("content"));

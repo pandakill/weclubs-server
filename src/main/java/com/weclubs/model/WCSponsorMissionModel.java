@@ -80,7 +80,7 @@ public class WCSponsorMissionModel extends WCMissionBaseModel {
     }
 
     public HashMap<String, Object> getMissionHash() {
-        HashMap<String, Object> result = new HashMap<>();
+        HashMap<String, Object> result = new HashMap<String, Object>();
 
         result.put("club_id", getClubId());
         result.put("club_name", getClubName());

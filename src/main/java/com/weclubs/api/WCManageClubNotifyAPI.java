@@ -67,9 +67,9 @@ class WCManageClubNotifyAPI {
 
         PageHelper.startPage(pageNo, pageSize);
         List<WCSponsorNotifyModel> notifyModelList = mNotificationService.getNotifyBySponsor(sponsorId);
-        PageInfo<WCSponsorNotifyModel> pageInfo = new PageInfo<>(notifyModelList);
+        PageInfo<WCSponsorNotifyModel> pageInfo = new PageInfo<WCSponsorNotifyModel>(notifyModelList);
 
-        List<HashMap<String, Object>> resultArray = new ArrayList<>();
+        List<HashMap<String, Object>> resultArray = new ArrayList<HashMap<String, Object>>();
         if (pageInfo.getList() != null && pageInfo.getList().size() > 0) {
             for (WCSponsorNotifyModel sponsorNotifyModel : pageInfo.getList()) {
                 HashMap<String, Object> hash = getNotifyHash(sponsorNotifyModel);
@@ -77,7 +77,7 @@ class WCManageClubNotifyAPI {
             }
         }
 
-        HashMap<String, Object> result = new HashMap<>();
+        HashMap<String, Object> result = new HashMap<String , Object>();
         result.put("notify", resultArray);
         result.put("has_more", pageInfo.isHasNextPage() ? 1 : 0);
         return WCResultData.getSuccessData(result);
@@ -164,7 +164,7 @@ class WCManageClubNotifyAPI {
         List<WCStudentMissionRelationBean> relationBeanList = mNotificationService.getNotifyRelationByNotifyId(notifyId);
         long unreadCount = 0;
         long totalCount = 0;
-        ArrayList<HashMap<String, Object>> relationHash = new ArrayList<>();
+        ArrayList<HashMap<String, Object>> relationHash = new ArrayList<HashMap<String, Object>>();
         if (relationBeanList != null && relationBeanList.size() > 0) {
             totalCount = relationBeanList.size();
             for (WCStudentMissionRelationBean relationBean : relationBeanList) {
@@ -177,7 +177,7 @@ class WCManageClubNotifyAPI {
             }
         }
 
-        HashMap<String, Object> result = new HashMap<>();
+        HashMap<String, Object> result = new HashMap<String, Object>();
         result.put("unread_count", unreadCount);
         result.put("total_count", totalCount);
         result.put("confirm_status", relationHash);
@@ -185,7 +185,7 @@ class WCManageClubNotifyAPI {
     }
 
     private HashMap<String, Object> getNotifyHash(WCSponsorNotifyModel notifyModel) {
-        HashMap<String, Object> result = new HashMap<>();
+        HashMap<String, Object> result = new HashMap<String, Object>();
         result.put("club_id", notifyModel.getClubId());
         result.put("club_name", notifyModel.getClubBean().getName());
         result.put("club_avatar", notifyModel.getClubBean().getAvatarUrl());
@@ -202,7 +202,7 @@ class WCManageClubNotifyAPI {
     }
 
     private HashMap<String, Object> getStudentNotifyRelationHash(WCStudentMissionRelationBean relationBean) {
-        HashMap<String, Object> result = new HashMap<>();
+        HashMap<String, Object> result = new HashMap<String, Object>();
         result.put("student_id", relationBean.getStudentId());
 
         WCStudentBean studentBean = relationBean.getStudentBean();

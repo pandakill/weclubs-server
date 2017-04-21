@@ -203,7 +203,6 @@ class WCClubMissionServiceImpl implements WCIClubMissionService {
         return mClubMissionMapper.getChildMissionDetailListByMissionIdWithStudent(studentId, missionId);
     }
 
-    @Override
     public List<WCSponsorMissionModel> getMissionBySponsorId(long sponsorId) {
 
         if (sponsorId <= 0) {
@@ -214,7 +213,6 @@ class WCClubMissionServiceImpl implements WCIClubMissionService {
         return mClubMissionMapper.getMissionsBySponsorId(sponsorId);
     }
 
-    @Override
     public WCHttpStatus publicMission(HashMap<String, Object> requestData) {
 
         WCHttpStatus check = WCHttpStatus.FAIL_REQUEST;
@@ -264,7 +262,7 @@ class WCClubMissionServiceImpl implements WCIClubMissionService {
         missionBean.setParentId(parentId);
         missionBean.setGraduateId(clubGraduateBean.getClubGraduateId());
 
-        List<WCClubMissionBean> missionList1 = new ArrayList<>();
+        List<WCClubMissionBean> missionList1 = new ArrayList<WCClubMissionBean>();
         missionList1.add(missionBean);
 
         List<HashMap<String, Object>> childHash = null;
@@ -317,14 +315,14 @@ class WCClubMissionServiceImpl implements WCIClubMissionService {
                 childMission.setDeadline(missionList1.get(0).getDeadline());
                 childMission.setGraduateId(clubGraduateBean.getClubGraduateId());
 
-                List<WCClubMissionBean> childMissionList = new ArrayList<>();
+                List<WCClubMissionBean> childMissionList = new ArrayList<WCClubMissionBean>();
                 childMissionList.add(childMission);
 
                 String[] ids = childParticipation.split(",");
 
                 mClubMissionMapper.createClubMission(childMissionList);
 
-                List<WCStudentMissionRelationBean> relationBeanList = new ArrayList<>();
+                List<WCStudentMissionRelationBean> relationBeanList = new ArrayList<WCStudentMissionRelationBean>();
                 for (String id : ids) {
                     WCStudentMissionRelationBean relationBean = new WCStudentMissionRelationBean();
                     relationBean.setStatus(0);
@@ -360,7 +358,7 @@ class WCClubMissionServiceImpl implements WCIClubMissionService {
 
             mClubMissionMapper.createClubMission(missionList1);
 
-            List<WCStudentMissionRelationBean> relationBeanList = new ArrayList<>();
+            List<WCStudentMissionRelationBean> relationBeanList = new ArrayList<WCStudentMissionRelationBean>();
             for (String id : ids) {
                 WCStudentMissionRelationBean relationBean = new WCStudentMissionRelationBean();
                 relationBean.setStatus(0);
@@ -378,7 +376,6 @@ class WCClubMissionServiceImpl implements WCIClubMissionService {
         return check;
     }
 
-    @Override
     public List<WCStudentMissionRelationBean> getMissionRelationsByMissionId(long missionId) {
 
         if (missionId == 0) {

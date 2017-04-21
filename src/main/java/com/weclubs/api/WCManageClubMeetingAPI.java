@@ -74,9 +74,9 @@ class WCManageClubMeetingAPI {
 
         PageHelper.startPage(pageNo, pageSize);
         List<WCSponsorMeetingModel> meetingModelList = mClubMeetingService.getMeetingBySponsor(sponsorId);
-        PageInfo<WCSponsorMeetingModel> pageInfo = new PageInfo<>(meetingModelList);
+        PageInfo<WCSponsorMeetingModel> pageInfo = new PageInfo<WCSponsorMeetingModel>(meetingModelList);
 
-        List<HashMap<String, Object>> resultArray = new ArrayList<>();
+        List<HashMap<String, Object>> resultArray = new ArrayList<HashMap<String, Object>>();
         if (pageInfo.getList() != null && pageInfo.getList().size() > 0) {
             for (WCSponsorMeetingModel meetingModel : pageInfo.getList()) {
                 HashMap<String, Object> hash = getSponsorMeetingHash(meetingModel);
@@ -84,7 +84,7 @@ class WCManageClubMeetingAPI {
             }
         }
 
-        HashMap<String, Object> result = new HashMap<>();
+        HashMap<String, Object> result = new HashMap<String, Object>();
         result.put("meeting", resultArray);
         result.put("has_more", pageInfo.isHasNextPage() ? 1 : 0);
         return WCResultData.getSuccessData(result);
@@ -209,7 +209,7 @@ class WCManageClubMeetingAPI {
     }
 
     private HashMap<String, Object> getSponsorMeetingHash(WCSponsorMeetingModel meetingModel) {
-        HashMap<String, Object> result = new HashMap<>();
+        HashMap<String, Object> result = new HashMap<String, Object>();
         result.put("meeting_id", meetingModel.getMissionId());
         result.put("content", meetingModel.getAttribution());
         result.put("create_date", meetingModel.getCreateDate());

@@ -193,7 +193,6 @@ class WCClubMeetingService implements WCIClubMeetingService {
         return mMeetingMapper.getMeetingParticipation(meetingId);
     }
 
-    @Override
     public List<WCSponsorMeetingModel> getMeetingBySponsor(long sponsorId) {
 
         if (sponsorId <= 0) {
@@ -217,7 +216,6 @@ class WCClubMeetingService implements WCIClubMeetingService {
         return meetingModelList;
     }
 
-    @Override
     public List<WCStudentMissionRelationBean> getUnConfirmMeetingRelationByMeetingId(long meetingId) {
 
         if (meetingId <= 0) {
@@ -228,7 +226,6 @@ class WCClubMeetingService implements WCIClubMeetingService {
         return mMeetingMapper.getUnConfirmMeetingRelationByMeetingId(meetingId);
     }
 
-    @Override
     public List<WCStudentMissionRelationBean> getMeetingRelationByMeetingId(long meetingId) {
 
         if (meetingId <= 0) {
@@ -239,7 +236,6 @@ class WCClubMeetingService implements WCIClubMeetingService {
         return mMeetingMapper.getMeetingRelationByMeetingId(meetingId);
     }
 
-    @Override
     public List<WCStudentMissionRelationBean> getAlreadySignRelationByMeetingId(long meetingId) {
 
         if (meetingId <= 0) {
@@ -250,7 +246,6 @@ class WCClubMeetingService implements WCIClubMeetingService {
         return mMeetingMapper.getSignRelationByMeetingId(meetingId);
     }
 
-    @Override
     public WCSponsorMeetingModel getSponsorMeetingDetail(long meetingId) {
 
         if (meetingId <= 0) {
@@ -277,7 +272,6 @@ class WCClubMeetingService implements WCIClubMeetingService {
         return meetingModel;
     }
 
-    @Override
     public WCHttpStatus publicMeeting(long sponsorId, String content, String address, long deadline, int needSign,
                                       String leaders, String participation, long clubId) {
 
@@ -360,7 +354,7 @@ class WCClubMeetingService implements WCIClubMeetingService {
 
         mMeetingMapper.createMeeting(meeting);
 
-        List<WCStudentMissionRelationBean> relationBeanList = new ArrayList<>();
+        List<WCStudentMissionRelationBean> relationBeanList = new ArrayList<WCStudentMissionRelationBean>();
         for (String s : participationId) {
             WCStudentMissionRelationBean relationBean = new WCStudentMissionRelationBean();
 
@@ -391,7 +385,6 @@ class WCClubMeetingService implements WCIClubMeetingService {
         return check;
     }
 
-    @Override
     public WCHttpStatus editMeeting(String content, String address, long deadline, int needSign,
                                     String leaders, long clubId, long meetingId) {
 

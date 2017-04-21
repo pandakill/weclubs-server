@@ -70,9 +70,9 @@ class WCManageClubActivityAPI {
 
         PageHelper.startPage(pageNo, pageSize);
         List<WCActivityDetailBaseModel> activityList = mActivityService.getManageClubBySponsorId(sponsorId);
-        PageInfo<WCActivityDetailBaseModel> pageInfo = new PageInfo<>(activityList);
+        PageInfo<WCActivityDetailBaseModel> pageInfo = new PageInfo<WCActivityDetailBaseModel>(activityList);
 
-        ArrayList<HashMap<String, Object>> resultArray = new ArrayList<>();
+        ArrayList<HashMap<String, Object>> resultArray = new ArrayList<HashMap<String, Object>>();
         if (pageInfo.getList() != null && pageInfo.getList().size() > 0) {
             for (WCActivityDetailBaseModel activityDetailBaseModel : pageInfo.getList()) {
                 HashMap<String, Object> hash = activityDetailBaseModel.getClubDetailBaseInfo();
@@ -80,7 +80,7 @@ class WCManageClubActivityAPI {
             }
         }
 
-        HashMap<String, Object> result = new HashMap<>();
+        HashMap<String, Object> result = new HashMap<String, Object>();
         result.put("activity", resultArray);
         return WCResultData.getSuccessData(result);
     }
@@ -131,14 +131,14 @@ class WCManageClubActivityAPI {
         long activityId = WCCommonUtil.getLongData(requestData.get("activity_id"));
 
         List<WCStudentActivityRelationBean> relationList = mActivityService.getSignData(activityId);
-        ArrayList<HashMap<String, Object>> resultArray = new ArrayList<>();
+        ArrayList<HashMap<String, Object>> resultArray = new ArrayList<HashMap<String, Object>>();
         if (relationList != null && relationList.size() > 0) {
             for (WCStudentActivityRelationBean relationBean : relationList) {
                 resultArray.add(relationBean.getSignData());
             }
         }
 
-        HashMap<String, Object> result = new HashMap<>();
+        HashMap<String, Object> result = new HashMap<String, Object>();
         result.put("sign_data", resultArray);
         return WCResultData.getSuccessData(result);
     }

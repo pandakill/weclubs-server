@@ -129,7 +129,7 @@ public class WCStudentActivityRelationBean implements Serializable {
     }
 
     public HashMap<String, Object> getSignData() {
-        HashMap<String, Object> result = new HashMap<>();
+        HashMap<String, Object> result = new HashMap<String, Object>();
         result.put("student_id", getStudentId());
         result.put("student_name", getStudentBean().getRealName());
         result.put("student_avatar", getStudentBean().getAvatarUrl());

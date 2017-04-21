@@ -455,7 +455,7 @@ class WCManageClubAPI {
 
         mClubService.updateClubHonor(honorList);
 
-        HashMap<String, Object> result = new HashMap<>();
+        HashMap<String, Object> result = new HashMap<String, Object>();
         return WCResultData.getSuccessData(result);
     }
 
@@ -496,7 +496,7 @@ class WCManageClubAPI {
         clubBean.setIntroduction(introduction);
         mClubService.updateClub(clubBean);
 
-        HashMap<String, Object> result = new HashMap<>();
+        HashMap<String, Object> result = new HashMap<String, Object>();
         return WCResultData.getSuccessData(result);
     }
 
@@ -537,7 +537,7 @@ class WCManageClubAPI {
         clubBean.setSlogan(slogan);
         mClubService.updateClub(clubBean);
 
-        HashMap<String, Object> result = new HashMap<>();
+        HashMap<String, Object> result = new HashMap<String, Object>();
         return WCResultData.getSuccessData(result);
     }
 

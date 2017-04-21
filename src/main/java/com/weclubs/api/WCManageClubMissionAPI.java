@@ -70,16 +70,16 @@ class WCManageClubMissionAPI {
 
         PageHelper.startPage(pageNo, pageSize);
         List<WCSponsorMissionModel> missionModelList = mClubMissionService.getMissionBySponsorId(sponsorId);
-        PageInfo<WCSponsorMissionModel> pageInfo = new PageInfo<>(missionModelList);
+        PageInfo<WCSponsorMissionModel> pageInfo = new PageInfo<WCSponsorMissionModel>(missionModelList);
 
-        ArrayList<HashMap<String, Object>> resultArray = new ArrayList<>();
+        ArrayList<HashMap<String, Object>> resultArray = new ArrayList<HashMap<String, Object>>();
         if (pageInfo.getList() != null && pageInfo.getList().size() > 0) {
             for (WCSponsorMissionModel sponsorMissionModel : pageInfo.getList()) {
                 resultArray.add(sponsorMissionModel.getMissionHash());
             }
         }
 
-        HashMap<String, Object> result = new HashMap<>();
+        HashMap<String, Object> result = new HashMap<String, Object>();
         result.put("mission", resultArray);
         result.put("has_more", pageInfo.isHasNextPage() ? 1 : 0);
         return WCResultData.getSuccessData(result);
@@ -134,7 +134,7 @@ class WCManageClubMissionAPI {
         WCClubMissionBean detailBean = mClubMissionService.getMissionDetailById(missionId);
         detailBean.setChildMissonDetails(mClubMissionService.getChildMissionDetailByMissionIdWithStudent(studentId, missionId));
 
-        HashMap<String, Object> result = new HashMap<>();
+        HashMap<String, Object> result = new HashMap<String, Object>();
 
         result.put("mission_id", detailBean.getMissionId());
         result.put("content", detailBean.getAttribution());
@@ -146,20 +146,20 @@ class WCManageClubMissionAPI {
         result.put("club_avatar", detailBean.getClubBean().getAvatarUrl());
 
         if (detailBean.getChildMissonDetails() != null && detailBean.getChildMissonDetails().size() > 0) {
-            List<HashMap<String, Object>> childMissionHash = new ArrayList<>();
+            List<HashMap<String, Object>> childMissionHash = new ArrayList<HashMap<String, Object>>();
             for (WCMissionBaseModel missionBaseModel : detailBean.getChildMissonDetails()) {
-                HashMap<String, Object> hash = new HashMap<>();
+                HashMap<String, Object> hash = new HashMap<String, Object>();
 
                 hash.put("mission_id", missionBaseModel.getMissionId());
                 hash.put("content", missionBaseModel.getAttribution());
 
-                List<HashMap<String, Object>> participants = new ArrayList<>();
+                List<HashMap<String, Object>> participants = new ArrayList<HashMap<String, Object>>();
                 List<WCStudentMissionRelationBean> participantBeans
                         = mClubMissionService.getMissionRelationsByMissionId(missionBaseModel.getMissionId());
 
                 if (participantBeans != null && participantBeans.size() > 0) {
                     for (WCStudentMissionRelationBean participation : participantBeans) {
-                        HashMap<String, Object> student = new HashMap<>();
+                        HashMap<String, Object> student = new HashMap<String, Object>();
                         student.put("student_id", participation.getStudentId());
                         student.put("student_name", participation.getStudentBean().getRealName());
                         student.put("student_avatar", participation.getStudentBean().getAvatarUrl());

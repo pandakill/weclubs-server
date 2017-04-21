@@ -153,7 +153,6 @@ class WCNotificationService implements WCINotificationService {
         return mNotificationMapper.getUnConfirmNotificationByClubId(studentId);
     }
 
-    @Override
     public List<WCSponsorNotifyModel> getNotifyBySponsor(long sponsorId) {
 
         if (sponsorId <= 0) {
@@ -174,7 +173,6 @@ class WCNotificationService implements WCINotificationService {
         return notifyModelList;
     }
 
-    @Override
     public List<WCStudentMissionRelationBean> getUnConfirmNotifyRelationByNotifyId(long notifyId) {
 
         if (notifyId <= 0) {
@@ -185,7 +183,6 @@ class WCNotificationService implements WCINotificationService {
         return mNotificationMapper.getUnConfirmRelationByNotifyId(notifyId);
     }
 
-    @Override
     public List<WCStudentMissionRelationBean> getNotifyRelationByNotifyId(long notifyId) {
 
         if (notifyId <= 0) {
@@ -196,7 +193,6 @@ class WCNotificationService implements WCINotificationService {
         return mNotificationMapper.getRelationByNotifyId(notifyId);
     }
 
-    @Override
     public WCHttpStatus publicNotify(long sponsorId, String content, long clubId, String students) {
 
         WCHttpStatus check = WCHttpStatus.FAIL_REQUEST;
@@ -253,7 +249,7 @@ class WCNotificationService implements WCINotificationService {
 
         mNotificationMapper.createNotification(notifyBean);
 
-        List<WCStudentMissionRelationBean> relations = new ArrayList<>();
+        List<WCStudentMissionRelationBean> relations = new ArrayList<WCStudentMissionRelationBean>();
         for (String id : ids) {
             WCStudentMissionRelationBean relationBean = new WCStudentMissionRelationBean();
             relationBean.setMissionId(notifyBean.getMissionId());
@@ -269,7 +265,6 @@ class WCNotificationService implements WCINotificationService {
         return check;
     }
 
-    @Override
     public WCSponsorNotifyModel getMyNotificationDetailById(long notificationId) {
 
         if (notificationId <= 0) {

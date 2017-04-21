@@ -75,7 +75,6 @@ class WCActivityServiceImpl implements WCIActivityService {
         return mActivityMapper.getActivityDetail(activityId);
     }
 
-    @Override
     public List<WCActivityDetailBaseModel> getManageClubBySponsorId(long sponsorId) {
 
         if (sponsorId <= 0) {
@@ -100,7 +99,6 @@ class WCActivityServiceImpl implements WCIActivityService {
         return activities;
     }
 
-    @Override
     public WCHttpStatus publicActivity(HashMap<String, Object> requestData) {
 
         WCHttpStatus check = WCHttpStatus.FAIL_REQUEST;
@@ -219,7 +217,7 @@ class WCActivityServiceImpl implements WCIActivityService {
                 activityBean.setApplyDeadline(applyDeadline);
             }
 
-            List<WCClubActivityBean> list = new ArrayList<>();
+            List<WCClubActivityBean> list = new ArrayList<WCClubActivityBean>();
             list.add(activityBean);
             mActivityMapper.createActivity(list);
             log.info("activity = " + list.toString());
@@ -245,11 +243,11 @@ class WCActivityServiceImpl implements WCIActivityService {
                 return check;
             }
 
-            List<WCClubActivityBean> list = new ArrayList<>();
+            List<WCClubActivityBean> list = new ArrayList<WCClubActivityBean>();
             list.add(activityBean);
             mActivityMapper.createActivity(list);
 
-            List<WCStudentActivityRelationBean> relationList = new ArrayList<>();
+            List<WCStudentActivityRelationBean> relationList = new ArrayList<WCStudentActivityRelationBean>();
             for (String id : ids) {
                 WCStudentActivityRelationBean relationBean = new WCStudentActivityRelationBean();
                 relationBean.setActivityId(list.get(0).getClubActivityId());
@@ -265,7 +263,6 @@ class WCActivityServiceImpl implements WCIActivityService {
         return check;
     }
 
-    @Override
     public List<WCStudentActivityRelationBean> getSignData(long activityId) {
 
         if (activityId <= 0) {
@@ -277,7 +274,6 @@ class WCActivityServiceImpl implements WCIActivityService {
     }
 
     // TODO: 2017/4/20 暂时没有实现修改受邀人员
-    @Override
     public WCHttpStatus editActivity(HashMap<String, Object> requestData) {
 
         WCHttpStatus check = WCHttpStatus.FAIL_REQUEST;
