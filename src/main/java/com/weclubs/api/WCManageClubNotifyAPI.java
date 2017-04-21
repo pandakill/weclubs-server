@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ class WCManageClubNotifyAPI {
         this.mNotificationService = mNotificationService;
     }
 
-    @RequestMapping(value = "/get_my_notify")
+    @RequestMapping(value = "/get_my_notify", method = RequestMethod.POST)
     public WCResultData getMyNotify(@RequestBody WCRequestModel requestModel) {
 
         WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
@@ -83,7 +84,7 @@ class WCManageClubNotifyAPI {
         return WCResultData.getSuccessData(result);
     }
 
-    @RequestMapping(value = "/public_notify")
+    @RequestMapping(value = "/public_notify", method = RequestMethod.POST)
     public WCResultData publicNotify(@RequestBody WCRequestModel requestModel) {
 
         WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
@@ -112,7 +113,7 @@ class WCManageClubNotifyAPI {
         return WCResultData.getHttpStatusData(check, null);
     }
 
-    @RequestMapping(value = "/get_my_notify_detail")
+    @RequestMapping(value = "/get_my_notify_detail", method = RequestMethod.POST)
     public WCResultData getMyNotifyDetail(@RequestBody WCRequestModel requestModel) {
 
         WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
@@ -140,7 +141,7 @@ class WCManageClubNotifyAPI {
         return WCResultData.getSuccessData(result);
     }
 
-    @RequestMapping(value = "/get_notify_check_status")
+    @RequestMapping(value = "/get_notify_check_status", method = RequestMethod.POST)
     public WCResultData getNotifyCheckStatus(@RequestBody WCRequestModel requestModel) {
 
         WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);

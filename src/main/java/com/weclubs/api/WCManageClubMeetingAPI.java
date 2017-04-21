@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -49,7 +50,7 @@ class WCManageClubMeetingAPI {
         this.mClubService = clubService;
     }
 
-    @RequestMapping(value = "/get_my_meeting")
+    @RequestMapping(value = "/get_my_meeting", method = RequestMethod.POST)
     public WCResultData getMyMeeting(@RequestBody WCRequestModel requestModel) {
 
         WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
@@ -90,7 +91,7 @@ class WCManageClubMeetingAPI {
         return WCResultData.getSuccessData(result);
     }
 
-    @RequestMapping(value = "/get_my_meeting_detail")
+    @RequestMapping(value = "/get_my_meeting_detail", method = RequestMethod.POST)
     public WCResultData getMyMeetingDetail(@RequestBody WCRequestModel requestModel) {
 
         WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
@@ -135,7 +136,7 @@ class WCManageClubMeetingAPI {
         return WCResultData.getSuccessData(result);
     }
 
-    @RequestMapping(value = "/public_meeting")
+    @RequestMapping(value = "/public_meeting", method = RequestMethod.POST)
     public WCResultData publicMeeting(@RequestBody WCRequestModel requestModel) {
 
         WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
@@ -172,7 +173,7 @@ class WCManageClubMeetingAPI {
         return WCResultData.getHttpStatusData(check, null);
     }
 
-    @RequestMapping(value = "/edit_meeting")
+    @RequestMapping(value = "/edit_meeting", method = RequestMethod.POST)
     public WCResultData editMeeting(@RequestBody WCRequestModel requestModel) {
 
         WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);

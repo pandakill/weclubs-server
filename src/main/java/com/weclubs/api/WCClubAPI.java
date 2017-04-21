@@ -48,7 +48,7 @@ class WCClubAPI {
         this.mSecurityService = mSecurityService;
     }
 
-    @RequestMapping(value = "/get_club_detail")
+    @RequestMapping(value = "/get_club_detail", method = RequestMethod.POST)
     public WCResultData getClubDetail(@RequestBody WCRequestModel requestModel) {
 
         WCHttpStatus security = mSecurityService.checkRequestParams(requestModel);
@@ -103,7 +103,7 @@ class WCClubAPI {
         }
     }
 
-    @RequestMapping(value = "/get_clubs_by_suggest")
+    @RequestMapping(value = "/get_clubs_by_suggest", method = RequestMethod.POST)
     public WCResultData getClubsBySuggest(@RequestBody WCRequestModel requestModel) {
 
         WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
@@ -139,7 +139,7 @@ class WCClubAPI {
         return WCResultData.getSuccessData(result);
     }
 
-//    @RequestMapping(value = "/get_clubs_by_owner")
+//    @RequestMapping(value = "/get_clubs_by_owner", method = RequestMethod.POST)
     public WCResultData getClubsByOwner(@RequestBody WCRequestModel requestModel) {
 
         WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
@@ -236,7 +236,7 @@ class WCClubAPI {
         return WCResultData.getSuccessData(result);
     }
 
-    @RequestMapping(value = "/get_my_clubs")
+    @RequestMapping(value = "/get_my_clubs", method = RequestMethod.POST)
     public WCResultData getMyClubs(@RequestBody WCRequestModel requestModel) {
 
         WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);

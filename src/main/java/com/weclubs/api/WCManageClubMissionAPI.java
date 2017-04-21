@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -45,7 +46,7 @@ class WCManageClubMissionAPI {
         this.mClubMissionService = mClubMissionService;
     }
 
-    @RequestMapping(value = "/get_my_mission")
+    @RequestMapping(value = "/get_my_mission", method = RequestMethod.POST)
     public WCResultData getMyMission(@RequestBody WCRequestModel requestModel) {
 
         WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
@@ -85,7 +86,7 @@ class WCManageClubMissionAPI {
         return WCResultData.getSuccessData(result);
     }
 
-    @RequestMapping(value = "/public_mission")
+    @RequestMapping(value = "/public_mission", method = RequestMethod.POST)
     public WCResultData publicMission(@RequestBody WCRequestModel requestModel) {
 
         WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
@@ -109,7 +110,7 @@ class WCManageClubMissionAPI {
         return WCResultData.getHttpStatusData(check, null);
     }
 
-    @RequestMapping(value = "/get_my_mission_detail")
+    @RequestMapping(value = "/get_my_mission_detail", method = RequestMethod.POST)
     public WCResultData getMyMissionDetail(@RequestBody WCRequestModel requestModel) {
 
         WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);

@@ -45,7 +45,7 @@ class WCManageClubActivityAPI {
         this.mActivityService = mActivityService;
     }
 
-    @RequestMapping(value = "/get_my_activity")
+    @RequestMapping(value = "/get_my_activity", method = RequestMethod.POST)
     public WCResultData getMyActivity(@RequestBody WCRequestModel requestModel) {
 
         WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
@@ -143,7 +143,7 @@ class WCManageClubActivityAPI {
         return WCResultData.getSuccessData(result);
     }
 
-    @RequestMapping(value = "/edit_activity")
+    @RequestMapping(value = "/edit_activity", method = RequestMethod.POST)
     public WCResultData editActivity(@RequestBody WCRequestModel requestModel) {
 
         WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);

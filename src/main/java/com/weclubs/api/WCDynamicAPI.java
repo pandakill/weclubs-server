@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -58,7 +59,7 @@ class WCDynamicAPI {
         this.mClubService = clubService;
     }
 
-    @RequestMapping(value = "/get_dynamic_list")
+    @RequestMapping(value = "/get_dynamic_list", method = RequestMethod.POST)
     public WCResultData getTodoList(@RequestBody WCRequestModel requestModel) {
 
         WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
@@ -121,7 +122,7 @@ class WCDynamicAPI {
         return WCResultData.getSuccessData(result);
     }
 
-    @RequestMapping(value = "/get_dynamic_detail")
+    @RequestMapping(value = "/get_dynamic_detail", method = RequestMethod.POST)
     public WCResultData getNotifyDetail(@RequestBody WCRequestModel requestModel) {
 
         WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);

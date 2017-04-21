@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ class WCSchoolAPI {
     @Autowired
     private WCISchoolService mSchoolService;
 
-    @RequestMapping(value = "get_school_list")
+    @RequestMapping(value = "get_school_list", method = RequestMethod.POST)
     public WCResultData getSchoolList(@RequestBody WCRequestModel requestModel) {
 
         WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
@@ -58,7 +59,7 @@ class WCSchoolAPI {
         return WCResultData.getSuccessData(result);
     }
 
-    @RequestMapping(value = "get_college_list")
+    @RequestMapping(value = "get_college_list", method = RequestMethod.POST)
     public WCResultData getCollegeList(@RequestBody WCRequestModel requestModel) {
 
         WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);

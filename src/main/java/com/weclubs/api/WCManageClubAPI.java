@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -90,7 +91,7 @@ class WCManageClubAPI {
         return WCResultData.getSuccessData(result);
     }
 
-    @RequestMapping(value = "/create_club")
+    @RequestMapping(value = "/create_club", method = RequestMethod.POST)
     public WCResultData createClub(@RequestBody WCRequestModel requestModel) {
 
         WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
@@ -140,7 +141,7 @@ class WCManageClubAPI {
         return WCResultData.getSuccessData(result);
     }
 
-    @RequestMapping(value = "/get_club_department")
+    @RequestMapping(value = "/get_club_department", method = RequestMethod.POST)
     public WCResultData getClubDepartment(@RequestBody WCRequestModel requestModel) {
 
         WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
@@ -188,7 +189,7 @@ class WCManageClubAPI {
         return WCResultData.getSuccessData(result);
     }
 
-    @RequestMapping(value = "/get_club_job")
+    @RequestMapping(value = "/get_club_job", method = RequestMethod.POST)
     public WCResultData getClubJob(@RequestBody WCRequestModel requestModel) {
 
         WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
@@ -228,7 +229,7 @@ class WCManageClubAPI {
         return WCResultData.getSuccessData(result);
     }
 
-    @RequestMapping(value = "/set_department")
+    @RequestMapping(value = "/set_department", method = RequestMethod.POST)
     public WCResultData setDepartment(@RequestBody WCRequestModel requestModel) {
 
         WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
@@ -273,7 +274,7 @@ class WCManageClubAPI {
         return WCResultData.getSuccessData(result);
     }
 
-    @RequestMapping(value = "/set_job")
+    @RequestMapping(value = "/set_job", method = RequestMethod.POST)
     public WCResultData setJob(@RequestBody WCRequestModel requestModel) {
 
         WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
@@ -316,7 +317,7 @@ class WCManageClubAPI {
         }
     }
 
-    @RequestMapping(value = "/get_all_authority")
+    @RequestMapping(value = "/get_all_authority", method = RequestMethod.POST)
     public WCResultData getAllAuthority(@RequestBody WCRequestModel requestModel) {
 
         WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
@@ -346,7 +347,7 @@ class WCManageClubAPI {
         return WCResultData.getSuccessData(result);
     }
 
-    @RequestMapping(value = "/get_club_honor")
+    @RequestMapping(value = "/get_club_honor", method = RequestMethod.POST)
     public WCResultData getClubHonor(@RequestBody WCRequestModel requestModel) {
 
         WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
@@ -386,7 +387,7 @@ class WCManageClubAPI {
         return WCResultData.getSuccessData(result);
     }
 
-    @RequestMapping(value = "/add_club_honor")
+    @RequestMapping(value = "/add_club_honor", method = RequestMethod.POST)
     public WCResultData addClubHonor(@RequestBody WCRequestModel requestModel) {
 
         WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
@@ -426,7 +427,7 @@ class WCManageClubAPI {
         return WCResultData.getSuccessData(result);
     }
 
-    @RequestMapping(value = "/edit_club_honor")
+    @RequestMapping(value = "/edit_club_honor", method = RequestMethod.POST)
     public WCResultData editClubHonor(@RequestBody WCRequestModel requestModel) {
 
         WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
@@ -459,7 +460,7 @@ class WCManageClubAPI {
         return WCResultData.getSuccessData(result);
     }
 
-    @RequestMapping(value = "/edit_club_introduction")
+    @RequestMapping(value = "/edit_club_introduction", method = RequestMethod.POST)
     public WCResultData editClubIntroduction(@RequestBody WCRequestModel requestModel) {
 
         WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
@@ -500,7 +501,7 @@ class WCManageClubAPI {
         return WCResultData.getSuccessData(result);
     }
 
-    @RequestMapping(value = "/edit_club_slogan")
+    @RequestMapping(value = "/edit_club_slogan", method = RequestMethod.POST)
     public WCResultData editClubSlogan(@RequestBody WCRequestModel requestModel) {
 
         WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
@@ -541,7 +542,7 @@ class WCManageClubAPI {
         return WCResultData.getSuccessData(result);
     }
 
-    @RequestMapping(value = "/set_student_department")
+    @RequestMapping(value = "/set_student_department", method = RequestMethod.POST)
     public WCResultData setStudentDepartment(@RequestBody WCRequestModel requestModel) {
 
         WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
@@ -569,7 +570,7 @@ class WCManageClubAPI {
         return WCResultData.getHttpStatusData(check, null);
     }
 
-    @RequestMapping(value = "/set_student_job")
+    @RequestMapping(value = "/set_student_job", method = RequestMethod.POST)
     public WCResultData setStudentJob(@RequestBody WCRequestModel requestModel) {
 
         WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
@@ -597,7 +598,7 @@ class WCManageClubAPI {
         return WCResultData.getHttpStatusData(check, null);
     }
 
-    @RequestMapping(value = "/delete_student")
+    @RequestMapping(value = "/delete_student", method = RequestMethod.POST)
     public WCResultData deleteStudent(@RequestBody WCRequestModel requestModel) {
 
         WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);

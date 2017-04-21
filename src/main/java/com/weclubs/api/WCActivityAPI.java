@@ -83,7 +83,7 @@ class WCActivityAPI {
         return WCResultData.getSuccessData(result);
     }
 
-    @RequestMapping(value = "/get_activity_detail")
+    @RequestMapping(value = "/get_activity_detail", method = RequestMethod.POST)
     public WCResultData getActivityDetail(@RequestBody WCRequestModel requestModel) {
 
         WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
