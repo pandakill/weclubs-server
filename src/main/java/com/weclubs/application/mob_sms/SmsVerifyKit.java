@@ -13,8 +13,8 @@ public class SmsVerifyKit {
 
     private Logger log = Logger.getLogger(SmsVerifyKit.class);
 
-    private final static String ANDROID_APP_KEY = "1c36d86921782";  //padakill007@gmail.com; weclubs 应用
-    private final static String IOS_APP_KEY = "1c8a005d31dea";  // linyanzuo1222@gmail.com; weclubs 应用
+    private final static String ANDROID_APP_KEY = "1d66889b4e514";  //linyanzuo1222@gmail.com;测试用的 weclubs 应用
+    private final static String IOS_APP_KEY = "1c8a005d31dea";  // linyanzuo1222@gmail.com;测试用的 weclubs 应用
 
     private String appkey;
     private String phone ;
