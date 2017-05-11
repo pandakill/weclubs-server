@@ -127,12 +127,16 @@ class WCManageClubAPI {
             level = Integer.parseInt((String) requestData.get("level"));
         }
         String avatarUrl = (String) requestData.get("avatar_url");
+        String slogan = (String) requestData.get("slogan");
+        String attribution = (String) requestData.get("attribution");
 
         WCClubBean clubBean = new WCClubBean();
         clubBean.setName(clubName);
         clubBean.setLevel(level);
         clubBean.setAvatarUrl(avatarUrl);
         clubBean.setSchoolId(schoolBean.getSchoolId());
+        clubBean.setSlogan(slogan);
+        clubBean.setIntroduction(attribution);
 
         long clubId = mClubService.createClub(clubBean, studentId);
 
