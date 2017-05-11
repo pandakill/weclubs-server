@@ -49,7 +49,7 @@ public class WCSecurityServiceImpl implements WCISecurityService {
         }
     }
 
-    public WCHttpStatus checkRequestID(long id) {
+    public WCHttpStatus checkRequestID(String id) {
         return WCHttpStatus.SUCCESS;
     }
 
@@ -102,7 +102,7 @@ public class WCSecurityServiceImpl implements WCISecurityService {
     }
 
     public WCHttpStatus checkCallerAvailable(String caller) {
-        String[] callers = new String[]{"ios_test", "chrome_test"};
+        String[] callers = new String[]{"ios_test", "weclubs_android", "chrome_test"};
 
         boolean available = false;
         for (String s : callers) {

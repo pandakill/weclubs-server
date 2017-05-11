@@ -40,7 +40,7 @@ public interface WCISecurityService {
      * @param id    请求id
      * @return 如果合法，返回 {@link WCHttpStatus} 中的SUCCESS
      */
-    WCHttpStatus checkRequestID(long id);
+    WCHttpStatus checkRequestID(String id);
 
     /**
      * 检查请求参数是否符合要求,请求参数的格式如下
