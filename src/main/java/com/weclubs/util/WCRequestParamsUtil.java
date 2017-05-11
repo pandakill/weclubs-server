@@ -33,27 +33,25 @@ public class WCRequestParamsUtil {
 //        }
 //    }
 
-    public static long getRequestId (HashMap<String, Object> params) {
+    public static String getRequestId (HashMap<String, Object> params) {
         if (null != params.get("id")) {
-            if (params.get("id") instanceof String) {
-                try {
-                    return (Long) params.get("id");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return -1;
-                }
+            try {
+                return (String) params.get("id");
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
             }
         }
 
-        return -1;
+        return null;
     }
 
-    public static long getRequestId (WCRequestModel requestModel) {
+    public static String getRequestId (WCRequestModel requestModel) {
         if (null != requestModel.getId() && !"".equals(requestModel.getId())) {
-            return Long.parseLong(requestModel.getId());
+            return requestModel.getId();
         }
 
-        return -1;
+        return null;
     }
 
     public static String getEncrypt(HashMap<String, Object> params) {
