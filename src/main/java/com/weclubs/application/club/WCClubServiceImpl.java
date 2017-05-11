@@ -37,19 +37,25 @@ public class WCClubServiceImpl implements WCIClubService {
 
     private Logger log = Logger.getLogger(WCClubServiceImpl.class);
 
-    @Autowired
     private WCClubMapper mClubMapper;
-    @Autowired
     private WCClubHonorMapper mClubHonorMapper;
-    @Autowired
     private WCDynamicMapper mDynamicMapper;
 
-    @Autowired
     private WCIClubGraduateService mClubGraduateService;
-    @Autowired
     private WCIUserService mUserService;
-    @Autowired
     private WCIClubResponsibilityService mClubResponsibilityService;
+
+    @Autowired
+    public WCClubServiceImpl(WCDynamicMapper mDynamicMapper, WCClubMapper mClubMapper,
+                             WCIUserService mUserService, WCIClubResponsibilityService mClubResponsibilityService,
+                             WCClubHonorMapper mClubHonorMapper, WCIClubGraduateService mClubGraduateService) {
+        this.mDynamicMapper = mDynamicMapper;
+        this.mClubMapper = mClubMapper;
+        this.mUserService = mUserService;
+        this.mClubResponsibilityService = mClubResponsibilityService;
+        this.mClubHonorMapper = mClubHonorMapper;
+        this.mClubGraduateService = mClubGraduateService;
+    }
 
     public WCClubBean getClubInfoById(long clubId) {
 
@@ -366,5 +372,23 @@ public class WCClubServiceImpl implements WCIClubService {
         for (WCClubHonorBean honorBean : honorBeanList) {
             mClubHonorMapper.updateClubHonor(honorBean);
         }
+    }
+
+    public boolean checkClubExit(String clubName, long schoolId) {
+        List<WCClubBean> list = getClubsBySchoolId(schoolId);
+
+        if (list == null || list.size() == 0) {
+            log.info("checkClubExit：schoolId = " + schoolId + " 社团列表为空。");
+            return false;
+        }
+
+        boolean isExit = false;
+        for (WCClubBean clubBean : list) {
+            if (clubName.equals(clubBean.getName())) {
+                isExit = true;
+                break;
+            }
+        }
+        return isExit;
     }
 }

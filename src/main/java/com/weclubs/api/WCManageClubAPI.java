@@ -130,6 +130,13 @@ class WCManageClubAPI {
         String slogan = (String) requestData.get("slogan");
         String attribution = (String) requestData.get("attribution");
 
+        if (!mClubService.checkClubExit(clubName, schoolBean.getSchoolId())) {
+            log.error("createClub：已经存在 clubName = 【" + clubName + "】的社团");
+            check = WCHttpStatus.FAIL_REQUEST;
+            check.msg = "已经存在同名的社团";
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
         WCClubBean clubBean = new WCClubBean();
         clubBean.setName(clubName);
         clubBean.setLevel(level);

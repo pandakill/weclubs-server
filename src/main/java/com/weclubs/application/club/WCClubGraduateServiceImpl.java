@@ -104,7 +104,6 @@ class WCClubGraduateServiceImpl implements WCIClubGraduateService {
         mClubGraduateMapper.createStuCluGraRelation(relationBean);
     }
 
-    @Override
     public WCHttpStatus updateClubCurrentGraduateStudentDepartment(long clubId, long studentId, long departmentId) {
 
         WCHttpStatus check = WCHttpStatus.FAIL_REQUEST;
@@ -166,7 +165,6 @@ class WCClubGraduateServiceImpl implements WCIClubGraduateService {
         return check;
     }
 
-    @Override
     public WCHttpStatus updateClubCurrentGraduateStudentJob(long clubId, long studentId, long jobId) {
 
         WCHttpStatus check = WCHttpStatus.FAIL_REQUEST;
@@ -228,7 +226,6 @@ class WCClubGraduateServiceImpl implements WCIClubGraduateService {
         return check;
     }
 
-    @Override
     public WCHttpStatus deleteStudentFromClubCurrentGraduate(long clubId, long studentId) {
 
         WCHttpStatus check = WCHttpStatus.FAIL_REQUEST;

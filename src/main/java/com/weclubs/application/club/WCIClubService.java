@@ -57,4 +57,14 @@ public interface WCIClubService {
      * @param honorList 社团荣誉列表键值对
      */
     void updateClubHonor(List<HashMap<String, Object>> honorList);
+
+    /**
+     * 检查某社团名称是否在该学校中已经存在
+     *
+     * @param clubName  社团名字
+     * @param schoolId  学校id
+     *
+     * @return  true：已经存在；false：不存在
+     */
+    boolean checkClubExit(String clubName, long schoolId);
 }
