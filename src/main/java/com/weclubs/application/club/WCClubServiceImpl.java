@@ -219,7 +219,7 @@ public class WCClubServiceImpl implements WCIClubService {
             result.setClubSlogan(clubBean.getSlogan());
             result.setClubIntroduction(clubBean.getIntroduction());
 
-            if (clubGraduateRelationBean.getDepartmentId() > 0) {
+            if (clubGraduateRelationBean != null && clubGraduateRelationBean.getDepartmentId() > 0) {
                 WCClubDepartmentBean departmentBean
                         = mClubResponsibilityService.getClubDepartmentById(clubGraduateRelationBean.getDepartmentId());
                 if (departmentBean != null) {
@@ -228,7 +228,7 @@ public class WCClubServiceImpl implements WCIClubService {
                 }
             }
 
-            if (clubGraduateRelationBean.getJobId() > 0) {
+            if (clubGraduateRelationBean != null && clubGraduateRelationBean.getJobId() > 0) {
                 WCClubJobBean jobBean = mClubResponsibilityService.getClubJobById(clubGraduateRelationBean.getJobId());
                 if (jobBean != null) {
                     result.setJobId(jobBean.getJobId());

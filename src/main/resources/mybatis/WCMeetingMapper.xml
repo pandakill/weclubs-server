@@ -220,6 +220,7 @@
         AND club_mission.`type` = 2
         AND student.`student_id` = student_mission.`student_id`
         AND student_mission.`is_leader` = 1
+        AND student_mission.`mission_id` = #{meetingId}
     </select>
 
     <select id="getMeetingParticipation" resultMap="meetingParticipationMap" resultType="list">
