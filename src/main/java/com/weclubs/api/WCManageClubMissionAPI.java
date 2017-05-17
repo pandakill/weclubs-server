@@ -168,7 +168,7 @@ class WCManageClubMissionAPI {
                         student.put("is_finish", participation.getStatus() == 2 ? 1 : 0);
                         student.put("is_confirm", participation.getStatus() > 0 ? 1 : 0);
 
-                        student.put("is_child", participation.getChildMissionCount() > 0 ? 1 : 0);
+                        student.put("has_child", participation.getChildMissionCount() > 0 ? 1 : 0);
 
                         participants.add(student);
                     }
@@ -191,7 +191,7 @@ class WCManageClubMissionAPI {
                 hash.put("is_finish", participation.getStatus() == 2 ? 1 : 0);
                 hash.put("is_confirm", participation.getStatus() > 0 ? 1 : 0);
 
-                hash.put("is_child", participation.getChildMissionCount() > 0 ? 1 : 0);
+                hash.put("has_child", participation.getChildMissionCount() > 0 ? 1 : 0);
 
                 participants.add(hash);
             }
