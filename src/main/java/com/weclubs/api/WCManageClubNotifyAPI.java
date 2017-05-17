@@ -181,6 +181,7 @@ class WCManageClubNotifyAPI {
         HashMap<String, Object> result = new HashMap<String, Object>();
         result.put("unread_count", unreadCount);
         result.put("total_count", totalCount);
+        result.put("already_read_count", totalCount - unreadCount);
         result.put("confirm_status", relationHash);
         return WCResultData.getSuccessData(result);
     }
