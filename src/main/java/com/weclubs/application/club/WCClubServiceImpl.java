@@ -10,6 +10,7 @@ import com.weclubs.model.WCManageClubModel;
 import com.weclubs.model.WCMyClubModel;
 import com.weclubs.model.WCStudentBaseInfoModel;
 import com.weclubs.model.WCStudentForClubModel;
+import com.weclubs.util.WCHttpStatus;
 import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -390,5 +391,27 @@ public class WCClubServiceImpl implements WCIClubService {
             }
         }
         return isExit;
+    }
+
+    public WCHttpStatus setClubAvatar(String avatarUrl, long clubId) {
+        WCHttpStatus check = WCHttpStatus.SUCCESS;
+
+        if (StringUtils.isEmpty(avatarUrl)) {
+            check = WCHttpStatus.FAIL_REQUEST;
+            check.msg = "头像地址不能为空";
+            return check;
+        }
+
+        WCClubBean clubBean = getClubInfoById(clubId);
+        if (clubBean == null) {
+            check = WCHttpStatus.FAIL_REQUEST;
+            check.msg = "社团 id 【" + clubId + "】不存在";
+            return check;
+        }
+
+        clubBean.setAvatarUrl(avatarUrl);
+        updateClub(clubBean);
+
+        return check;
     }
 }

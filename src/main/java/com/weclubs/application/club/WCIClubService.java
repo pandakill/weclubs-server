@@ -6,6 +6,7 @@ import com.weclubs.bean.WCClubStudentBean;
 import com.weclubs.model.WCManageClubModel;
 import com.weclubs.model.WCMyClubModel;
 import com.weclubs.model.WCStudentForClubModel;
+import com.weclubs.util.WCHttpStatus;
 
 import java.util.HashMap;
 import java.util.List;
@@ -67,4 +68,15 @@ public interface WCIClubService {
      * @return  true：已经存在；false：不存在
      */
     boolean checkClubExit(String clubName, long schoolId);
+
+    /**
+     * 设置社团头像
+     *
+     * @param avatarUrl 头像地址
+     * @param clubId 社团id
+     *
+     * @return  如果修改设置成功，则返回 {@link WCHttpStatus#SUCCESS}
+     *          否则返回 {@link WCHttpStatus#FAIL_REQUEST}
+     */
+    WCHttpStatus setClubAvatar(String avatarUrl, long clubId);
 }
