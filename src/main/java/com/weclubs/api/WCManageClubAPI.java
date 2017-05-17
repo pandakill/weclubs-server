@@ -279,10 +279,10 @@ class WCManageClubAPI {
             log.info("社团 id = 【" + clubId + "】删除所有部门");
         }
 
-        mClubResponsibilityService.setNewDepartmentsByClubId(clubId, selected, newDepartments);
+        check = mClubResponsibilityService.setNewDepartmentsByClubId(clubId, selected, newDepartments);
 
         HashMap<String, Object> result = new HashMap<String, Object>();
-        return WCResultData.getSuccessData(result);
+        return WCResultData.getHttpStatusData(check, result);
     }
 
     @RequestMapping(value = "/set_job", method = RequestMethod.POST)
@@ -316,10 +316,10 @@ class WCManageClubAPI {
             JSONObject jsonObject = new JSONObject(jobAuth);
             log.info("setJob：jobAuthJsonObj = " + jsonObject.toString());
 
-            mClubResponsibilityService.setNewJobByClubId(clubId, jsonObject);
+            check = mClubResponsibilityService.setNewJobByClubId(clubId, jsonObject);
 
             HashMap<String, Object> result = new HashMap<String, Object>();
-            return WCResultData.getSuccessData(result);
+            return WCResultData.getHttpStatusData(check, result);
         } catch (JSONException e) {
             log.error("setJob：jobAuth = " + jobAuth);
             check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;

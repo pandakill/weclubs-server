@@ -10,13 +10,16 @@ import com.weclubs.mapper.WCClubAuthorityMapper;
 import com.weclubs.mapper.WCClubDepartmentMapper;
 import com.weclubs.mapper.WCClubJobMapper;
 import com.weclubs.mapper.WCClubMapper;
+import com.weclubs.util.WCHttpStatus;
 import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * 部门职能的服务类
@@ -87,18 +90,26 @@ class WCClubResponsibilityServiceImpl implements WCIClubResponsibilityService {
         mJobMapper.createClubJob(jobBean);
     }
 
-    public void setDepartmentsByClubId(long clubId, List<WCClubDepartmentBean> departments) {
+    public WCHttpStatus setDepartmentsByClubId(long clubId, List<WCClubDepartmentBean> departments) {
+
+        WCHttpStatus check = WCHttpStatus.SUCCESS;
 
         if (clubId <= 0) {
             log.error("setDepartmentsByClubId：设置社团部门失败，clubId不能小于等于0。");
-            return;
+
+            check = WCHttpStatus.FAIL_REQUEST;
+            check.msg = "club_id 不能小于等于0";
+            return check;
         }
 
         WCClubBean clubBean = mClubMapper.getClubById(clubId);
 
         if (clubBean == null) {
             log.error("setDepartmentsByClubId：设置社团部门失败，找不到 id = " + clubId + " 的社团");
-            return;
+
+            check = WCHttpStatus.FAIL_REQUEST;
+            check.msg = "找不到 id = 【" + clubId + "】的社团";
+            return check;
         }
 
         String departmentsStr = "";
@@ -131,6 +142,8 @@ class WCClubResponsibilityServiceImpl implements WCIClubResponsibilityService {
         log.info("setDepartmentsByClubId：去重之后的 departmentsStr = " + departmentsStr);
 
         mDepartmentMapper.setCurrentClubDepartments(clubId, departmentsStr);
+
+        return check;
     }
 
     public void setDepartmentsByClubId(long clubId, String ids) {
@@ -155,11 +168,15 @@ class WCClubResponsibilityServiceImpl implements WCIClubResponsibilityService {
         setDepartmentsByClubId(clubId, departmentBeans);
     }
 
-    public void setNewDepartmentsByClubId(long clubId, String ids, String departments) {
+    public WCHttpStatus setNewDepartmentsByClubId(long clubId, String ids, String departments) {
+
+        WCHttpStatus check = WCHttpStatus.SUCCESS;
 
         if (clubId <= 0) {
             log.error("setNewDepartmentsByClubId：clubId不能小于等于0");
-            return;
+            check = WCHttpStatus.FAIL_REQUEST;
+            check.msg = "club_id 不能小于等于0";
+            return check;
         }
 
         List<WCClubDepartmentBean> departmentBeans = new ArrayList<WCClubDepartmentBean>();
@@ -197,7 +214,7 @@ class WCClubResponsibilityServiceImpl implements WCIClubResponsibilityService {
             log.error("setDepartmentsByClubId：设置的社团部门为空！");
         }
 
-        setDepartmentsByClubId(clubId, departmentBeans);
+        return setDepartmentsByClubId(clubId, departmentBeans);
     }
 
     public void setJobsByClubId(long clubId, List<WCClubJobBean> jobs) {
@@ -247,11 +264,15 @@ class WCClubResponsibilityServiceImpl implements WCIClubResponsibilityService {
         mJobMapper.setCurrentClubJobs(clubId, jobStr);
     }
 
-    public void setNewJobByClubId(long clubId, org.json.JSONObject jobAuth) {
+    public WCHttpStatus setNewJobByClubId(long clubId, org.json.JSONObject jobAuth) {
+
+        WCHttpStatus check = WCHttpStatus.SUCCESS;
 
         if (clubId <= 0) {
             log.error("setNewJobByClubId：clubId不能小于等于0");
-            return;
+            check = WCHttpStatus.FAIL_REQUEST;
+            check.msg = "club_id 不能小于等于0";
+            return check;
         }
 
         List<String> jobIdOrName = new ArrayList<String>();
@@ -275,6 +296,10 @@ class WCClubResponsibilityServiceImpl implements WCIClubResponsibilityService {
                     resultJsonObj.put(s, jobBean.getJobId() + "");
                 } else {
                     log.info("setNewJobByClubId：找不到 id = 【" + s + "】的职位，无法添加");
+
+                    check = WCHttpStatus.FAIL_REQUEST;
+                    check.msg = "找不到 id = 【" + s + "】的职位，无法添加";
+                    return check;
                 }
             } catch (NumberFormatException e) {
                 WCClubJobBean jobBean = mJobMapper.getClubJobByJobName(s);
@@ -288,16 +313,25 @@ class WCClubResponsibilityServiceImpl implements WCIClubResponsibilityService {
                     resultJsonObj.put(jobBean.getJobId() + "", jobAuth.get(s));
                 } catch (JSONException e1) {
                     e1.printStackTrace();
+
+                    check = WCHttpStatus.FAIL_REQUEST;
+                    check.msg = "参数有误";
+                    return check;
                 }
                 jobBeanList.add(jobBean);
             } catch (JSONException e) {
                 e.printStackTrace();
+
+                check = WCHttpStatus.FAIL_REQUEST;
+                check.msg = "参数有误";
+                return check;
             }
         }
         log.info("setNewJobByClubId：jobBeanList = " + jobBeanList.toString());
         log.info("setNewJobByClubId：resultJsonObj = " + resultJsonObj.toString());
 
         mJobMapper.setCurrentClubJobs(clubId, resultJsonObj.toString());
+        return check;
     }
 
     public List<WCClubDepartmentBean> getDepartmentsBySuggest() {
