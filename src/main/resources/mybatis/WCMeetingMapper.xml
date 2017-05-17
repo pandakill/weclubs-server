@@ -15,7 +15,6 @@
         <result property="sponsorId" column="sponsor_id" />
         <result property="createDate" column="create_date" />
         <result property="isDel" column="is_del" />
-        <result property="signType" column="sign_type" />
 
         <association property="clubBean" javaType="com.weclubs.bean.WCClubBean">
             <id property="clubId" column="club_id" />
