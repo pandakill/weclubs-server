@@ -293,7 +293,7 @@ class WCClubResponsibilityServiceImpl implements WCIClubResponsibilityService {
                 WCClubJobBean jobBean = mJobMapper.getClubJobById(id);
                 if (jobBean != null) {
                     jobBeanList.add(jobBean);
-                    resultJsonObj.put(s, jobBean.getJobId() + "");
+                    resultJsonObj.put(s, jobAuth.getString(s));
                 } else {
                     log.info("setNewJobByClubId：找不到 id = 【" + s + "】的职位，无法添加");
 
