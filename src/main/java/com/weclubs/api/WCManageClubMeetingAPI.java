@@ -73,6 +73,12 @@ class WCManageClubMeetingAPI {
         int pageSize = WCRequestParamsUtil.getPageSize(requestModel);
         long sponsorId = getLongData(requestData.get("sponsor_id"));
 
+        if (sponsorId <= 0) {
+            check = WCHttpStatus.FAIL_REQUEST;
+            check.msg = "缺少参数：sponsor_id";
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
         PageHelper.startPage(pageNo, pageSize);
         List<WCSponsorMeetingModel> meetingModelList = mClubMeetingService.getMeetingBySponsor(sponsorId);
         PageInfo<WCSponsorMeetingModel> pageInfo = new PageInfo<WCSponsorMeetingModel>(meetingModelList);
