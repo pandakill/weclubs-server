@@ -231,8 +231,10 @@ class WCManageClubMeetingAPI {
         }
         result.put("time_to_sign", timeToSign ? 1 : (meetingModel.getSignType() == 0 ? 0 : 2));
 
+        result.put("already_confirm_count", meetingModel.getTotalCount() - meetingModel.getUnConfirmCount());
         result.put("unconfirm_count", meetingModel.getUnConfirmCount());
         result.put("total_count", meetingModel.getTotalCount());
+        result.put("unsign_count", meetingModel.getTotalCount() - meetingModel.getSignCount());
         result.put("already_sign_count", meetingModel.getSignCount());
 
         return result;
