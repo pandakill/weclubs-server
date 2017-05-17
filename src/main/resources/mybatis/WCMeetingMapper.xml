@@ -190,7 +190,7 @@
         AND student_mission.`is_del` = 0
         AND club_mission.`type` = 2
         AND club_mission.`status` = 0
-        AND student_mission.`is_sign` = 0
+--         AND student_mission.`is_sign` = 0
         AND student.`student_id` = club_mission.`sponsor_id`
         AND student_mission.`student_id` = #{studentId}
     </select>
@@ -296,7 +296,7 @@
         AND club_mission.`mission_id` = #{meetingId}
         AND club_mission.`mission_id` = relation.`mission_id`
         AND relation.`is_del` = 0
-        AND relation.`is_sign` = 1
+        AND relation.`is_sign` > 0
         ORDER BY relation.`status`
     </select>
 
