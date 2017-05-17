@@ -62,15 +62,28 @@ class WCMeetingAPI {
 
         List<WCMeetingParticipationModel> participationModels = mMeetingService.getMeetingParticipation(meetingId);
         ArrayList<HashMap<String, Object>>  hashArray = new ArrayList<HashMap<String, Object>>();
+        int unSignCount = 0;
+        int unConfirmCount = 0;
         if (participationModels != null && participationModels.size() > 0) {
             for (WCMeetingParticipationModel participationModel : participationModels) {
                 HashMap<String, Object> hash = new HashMap<String, Object>();
 
-                hash.put("is_confirm", participationModel.getStatus() == 1 ? 1 : 0);
-                hash.put("is_leave", participationModel.getStatus() == 3 ? 1 : 0);
-                hash.put("is_sign", participationModel.getIsSign());
+                // status = 0：未确认， 1：已经确认，  3：已经确认但请假
+                // isSign = 0：未签到   1：已经签到  2：已经签到但迟到
+                hash.put("is_confirm", participationModel.getStatus() == 0 ? 0 : 1);    // 是否已经确认，不包括请假
+                hash.put("is_leave", participationModel.getStatus() == 3 ? 1 : 0);  // 是否请假
+                hash.put("is_sign", participationModel.getIsSign() == 0 ? 0 : 1);    // 是否已经签到
+                hash.put("is_late", participationModel.getIsSign() == 2 ? 0 : 1);  // 计算是否迟到
                 hash.put("sign_date", participationModel.getSignDate());
                 hash.put("dynamic_date", participationModel.getCreateDate());
+
+                if (participationModel.getStatus() == 0) {
+                    unConfirmCount ++;
+                }
+
+                if (participationModel.getIsSign() == 0) {
+                    unSignCount ++;
+                }
 
                 hash.put("student_id", participationModel.getStudentId());
                 hash.put("name", participationModel.getStudentName());
@@ -84,6 +97,11 @@ class WCMeetingAPI {
 
         HashMap<String, Object> result = new HashMap<String, Object>();
         result.put("participation", hashArray);
+        result.put("total_count", hashArray.size());
+        result.put("unsign_count", unSignCount);
+        result.put("already_sign_count", hashArray.size() - unSignCount);
+        result.put("unconfirm_count", unConfirmCount);
+        result.put("already_confirm_count", hashArray.size() - unConfirmCount);
         return WCResultData.getSuccessData(result);
     }
 }
