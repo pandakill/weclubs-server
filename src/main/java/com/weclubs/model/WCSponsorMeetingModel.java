@@ -23,6 +23,7 @@ public class WCSponsorMeetingModel extends WCClubMissionBean {
         setSponsorId(missionBean.getSponsorId());
         setCreateDate(missionBean.getCreateDate());
         setIsDel(missionBean.getIsDel());
+        setSignType(missionBean.getSignType());
 
         setClubBean(missionBean.getClubBean());
         setParentMissionBean(missionBean.getParentMissionBean());
