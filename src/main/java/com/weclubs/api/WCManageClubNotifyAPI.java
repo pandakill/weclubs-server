@@ -198,6 +198,7 @@ class WCManageClubNotifyAPI {
         result.put("dynamic_type", "notify");
         result.put("unread_count", notifyModel.getUnreadCount());
         result.put("total_count", notifyModel.getTotalCount());
+        result.put("already_read_count", notifyModel.getTotalCount() - notifyModel.getUnreadCount());
 
         return result;
     }
