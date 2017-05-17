@@ -60,7 +60,7 @@
 
     <!-- 根据社团 id 获取当前届数社团的所有部门 -->
     <select id="getCurrentClubDepartmentsByClubId" resultType="String">
-        SELECT `department`
+        SELECT `departments`
         FROM `t_club_graduate`
         WHERE `club_id` = #{clubId}
         AND `is_current` = 1

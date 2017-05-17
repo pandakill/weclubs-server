@@ -12,27 +12,27 @@
 
     <!-- 创建社团权限 -->
     <insert id="createAuthority" useGeneratedKeys="true" keyProperty="clubAuthorityId" parameterType="com.weclubs.bean.WCClubAuthorityBean">
-        INSERT INTO `t_club_aurhority`(`name`, `attribution`)
+        INSERT INTO `t_club_authority`(`name`, `attribution`)
         VALUES (#{name}, #{attribute})
     </insert>
 
     <!-- 根据 id 删除权限 -->
     <update id="deleteAuthority">
-        UPDATE `t_club_aurhority`
+        UPDATE `t_club_authority`
         SET `IS_DEL` = 1
         WHERE `club_authority_id` = #{authorityId}
     </update>
 
     <!-- 根据 id 获取指定的权限详情 -->
     <select id="getAuthorityById" resultMap="clubAuthorityMap" resultType="com.weclubs.bean.WCClubAuthorityBean">
-        SELECT * FROM `t_club_aurhority`
+        SELECT * FROM `t_club_authority`
         WHERE `club_authority_id` = #{authorityId}
         AND `is_del` = 0
     </select>
 
     <!-- 根据学生 id 查找该学生当前加入的所有社团实体列表 -->
     <select id="getAuthorities" resultType="List" resultMap="clubAuthorityMap">
-        SELECT * FROM `t_club_aurhority`
+        SELECT * FROM `t_club_authority`
         WHERE `is_del` = 0
     </select>
 </mapper>
