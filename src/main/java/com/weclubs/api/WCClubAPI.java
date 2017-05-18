@@ -12,6 +12,7 @@ import com.weclubs.model.WCMyClubModel;
 import com.weclubs.model.request.WCRequestModel;
 import com.weclubs.model.response.WCResultData;
 import com.weclubs.util.PinYinComparator;
+import com.weclubs.util.WCCommonUtil;
 import com.weclubs.util.WCHttpStatus;
 import com.weclubs.util.WCRequestParamsUtil;
 import net.sourceforge.pinyin4j.PinyinHelper;
@@ -23,10 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * 社团相关接口
@@ -211,15 +209,11 @@ class WCClubAPI {
             return WCResultData.getHttpStatusData(check, null);
         }
 
-        long clubId = Long.parseLong((String) requestData.get("club_id"));
+        long clubId = WCCommonUtil.getLongData(requestData.get("club_id"));
 
         int sortType = WCClubServiceImpl.SORT_BY_REAL_NAME; // 默认排序为按照真实姓名
         if (requestData.containsKey("sort_type")) {
-            if (requestData.get("sort_type") instanceof Integer) {
-                sortType = (Integer) requestData.get("sort_type");
-            } else if (requestData.get("sort_type") instanceof String) {
-                sortType = Integer.parseInt((String) requestData.get("sort_type"));
-            }
+            sortType = WCCommonUtil.getIntegerData(requestData.get("sort_type"));
         }
 
         List<WCClubStudentBean> students = mClubService.getStudentsByCurrentGraduate(clubId, sortType);
@@ -232,7 +226,7 @@ class WCClubAPI {
 
         HashMap<String, Object> result = new HashMap<String, Object>();
         result.put("sort_type", sortType);
-        result.put("student", commonStudentSortByPinyin(studentsMap));
+        result.put("groups", getStudentSortByPinyin(studentsMap));
         return WCResultData.getSuccessData(result);
     }
 
@@ -320,21 +314,47 @@ class WCClubAPI {
         PinYinComparator comparator = new PinYinComparator();
         for (HashMap<String, Object> stringObjectHashMap : studentsMap) {
             for (String s : AZ) {
-                String[] args = PinyinHelper.toGwoyeuRomatzyhStringArray(((String) stringObjectHashMap.get("name")).charAt(0));
-                if (args.length > 0) {
-                    log.info("s.toLowerCase() = " + s.toLowerCase(Locale.getDefault()) + "; args[0] = " + args[0]
-                            + "; char = " + ((String) stringObjectHashMap.get("name")).charAt(0));
-                    if (s.toLowerCase(Locale.getDefault()).equals(args[0].split("")[0])) {
-                        ((ArrayList<HashMap<String, Object>>) resultMap.get(s)).add(stringObjectHashMap);
-                        break;
-                    }
-                } else {
+                String studentName = (String) stringObjectHashMap.get("name");
+                if (StringUtils.isEmpty(studentName)) {
                     ((ArrayList<HashMap<String, Object>>) resultMap.get("*")).add(stringObjectHashMap);
                     break;
+                } else {
+                    String[] args = PinyinHelper.toGwoyeuRomatzyhStringArray(studentName.charAt(0));
+                    if (args.length > 0) {
+                        log.info("s.toLowerCase() = " + s.toLowerCase(Locale.getDefault()) + "; args[0] = " + args[0]
+                                + "; char = " + ((String) stringObjectHashMap.get("name")).charAt(0));
+                        if (s.toLowerCase(Locale.getDefault()).equals(args[0].split("")[0])) {
+                            ((ArrayList<HashMap<String, Object>>) resultMap.get(s)).add(stringObjectHashMap);
+                            break;
+                        }
+                    } else {
+                        ((ArrayList<HashMap<String, Object>>) resultMap.get("*")).add(stringObjectHashMap);
+                        break;
+                    }
                 }
             }
         }
 
         return resultMap;
+    }
+
+    private ArrayList<HashMap<String, Object>> getStudentSortByPinyin(ArrayList<HashMap<String, Object>> studentsMap) {
+        ArrayList<HashMap<String, Object>> result = new ArrayList<HashMap<String, Object>>();
+        HashMap<String, Object> studentHash = commonStudentSortByPinyin(studentsMap);
+
+        Set set = studentHash.entrySet();
+        for (Object aSet : set) {
+            HashMap<String, Object> item = new HashMap<String, Object>();
+
+            Map.Entry entry = (Map.Entry) aSet;
+            ArrayList<HashMap<String, Object>> students = (ArrayList<HashMap<String, Object>>) entry.getValue();
+            if (students != null && students.size() > 0) {
+                item.put("group_name", entry.getKey());
+                item.put("students", entry.getValue());
+                result.add(item);
+            }
+        }
+
+        return result;
     }
 }
