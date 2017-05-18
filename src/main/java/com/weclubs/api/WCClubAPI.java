@@ -7,24 +7,22 @@ import com.weclubs.application.club.WCIClubService;
 import com.weclubs.application.security.WCISecurityService;
 import com.weclubs.bean.WCClubBean;
 import com.weclubs.bean.WCClubHonorBean;
-import com.weclubs.bean.WCClubStudentBean;
 import com.weclubs.model.WCMyClubModel;
 import com.weclubs.model.request.WCRequestModel;
 import com.weclubs.model.response.WCResultData;
-import com.weclubs.util.PinYinComparator;
 import com.weclubs.util.WCCommonUtil;
 import com.weclubs.util.WCHttpStatus;
 import com.weclubs.util.WCRequestParamsUtil;
-import net.sourceforge.pinyin4j.PinyinHelper;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * 社团相关接口
@@ -216,17 +214,9 @@ class WCClubAPI {
             sortType = WCCommonUtil.getIntegerData(requestData.get("sort_type"));
         }
 
-        List<WCClubStudentBean> students = mClubService.getStudentsByCurrentGraduate(clubId, sortType);
-        ArrayList<HashMap<String, Object>> studentsMap = new ArrayList<HashMap<String, Object>>();
-        if (students != null) {
-            for (WCClubStudentBean student : students) {
-                studentsMap.add(getCommonStudent(student));
-            }
-        }
-
         HashMap<String, Object> result = new HashMap<String, Object>();
         result.put("sort_type", sortType);
-        result.put("groups", getStudentSortByPinyin(studentsMap));
+        result.put("groups", mClubService.getStudentsByCurrentGraduate(clubId, sortType));
         return WCResultData.getSuccessData(result);
     }
 
@@ -280,81 +270,6 @@ class WCClubAPI {
             honorHash.put("name", honor.getContent());
             result.add(honorHash);
         }
-        return result;
-    }
-
-    private HashMap<String, Object> getCommonStudent(WCClubStudentBean studentBean) {
-        HashMap<String, Object> result = new HashMap<String, Object>();
-        result.put("student_id", studentBean.getStudentId());
-        result.put("name", !StringUtils.isEmpty(studentBean.getRealName()) ? studentBean.getRealName() : studentBean.getNickName());
-        result.put("department", studentBean.getDepartmentBean() != null ? studentBean.getDepartmentBean().getDepartmentName() : null);
-        result.put("job", studentBean.getJobBean() != null ? studentBean.getJobBean().getJobName() : null);
-        result.put("mobile", studentBean.getMobile());
-        result.put("avatar_url", studentBean.getAvatarUrl());
-        result.put("major", studentBean.getGraduateYear() + "-"
-                + (studentBean.getSchoolBean() != null ? studentBean.getSchoolBean().getName() : null));
-        return result;
-    }
-
-    /**
-     * 根据真实姓名首字母进行排序
-     *
-     * @param studentsMap   学生的键值对列表
-     * @return  排序后的根据ABCD。。。排序的学生键值对
-     */
-    private HashMap<String, Object> commonStudentSortByPinyin(ArrayList<HashMap<String, Object>> studentsMap) {
-        String english = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        String[] AZ = english.split("");
-        HashMap<String, Object> resultMap = new HashMap<String, Object>();
-        for (String s : AZ) {
-            resultMap.put(s, new ArrayList<HashMap<String, Object>>());
-        }
-        resultMap.put("*", new ArrayList<HashMap<String, Object>>());
-
-        PinYinComparator comparator = new PinYinComparator();
-        for (HashMap<String, Object> stringObjectHashMap : studentsMap) {
-            for (String s : AZ) {
-                String studentName = (String) stringObjectHashMap.get("name");
-                if (StringUtils.isEmpty(studentName)) {
-                    ((ArrayList<HashMap<String, Object>>) resultMap.get("*")).add(stringObjectHashMap);
-                    break;
-                } else {
-                    String[] args = PinyinHelper.toGwoyeuRomatzyhStringArray(studentName.charAt(0));
-                    if (args.length > 0) {
-                        log.info("s.toLowerCase() = " + s.toLowerCase(Locale.getDefault()) + "; args[0] = " + args[0]
-                                + "; char = " + ((String) stringObjectHashMap.get("name")).charAt(0));
-                        if (s.toLowerCase(Locale.getDefault()).equals(args[0].split("")[0])) {
-                            ((ArrayList<HashMap<String, Object>>) resultMap.get(s)).add(stringObjectHashMap);
-                            break;
-                        }
-                    } else {
-                        ((ArrayList<HashMap<String, Object>>) resultMap.get("*")).add(stringObjectHashMap);
-                        break;
-                    }
-                }
-            }
-        }
-
-        return resultMap;
-    }
-
-    private ArrayList<HashMap<String, Object>> getStudentSortByPinyin(ArrayList<HashMap<String, Object>> studentsMap) {
-        ArrayList<HashMap<String, Object>> result = new ArrayList<HashMap<String, Object>>();
-        HashMap<String, Object> studentHash = commonStudentSortByPinyin(studentsMap);
-
-        Set set = studentHash.entrySet();
-        for (Object aSet : set) {
-            HashMap<String, Object> item = new HashMap<String, Object>();
-
-            Map.Entry entry = (Map.Entry) aSet;
-            ArrayList<HashMap<String, Object>> students = (ArrayList<HashMap<String, Object>>) entry.getValue();
-            if (students != null && students.size() > 0) {
-                item.put("group_name", entry.getKey());
-                item.put("students", entry.getValue());
-                result.add(item);
-            }
-        }
-
         return result;
     }
 }

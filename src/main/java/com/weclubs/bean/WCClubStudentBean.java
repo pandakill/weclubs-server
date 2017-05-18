@@ -1,6 +1,7 @@
 package com.weclubs.bean;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 /**
  * 学校、院系、专业关系表，对应数据库 t_school 表
@@ -55,5 +56,18 @@ public class WCClubStudentBean extends WCStudentBean implements Serializable {
                 ", departmentBean=" + departmentBean +
                 ", jobBean=" + jobBean +
                 '}';
+    }
+
+    public HashMap<String, Object> getCommonStudent() {
+        HashMap<String, Object> result = new HashMap<String, Object>();
+        result.put("student_id", getStudentId());
+        result.put("name", getRealName());
+        result.put("department", getDepartmentBean() != null ? getDepartmentBean().getDepartmentName() : null);
+        result.put("job", getJobBean() != null ? getJobBean().getJobName() : null);
+        result.put("mobile", getMobile());
+        result.put("avatar_url", getAvatarUrl());
+        result.put("major",(getSchoolBean() != null ? getSchoolBean().getName() : null));
+        result.put("graduate_year", getGraduateYear());
+        return result;
     }
 }
