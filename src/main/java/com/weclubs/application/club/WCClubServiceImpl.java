@@ -174,11 +174,7 @@ public class WCClubServiceImpl implements WCIClubService {
 
         List<WCClubStudentBean> listStudent = new ArrayList<WCClubStudentBean>();
 
-        if (sortType == SORT_BY_REAL_NAME) {    //根据学生真实姓名首字母排序
-            listStudent = mClubMapper.getCurrentGraduateStudentsBySortStuName(clubId);
-        } else {
-            listStudent = mClubMapper.getCurrentGraduateStudents(clubId);
-        }
+        listStudent = mClubMapper.getCurrentGraduateStudentsBySortStuName(clubId);
 
         ArrayList<HashMap<String, Object>> studentsMap = new ArrayList<HashMap<String, Object>>();
         if (listStudent != null) {
@@ -187,6 +183,17 @@ public class WCClubServiceImpl implements WCIClubService {
             }
         }
 
+        if (sortType == SORT_BY_REAL_NAME) {    //根据学生真实姓名首字母排序
+            return getStudentSortByPinyin(studentsMap);
+        } else if (sortType == SORT_BY_JOB){
+            return getStudentSortByJob(studentsMap);
+        } else if (sortType == SORT_BY_DEPARTMENT) {
+            return getStudentSortByDepartment(studentsMap);
+        } else if (sortType == SORT_BY_GRADUATE) {
+            return getStudentSortByGraduate(studentsMap);
+        }
+
+        // 如果没有排序规则，则默认按照名字首字母进行排序
         return getStudentSortByPinyin(studentsMap);
     }
 
@@ -432,10 +439,10 @@ public class WCClubServiceImpl implements WCIClubService {
      * @param studentsMap   学生的键值对列表
      * @return  排序后的根据ABCD。。。排序的学生键值对
      */
-    private HashMap<String, Object> commonStudentSortByPinyin(ArrayList<HashMap<String, Object>> studentsMap) {
+    private ArrayList<HashMap<String, Object>> getStudentSortByPinyin(ArrayList<HashMap<String, Object>> studentsMap) {
         String english = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         String[] AZ = english.split("");
-        HashMap<String, Object> resultMap = new HashMap<String, Object>();
+        HashMap<String, ArrayList<HashMap<String, Object>>> resultMap = new HashMap<String, ArrayList<HashMap<String, Object>>>();
         for (String s : AZ) {
             resultMap.put(s, new ArrayList<HashMap<String, Object>>());
         }
@@ -465,14 +472,93 @@ public class WCClubServiceImpl implements WCIClubService {
             }
         }
 
-        return resultMap;
+        return getStudentsSort(resultMap);
     }
 
-    private ArrayList<HashMap<String, Object>> getStudentSortByPinyin(ArrayList<HashMap<String, Object>> studentsMap) {
-        ArrayList<HashMap<String, Object>> result = new ArrayList<HashMap<String, Object>>();
-        HashMap<String, Object> studentHash = commonStudentSortByPinyin(studentsMap);
+    /**
+     * 根据学生职位进行排序
+     *
+     * @param studentsMap   学生数组列表
+     * @return  排序后的列表
+     */
+    private ArrayList<HashMap<String, Object>> getStudentSortByJob(ArrayList<HashMap<String, Object>> studentsMap) {
+        HashMap<String, ArrayList<HashMap<String, Object>>> jobKeys = new HashMap<String, ArrayList<HashMap<String, Object>>>();
 
-        Set set = studentHash.entrySet();
+        if (studentsMap != null && studentsMap.size() > 0) {
+            for (HashMap<String, Object> studentHash : studentsMap) {
+                if (jobKeys.containsKey((String) studentHash.get("job"))) {
+                    jobKeys.get(studentHash.get("job")).add(studentHash);
+                } else {
+                    if (StringUtils.isEmpty((String) studentHash.get("department"))) {
+                        if (jobKeys.containsKey("*")) {
+                            jobKeys.get(studentHash.get("*")).add(studentHash);
+                        } else {
+                            ArrayList<HashMap<String, Object>> arrayList = new ArrayList<HashMap<String, Object>>();
+                            arrayList.add(studentHash);
+                            jobKeys.put("*", arrayList);
+                        }
+                    } else {
+                        ArrayList<HashMap<String, Object>> arrayList = new ArrayList<HashMap<String, Object>>();
+                        arrayList.add(studentHash);
+                        jobKeys.put((String) studentHash.get("job"), arrayList);
+                    }
+                }
+            }
+        }
+
+        return getStudentsSort(jobKeys);
+    }
+
+    private ArrayList<HashMap<String, Object>> getStudentSortByDepartment(ArrayList<HashMap<String, Object>> studentsMap) {
+        HashMap<String, ArrayList<HashMap<String, Object>>> jobKeys = new HashMap<String, ArrayList<HashMap<String, Object>>>();
+
+        if (studentsMap != null && studentsMap.size() > 0) {
+            for (HashMap<String, Object> studentHash : studentsMap) {
+                if (jobKeys.containsKey((String) studentHash.get("department"))) {
+                    jobKeys.get(studentHash.get("department")).add(studentHash);
+                } else {
+                    if (StringUtils.isEmpty((String) studentHash.get("department"))) {
+                        if (jobKeys.containsKey("*")) {
+                            jobKeys.get(studentHash.get("*")).add(studentHash);
+                        } else {
+                            ArrayList<HashMap<String, Object>> arrayList = new ArrayList<HashMap<String, Object>>();
+                            arrayList.add(studentHash);
+                            jobKeys.put("*", arrayList);
+                        }
+                    } else {
+                        ArrayList<HashMap<String, Object>> arrayList = new ArrayList<HashMap<String, Object>>();
+                        arrayList.add(studentHash);
+                        jobKeys.put((String) studentHash.get("department"), arrayList);
+                    }
+                }
+            }
+        }
+
+        return getStudentsSort(jobKeys);
+    }
+
+    private ArrayList<HashMap<String, Object>> getStudentSortByGraduate(ArrayList<HashMap<String, Object>> studentsMap) {
+        HashMap<String, ArrayList<HashMap<String, Object>>> jobKeys = new HashMap<String, ArrayList<HashMap<String, Object>>>();
+
+        if (studentsMap != null && studentsMap.size() > 0) {
+            for (HashMap<String, Object> studentHash : studentsMap) {
+                if (jobKeys.containsKey(String.valueOf(studentHash.get("graduate_year")))) {
+                    jobKeys.get(String.valueOf(studentHash.get("graduate_year"))).add(studentHash);
+                } else {
+                    ArrayList<HashMap<String, Object>> arrayList = new ArrayList<HashMap<String, Object>>();
+                    arrayList.add(studentHash);
+                    jobKeys.put(String.valueOf(studentHash.get("graduate_year")), arrayList);
+                }
+            }
+        }
+
+        return getStudentsSort(jobKeys);
+    }
+
+    private ArrayList<HashMap<String, Object>> getStudentsSort(HashMap<String, ArrayList<HashMap<String, Object>>> studentHashList) {
+        ArrayList<HashMap<String, Object>> result = new ArrayList<HashMap<String, Object>>();
+
+        Set set = studentHashList.entrySet();
         for (Object aSet : set) {
             HashMap<String, Object> item = new HashMap<String, Object>();
 
@@ -484,7 +570,6 @@ public class WCClubServiceImpl implements WCIClubService {
                 result.add(item);
             }
         }
-
         return result;
     }
 }
