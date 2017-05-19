@@ -73,7 +73,7 @@ class WCMeetingAPI {
                 hash.put("is_confirm", participationModel.getStatus() == 0 ? 0 : 1);    // 是否已经确认，不包括请假
                 hash.put("is_leave", participationModel.getStatus() == 3 ? 1 : 0);  // 是否请假
                 hash.put("is_sign", participationModel.getIsSign() == 0 ? 0 : 1);    // 是否已经签到
-                hash.put("is_late", participationModel.getIsSign() == 2 ? 0 : 1);  // 计算是否迟到
+                hash.put("is_late", participationModel.getIsSign() == 2 ? 1 : 0);  // 计算是否迟到
                 hash.put("sign_date", participationModel.getSignDate());
                 hash.put("dynamic_date", participationModel.getCreateDate());
 
@@ -90,6 +90,7 @@ class WCMeetingAPI {
                 hash.put("avatar_url", participationModel.getStudentAvatar());
                 hash.put("department_name", participationModel.getDepartmentName());
                 hash.put("job_name", participationModel.getJobName());
+                hash.put("comment", participationModel.getComment());
 
                 hashArray.add(hash);
             }
