@@ -32,6 +32,7 @@ public class WCStudentBean implements Serializable {
     private String realName;
     private String password;
     private String avatarUrl;
+    private int gender;
     private String birthday;
     private String qrcordUrl;
     private String className;
@@ -151,6 +152,14 @@ public class WCStudentBean implements Serializable {
 
     public void setSchoolBean(WCSchoolBean schoolBean) {
         this.schoolBean = schoolBean;
+    }
+
+    public int getGender() {
+        return gender;
+    }
+
+    public void setGender(int gender) {
+        this.gender = gender;
     }
 
     @Override

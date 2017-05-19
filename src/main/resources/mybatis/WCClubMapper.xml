@@ -56,6 +56,7 @@
         <result property="graduateYear" column="graduate_year" />
         <result property="status" column="status" />
         <result property="isDel" column="is_Del" />
+        <result property="gender" column="gender" />
 
         <result property="departmentId" column="department_id" />
         <result property="jobId" column="jobId" />

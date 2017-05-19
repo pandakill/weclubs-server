@@ -16,6 +16,7 @@
         <result property="graduateYear" column="graduate_year" />
         <result property="status" column="status" />
         <result property="isDel" column="is_Del" />
+        <result property="gender" column="gender" />
     </resultMap>
 
     <!-- 学生实体映射 map，包含学校信息 -->
@@ -32,6 +33,7 @@
         <result property="graduateYear" column="graduate_year" />
         <result property="status" column="status" />
         <result property="isDel" column="is_Del" />
+        <result property="gender" column="gender" />
 
         <association property="schoolBean" javaType="com.weclubs.bean.WCSchoolBean">
             <id property="schoolId" column="school_id" />

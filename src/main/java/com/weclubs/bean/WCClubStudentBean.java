@@ -68,6 +68,7 @@ public class WCClubStudentBean extends WCStudentBean implements Serializable {
         result.put("avatar_url", getAvatarUrl());
         result.put("major",(getSchoolBean() != null ? getSchoolBean().getName() : null));
         result.put("graduate_year", getGraduateYear());
+        result.put("gender", getGender());
         return result;
     }
 }
