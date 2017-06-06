@@ -26,14 +26,6 @@ public class WCTokenServiceImpl implements WCITokenService {
     @Autowired
     private WCTokenMapper mTokenMapper;
 
-    public void add(WCTokenBean bean) {
-        mTokenMapper.createToken(bean);
-    }
-
-    public void update(WCTokenBean bean) {
-        mTokenMapper.updateToken(bean);
-    }
-
     public WCTokenBean findTokenByUserIdAndCaller(long userId, String caller) {
         return mTokenMapper.getTokenByUIdAndCaller(userId, caller);
     }
@@ -63,7 +55,7 @@ public class WCTokenServiceImpl implements WCITokenService {
         if (tokenBean != null) {
             tokenBean.setToken(token);
             tokenBean.setCreateDate(currentTimeMillis);
-            update(tokenBean);
+            mTokenMapper.updateToken(tokenBean);
         } else {
             tokenBean = new WCTokenBean();
             tokenBean.setToken(token);
@@ -71,7 +63,7 @@ public class WCTokenServiceImpl implements WCITokenService {
             tokenBean.setCaller(caller);
             tokenBean.setCreateDate(currentTimeMillis);
 
-            add(tokenBean);
+            mTokenMapper.createToken(tokenBean);
         }
 
         return token;

