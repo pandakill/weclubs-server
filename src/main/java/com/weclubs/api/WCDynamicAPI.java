@@ -16,6 +16,7 @@ import com.weclubs.model.WCStudentForClubModel;
 import com.weclubs.model.request.WCRequestModel;
 import com.weclubs.model.response.WCResultData;
 import com.weclubs.util.Constants;
+import com.weclubs.util.WCCommonUtil;
 import com.weclubs.util.WCHttpStatus;
 import com.weclubs.util.WCRequestParamsUtil;
 import org.apache.log4j.Logger;
@@ -163,6 +164,39 @@ class WCDynamicAPI {
         }
         result.put("dynamic_type", dynamicType);
         return WCResultData.getSuccessData(result);
+    }
+
+    @RequestMapping(value = "/set_dynamic_status")
+    public WCResultData setDynamicStatus(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        check = mSecurityService.checkTokenAvailable(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        if (requestData == null || requestData.size() == 0) {
+            check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        String dynamicType = (String) requestData.get("dynamic_type");
+        long dynamicId = WCCommonUtil.getLongData(requestData.get("dynamic_id"));
+        long studentId = WCRequestParamsUtil.getUserId(requestModel);
+        String status = (String) requestData.get("status");
+        String comment = null;
+        if (requestData.containsKey("comment")) {
+            comment = (String) requestData.get("comment");
+        }
+
+        check = mDynamicService.setDynamicStatus(studentId, dynamicId, dynamicType, status, comment);
+
+        return WCResultData.getHttpStatusData(check, new HashMap<String, Object>());
     }
 
     private HashMap<String, Object> getTodoHash(WCStudentMissionRelationBean relationBean,

@@ -40,4 +40,11 @@ public interface WCDynamicMapper {
     WCStudentMissionRelationBean getDynamicStudentRelation(@Param("studentId") long studentId,
                                                            @Param("dynamicId") long dynamicId,
                                                            @Param("dynamicType") int dynamicType);
+
+    /**
+     * 更新学生动态信息
+     *
+     * @param relationBean  学生任务关系
+     */
+    void updateDynamicStatus(WCStudentMissionRelationBean relationBean);
 }

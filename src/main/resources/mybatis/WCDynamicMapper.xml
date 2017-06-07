@@ -60,4 +60,11 @@
         AND mission_relation.`is_del` = 0
     </select>
 
+    <update id="updateDynamicStatus">
+        UPDATE `t_student_mission_relation`
+        SET `is_leader` = #{isLeader}, `status` = #{status}, `is_sign` = #{isSign},
+            `comment` = #{comment}, `sign_date` = #{signDate}
+        WHERE `stu_mis_rel_id` = #{stuMisRelId}
+    </update>
+
 </mapper>
