@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.weclubs.mapper.WCMessageMapper">
+
+    <!-- 推送消息映射 map -->
+    <resultMap id="messageMap" type="com.weclubs.bean.WCMessageBean">
+        <id property="messageId" column="message_id" />
+        <result property="title" column="title" />
+        <result property="content" column="content" />
+        <result property="data" column="data" />
+        <result property="isDel" column="is_del" />
+    </resultMap>
+
+    <!-- 学生消息关系实体映射 map -->
+    <resultMap id="studentMsgMap" extends="messageMap" type="com.weclubs.bean.WCStudentMessageRelationBean">
+        <id property="stuMsgId" column="stu_msg_id" />
+        <result property="studentId" column="student_id" />
+        <result property="messageId" column="message_id" />
+        <result property="status" column="status" />
+
+        <association property="studentBean" javaType="com.weclubs.bean.WCStudentBean">
+            <id property="studentId" column="student_id" />
+            <result property="schoolId" column="school_id" />
+            <result property="mobile" column="mobile" />
+            <result property="nickName" column="nick_name" />
+            <result property="realName" column="real_name" />
+            <result property="password" column="password" />
+            <result property="avatarUrl" column="avatar_url" />
+            <result property="birthday" column="birthday" />
+            <result property="className" column="class_name" />
+            <result property="graduateYear" column="graduate_year" />
+            <result property="status" column="status" />
+            <result property="isDel" column="is_Del" />
+            <result property="gender" column="gender" />
+        </association>
+
+        <association property="messageBean" javaType="com.weclubs.bean.WCMessageBean">
+            <id property="messageId" column="message_id" />
+            <result property="title" column="title" />
+            <result property="content" column="content" />
+            <result property="data" column="data" />
+            <result property="isDel" column="is_del" />
+        </association>
+    </resultMap>
+
+    <select id="getMsgDetailByStuIdAndMsgId" resultMap="studentMsgMap">
+        SELECT * FROM `t_message` msg, `t_student_message_relation` relation, `t_student` student
+        WHERE msg.`message_id` = #{msgId}
+        AND relation.`message_id` = #{msgId}
+        AND student.`student_id` = #{studentId}
+        AND relation.`student_id` = #{studentId}
+        AND msg.`is_del` = 0
+    </select>
+
+    <select id="getMsgListByStuId" resultType="List" resultMap="studentMsgMap">
+        SELECT * FROM `t_message` msg, `t_student_message_relation` relation, `t_student` student
+        WHERE relation.`message_id` = msg.`message_id`
+        AND relation.`student_id` = student.`student_id`
+        AND relation.`student_id` = #{studentId}
+        AND msg.`is_del` = 0
+    </select>
+
+    <insert id="createMsg" useGeneratedKeys="true" keyProperty="messageId" parameterType="com.weclubs.bean.WCMessageBean">
+        INSERT INTO `t_message`(`title`, `content`, `data`, `is_del`)
+        VALUES (#{title}, #{content}, #{data}, #{isDel})
+    </insert>
+
+    <insert id="createStudentRelation" useGeneratedKeys="true" keyProperty="stuMsgId">
+        INSERT INTO `t_student_message_relation`(`student_id`, `message_id`)
+        VALUES
+        <foreach collection ="list" item="stuId" index="index" separator =",">
+            (
+            #{stuId}, #{msgId}
+            )
+        </foreach >
+    </insert>
+
+    <update id="updateStudentRelation" parameterType="com.weclubs.bean.WCStudentMessageRelationBean">
+        UPDATE `t_student_message_relation`
+        SET `status` = #{status}
+        WHERE `stu_msg_id` = #{stuMsgId}
+    </update>
+
+</mapper>
