@@ -50,7 +50,7 @@ public class WCJPushClient {
             return;
         }
 
-        log.info("pushNotify：pushPayload = " + pushPayload.toString());
+        log.info("pushNotify：pushPayload = " + pushPayload);
 
         try {
             PushResult pushResult = mJPushClient.sendPush(pushPayload);
@@ -64,6 +64,12 @@ public class WCJPushClient {
 
     public void pushNotifyToPerson(String title, String content, long... userId) {
         PushPayload pushPayload = buildPushObject_alias_to_person(title, content, userId);
+
+        pushNotify(pushPayload);
+    }
+
+    public void pushNotifyAndMsgToPerson(String title, String content, long... userId) {
+        PushPayload pushPayload = buildPushAndMsgObject_alias_to_person(title, content, userId);
 
         pushNotify(pushPayload);
     }

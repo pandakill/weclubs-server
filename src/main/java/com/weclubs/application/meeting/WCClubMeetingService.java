@@ -1,11 +1,10 @@
 package com.weclubs.application.meeting;
 
 import com.weclubs.application.club.WCIClubGraduateService;
+import com.weclubs.application.club.WCIClubService;
+import com.weclubs.application.jiguang_push.WCIJiGuangPushService;
 import com.weclubs.application.user.WCIUserService;
-import com.weclubs.bean.WCClubGraduateBean;
-import com.weclubs.bean.WCClubMissionBean;
-import com.weclubs.bean.WCStudentBean;
-import com.weclubs.bean.WCStudentMissionRelationBean;
+import com.weclubs.bean.*;
 import com.weclubs.mapper.WCMeetingMapper;
 import com.weclubs.model.WCMeetingParticipationModel;
 import com.weclubs.model.WCSponsorMeetingModel;
@@ -32,13 +31,18 @@ class WCClubMeetingService implements WCIClubMeetingService {
     private WCMeetingMapper mMeetingMapper;
     private WCIUserService mUserService;
     private WCIClubGraduateService mClubGraduateService;
+    private WCIJiGuangPushService mJiGuangPushService;
+    private WCIClubService mClubService;
 
     @Autowired
     public WCClubMeetingService(WCIUserService mUserService, WCMeetingMapper mMeetingMapper,
-                                WCIClubGraduateService graduateService) {
+                                WCIClubGraduateService graduateService, WCIJiGuangPushService jiGuangPushService,
+                                WCIClubService clubService) {
         this.mUserService = mUserService;
         this.mMeetingMapper = mMeetingMapper;
         this.mClubGraduateService = graduateService;
+        this.mJiGuangPushService = jiGuangPushService;
+        this.mClubService = clubService;
     }
 
     public void createMeeting(WCClubMissionBean meetingBean) {
@@ -381,6 +385,15 @@ class WCClubMeetingService implements WCIClubMeetingService {
 
         mMeetingMapper.createStudentRelation(relationBeanList);
 
+        long[] participationArray = new long[relationBeanList.size()];
+        for (int i = 0; i < relationBeanList.size(); i++) {
+            participationArray[i] = relationBeanList.get(i).getStudentId();
+        }
+
+        WCClubBean clubBean = mClubService.getClubInfoById(clubId);
+        mJiGuangPushService.pushNewMeetingCreate(deadline, meeting.getAddress(), clubBean.getName(),
+                meeting.getAttribution(), meeting.getMissionId(), participationArray);
+
         check = WCHttpStatus.SUCCESS;
         return check;
     }
@@ -393,31 +406,31 @@ class WCClubMeetingService implements WCIClubMeetingService {
 
         if (meetingId <= 0) {
             check.msg = "meeting_id 不能小于等于0";
-            log.error("publicMeeting：" + check.msg);
+            log.error("editMeeting：" + check.msg);
             return check;
         }
 
         if (StringUtils.isEmpty(content)) {
             check.msg = "会议简介内容不能为空";
-            log.error("publicMeeting：" + check.msg);
+            log.error("editMeeting：" + check.msg);
             return check;
         }
 
         if (StringUtils.isEmpty(address)) {
             check.msg = "会议举办地点不能为空";
-            log.error("publicMeeting：" + check.msg);
+            log.error("editMeeting：" + check.msg);
             return check;
         }
 
         if (clubId <= 0) {
             check.msg = "clubId 不能小于等于0";
-            log.error("publicMeeting：" + check.msg);
+            log.error("editMeeting：" + check.msg);
             return check;
         }
 
         if (deadline <= 0 || String.valueOf(deadline).length() != 13) {
             check.msg = "会议举办时间格式不对";
-            log.error("publicMeeting：" + check.msg);
+            log.error("editMeeting：" + check.msg);
             return check;
         }
 
@@ -428,25 +441,25 @@ class WCClubMeetingService implements WCIClubMeetingService {
 
         if (needSign == 1 && (leadersId == null || leadersId.length <= 0)) {
             check.msg = "签到负责人不能为空";
-            log.error("publicMeeting：" + check.msg);
+            log.error("editMeeting：" + check.msg);
             return check;
         } else if (needSign == 1 && leadersId.length >= 5) {
             check.msg = "签到负责人只能小于等于5位";
-            log.error("publicMeeting：" + check.msg + ";当前签到负责人为：" + leaders);
+            log.error("editMeeting：" + check.msg + ";当前签到负责人为：" + leaders);
             return check;
         }
 
         WCClubGraduateBean graduateBean = mClubGraduateService.getCurrentClubGraduate(clubId);
         if (graduateBean == null) {
             check.msg = "找不到该社团";
-            log.error("publicMeeting：" + check.msg + "-【" + clubId + "】");
+            log.error("editMeeting：" + check.msg + "-【" + clubId + "】");
             return check;
         }
 
         WCClubMissionBean meeting = getMeetingDetailById(meetingId);
         if (meeting == null) {
             check.msg = "找不到该会议【" + meetingId + "】";
-            log.error("publicMeeting：" + check.msg);
+            log.error("editMeeting：" + check.msg);
             return check;
         }
 

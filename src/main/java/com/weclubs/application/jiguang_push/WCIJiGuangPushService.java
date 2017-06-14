@@ -20,4 +20,17 @@ public interface WCIJiGuangPushService {
      */
     void pushDynamicStatusChange(String activity, String chineseType, String userName,
                                  String attribution, String dynamicType, long dynamicId, long... receiverId);
+
+    /**
+     * 创建新的会议时需要发起的推送通知
+     *
+     * @param date  会议开始时间
+     * @param address   会议举办地点
+     * @param clubName  社团名称
+     * @param clubName  社团名称
+     * @param meeting   会议标题
+     * @param meetingId 会议 id
+     * @param receiverId    推送通知的接收者
+     */
+    void pushNewMeetingCreate(long date, String address, String clubName, String meeting, long meetingId, long... receiverId);
 }
