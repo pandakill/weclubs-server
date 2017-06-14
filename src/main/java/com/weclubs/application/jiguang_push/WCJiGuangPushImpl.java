@@ -1,6 +1,6 @@
 package com.weclubs.application.jiguang_push;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSON;
 import com.weclubs.application.message.WCIMessageService;
 import com.weclubs.bean.WCMessageBean;
 import com.weclubs.util.Constants;
@@ -10,9 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * 极光推送的实体
@@ -52,19 +50,19 @@ class WCJiGuangPushImpl implements WCIJiGuangPushService {
         String content = "【" + userName + "】"
                 + activity + "了【" + missionAttr + "】" + chineseType;
 
-        // 发送推送通知
-        WCJPushClient.getInstance().pushNotifyToPerson(title, content, receiverId);
-
-        // 发送通知之后需要记录到服务器当中
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("scene_id", Constants.SCENE_MANAGE_DYNAMIC);
-        jsonObject.put("dynamic_id", dynamicId);
+        Map<String, String> jsonObject = new HashMap<String, String>();
+        jsonObject.put("scene_id", Constants.SCENE_MANAGE_DYNAMIC + "");
+        jsonObject.put("dynamic_id", dynamicId + "");
         jsonObject.put("dynamic_type", dynamicType);
 
+        // 发送推送通知
+        WCJPushClient.getInstance().pushNotifyToPerson(title, content, jsonObject, receiverId);
+
+        // 发送通知之后需要记录到服务器当中
         WCMessageBean messageBean = new WCMessageBean();
         messageBean.setTitle(title);
         messageBean.setContent(content);
-        messageBean.setData(jsonObject.toJSONString());
+        messageBean.setData(JSON.toJSONString(jsonObject));
 
         // 消息接收者
         List<Long> msgReceiver = new ArrayList<Long>();
@@ -95,17 +93,17 @@ class WCJiGuangPushImpl implements WCIJiGuangPushService {
 
         String content = clubName + "：" + dateStr + " 前在【" + address + "】参加【" + meeting + "】";
 
-        WCJPushClient.getInstance().pushNotifyToPerson(title, content, receiverId);
-
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("scene_id", Constants.SCENE_PERSON_DYNAMIC);
-        jsonObject.put("dynamic_id", meetingId);
+        Map<String, String > jsonObject = new HashMap<String, String>();
+        jsonObject.put("scene_id", Constants.SCENE_PERSON_DYNAMIC + "");
+        jsonObject.put("dynamic_id", meetingId + "");
         jsonObject.put("dynamic_type", Constants.TODO_MEETING);
+
+        WCJPushClient.getInstance().pushNotifyToPerson(title, content, jsonObject, receiverId);
 
         WCMessageBean messageBean = new WCMessageBean();
         messageBean.setTitle(title);
         messageBean.setContent(content);
-        messageBean.setData(jsonObject.toJSONString());
+        messageBean.setData(JSON.toJSONString(jsonObject));
 
         // 消息接收者
         List<Long> msgReceiver = new ArrayList<Long>();

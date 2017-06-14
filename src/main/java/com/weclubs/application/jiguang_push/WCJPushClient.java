@@ -15,6 +15,8 @@ import com.sun.istack.internal.NotNull;
 import com.weclubs.util.Constants;
 import org.apache.log4j.Logger;
 
+import java.util.Map;
+
 /**
  * 极光推送的 client 类
  *
@@ -62,14 +64,14 @@ public class WCJPushClient {
         }
     }
 
-    public void pushNotifyToPerson(String title, String content, long... userId) {
-        PushPayload pushPayload = buildPushObject_alias_to_person(title, content, userId);
+    public void pushNotifyToPerson(String title, String content, Map<String, String> extra, long... userId) {
+        PushPayload pushPayload = buildPushObject_alias_to_person(title, content, extra, userId);
 
         pushNotify(pushPayload);
     }
 
-    public void pushNotifyAndMsgToPerson(String title, String content, long... userId) {
-        PushPayload pushPayload = buildPushAndMsgObject_alias_to_person(title, content, userId);
+    public void pushNotifyAndMsgToPerson(String title, String content, Map<String, String> extra, long... userId) {
+        PushPayload pushPayload = buildPushAndMsgObject_alias_to_person(title, content, extra, userId);
 
         pushNotify(pushPayload);
     }
@@ -79,13 +81,21 @@ public class WCJPushClient {
      *
      * @param content   推送通知内容
      */
-    private PushPayload buildPushObject_all_all(String title, String content) {
+    private PushPayload buildPushObject_all_all(String title, String content, Map<String, String> extra) {
         return PushPayload.newBuilder()
                 .setNotification(Notification.alert(content))
                 .setNotification(Notification.newBuilder()
                         .setAlert(content)
-                        .addPlatformNotification(AndroidNotification.newBuilder().setTitle(title).build())
-                        .addPlatformNotification(IosNotification.newBuilder().addExtra(title, content).incrBadge(1).build())
+                        .addPlatformNotification(AndroidNotification.newBuilder()
+                                .setTitle(title)
+                                .setAlert(content)
+                                .addExtras(extra)
+                                .build())
+                        .addPlatformNotification(IosNotification.newBuilder()
+                                .addExtra("title", title)
+                                .addExtras(extra)
+                                .incrBadge(1)
+                                .build())
                         .build())
                 .build();
     }
@@ -95,13 +105,21 @@ public class WCJPushClient {
      *
      * @param content   推送消息、通知内容
      */
-    private PushPayload buildPushAndMsgObject_all_all(String title, String content) {
+    private PushPayload buildPushAndMsgObject_all_all(String title, String content, Map<String, String> extra) {
         return PushPayload.newBuilder()
                 .setNotification(Notification.alert(content))
                 .setNotification(Notification.newBuilder()
                         .setAlert(content)
-                        .addPlatformNotification(AndroidNotification.newBuilder().setTitle(title).build())
-                        .addPlatformNotification(IosNotification.newBuilder().addExtra(title, content).incrBadge(1).build())
+                        .addPlatformNotification(AndroidNotification.newBuilder()
+                                .setTitle(title)
+                                .setAlert(content)
+                                .addExtras(extra)
+                                .build())
+                        .addPlatformNotification(IosNotification.newBuilder()
+                                .addExtra("title", title)
+                                .addExtras(extra)
+                                .incrBadge(1)
+                                .build())
                         .build())
                 .setMessage(Message.newBuilder()
                         .setMsgContent(content)
@@ -116,7 +134,8 @@ public class WCJPushClient {
      *
      * @param content   推送消息内容
      */
-    private PushPayload buildPushObject_alias_to_person(String title, String content, @NotNull long... userId) {
+    private PushPayload buildPushObject_alias_to_person(String title, String content,
+                                                        Map<String, String> extra, @NotNull long... userId) {
 
         String[] str = new String[userId.length];
         if (userId.length > 0) {
@@ -131,8 +150,16 @@ public class WCJPushClient {
                 .setNotification(Notification.alert(content))
                 .setNotification(Notification.newBuilder()
                 .setAlert(content)
-                .addPlatformNotification(AndroidNotification.newBuilder().setTitle(title).build())
-                .addPlatformNotification(IosNotification.newBuilder().addExtra(title, content).incrBadge(1).build())
+                .addPlatformNotification(AndroidNotification.newBuilder()
+                        .setTitle(title)
+                        .setAlert(content)
+                        .addExtras(extra)
+                        .build())
+                .addPlatformNotification(IosNotification.newBuilder()
+                        .addExtra("title", title)
+                        .addExtras(extra)
+                        .incrBadge(1)
+                        .build())
                 .build())
                 .build();
     }
@@ -143,7 +170,8 @@ public class WCJPushClient {
      *
      * @param content   推送消息内容
      */
-    private PushPayload buildPushAndMsgObject_alias_to_person(String title, String content, @NotNull long... userId) {
+    private PushPayload buildPushAndMsgObject_alias_to_person(String title, String content,
+                                                              Map<String, String> extra, @NotNull long... userId) {
 
         String[] str = new String[userId.length];
         if (userId.length > 0) {
@@ -158,8 +186,16 @@ public class WCJPushClient {
                 .setNotification(Notification.alert(content))
                 .setNotification(Notification.newBuilder()
                         .setAlert(content)
-                        .addPlatformNotification(AndroidNotification.newBuilder().setTitle(title).build())
-                        .addPlatformNotification(IosNotification.newBuilder().addExtra(title, content).incrBadge(1).build())
+                        .addPlatformNotification(AndroidNotification.newBuilder()
+                                .setTitle(title)
+                                .setAlert(content)
+                                .addExtras(extra)
+                                .build())
+                        .addPlatformNotification(IosNotification.newBuilder()
+                                .addExtra("title", title)
+                                .addExtras(extra)
+                                .incrBadge(1)
+                                .build())
                         .build())
                 .setMessage(Message.newBuilder()
                         .setMsgContent(content)
