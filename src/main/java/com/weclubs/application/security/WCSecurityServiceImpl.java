@@ -1,6 +1,7 @@
 package com.weclubs.application.security;
 
 import com.weclubs.application.token.WCITokenService;
+import com.weclubs.application.user.WCIUserService;
 import com.weclubs.bean.WCStudentBean;
 import com.weclubs.model.request.WCRequestModel;
 import com.weclubs.util.MD5;
@@ -22,14 +23,20 @@ import java.util.*;
  * Created by fangzanpan on 2017/2/5.
  */
 @Service(value = "securityService")
-public class WCSecurityServiceImpl implements WCISecurityService {
+class WCSecurityServiceImpl implements WCISecurityService {
 
     private final static String secretKey = MD5.md5("pukongjie");
 
     private Logger log = Logger.getLogger(WCSecurityServiceImpl.class);
 
-    @Autowired
     private WCITokenService mTokenService;
+    private WCIUserService mUserService;
+
+    @Autowired
+    public WCSecurityServiceImpl(WCITokenService mTokenService, WCIUserService mUserService) {
+        this.mTokenService = mTokenService;
+        this.mUserService = mUserService;
+    }
 
     public WCHttpStatus checkTokenAvailable(long userId, String caller, String token) {
         if (mTokenService.isTokenAvailable(userId, caller, token)) {
@@ -130,6 +137,19 @@ public class WCSecurityServiceImpl implements WCISecurityService {
         } else {
             return WCHttpStatus.FAIL_REQUEST;
         }
+    }
+
+    public WCHttpStatus checkUserIsAuthorized(long userId) {
+        WCStudentBean user = mUserService.getUserInfoById(userId);
+        if (user == null) {
+            return WCHttpStatus.FAIL_USER_UNKNOWK;
+        }
+
+        if (user.getStatus() == 1) {
+            return WCHttpStatus.SUCCESS;
+        }
+
+        return WCHttpStatus.FAIL_USER_UNAUTHORIZED;
     }
 
     public String encodePassword(long userId, String password) {

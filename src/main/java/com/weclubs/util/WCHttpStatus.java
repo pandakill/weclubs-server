@@ -22,9 +22,10 @@ public enum WCHttpStatus {
 
     FAIL_USER_TOKEN_UNVALID(3010, "token失效"),
     FAIL_USER_PSW_UNVALID(3011, "密码错误"),
-    FAIL_USER_UNPERMISSION(3012, "用户没有改权限"),
+    FAIL_USER_UNPERMISSION(3012, "用户没有权限"),
     FAIL_USER_SETUP_PASSWORD_UNVAILID(3013, "用户已经设置过密码，不允许再次调用该接口"),
     FAIL_USER_UNKNOWK(3014, "找不到该用户"),
+    FAIL_USER_UNAUTHORIZED(3015, "用户尚未认证"),
 
     FAIL_APPLICATION_ERROR(5000, "程序出错"),
 

@@ -84,6 +84,15 @@ public interface WCISecurityService {
     WCHttpStatus checkPasswordAvailable(WCStudentBean studentBean, String password);
 
     /**
+     * 检查用户是否已经认证
+     *
+     * @param userId    用户id
+     * @return  如果已经认证，返回 {@link WCHttpStatus#SUCCESS}
+     *          否则返回 {@link WCHttpStatus#FAIL_USER_UNAUTHORIZED}
+     */
+    WCHttpStatus checkUserIsAuthorized(long userId);
+
+    /**
      * 根据客户端上传的的密码，以及用户 id 进行二次加密，该返回得到的即为数据库存储的密码字段
      * 客户端上传的密码应该是： MD5(BASE64(password))
      *
