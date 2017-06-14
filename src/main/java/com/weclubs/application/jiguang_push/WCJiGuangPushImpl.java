@@ -112,4 +112,40 @@ class WCJiGuangPushImpl implements WCIJiGuangPushService {
         }
         mMessageService.publicMessage(messageBean, msgReceiver);
     }
+
+    /*
+     * 通知样式格式：
+     * Android
+     *      title：你有新的通知需要确认
+     *      content：篮球协会：发布了【台风来临，下午活动取消，举办时间待定】
+     * iOS
+     *      content：篮球协会：发布了【台风来临，下午活动取消，举办时间待定】
+     *
+     * 点击需要跳转至动态详情页面，scene_id = 101
+     */
+    public void pushNewNotifyCreate(String clubName, String notify, long notifyId, long... receiverId) {
+        String title = "你有新的通知需要确认";
+
+        notify = notify.length() > 20 ? (notify.substring(0, 20) + "...") : notify;
+        String content = clubName + "：发布了新通知【" + notify + "】";
+
+        Map<String, String > jsonObject = new HashMap<String, String>();
+        jsonObject.put("scene_id", Constants.SCENE_PERSON_DYNAMIC + "");
+        jsonObject.put("dynamic_id", notifyId + "");
+        jsonObject.put("dynamic_type", Constants.TODO_NOTIFY);
+
+        WCJPushClient.getInstance().pushNotifyToPerson(title, content, jsonObject, receiverId);
+
+        WCMessageBean messageBean = new WCMessageBean();
+        messageBean.setTitle(title);
+        messageBean.setContent(content);
+        messageBean.setData(JSON.toJSONString(jsonObject));
+
+        // 消息接收者
+        List<Long> msgReceiver = new ArrayList<Long>();
+        for (long l : receiverId) {
+            msgReceiver.add(l);
+        }
+        mMessageService.publicMessage(messageBean, msgReceiver);
+    }
 }

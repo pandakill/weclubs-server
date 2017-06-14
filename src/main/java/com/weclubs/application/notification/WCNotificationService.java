@@ -1,6 +1,8 @@
 package com.weclubs.application.notification;
 
 import com.weclubs.application.club.WCIClubGraduateService;
+import com.weclubs.application.club.WCIClubService;
+import com.weclubs.application.jiguang_push.WCIJiGuangPushService;
 import com.weclubs.application.user.WCIUserService;
 import com.weclubs.bean.*;
 import com.weclubs.mapper.WCNotificationMapper;
@@ -26,13 +28,19 @@ class WCNotificationService implements WCINotificationService {
 
     private WCNotificationMapper mNotificationMapper;
     private WCIUserService mUserService;
-    @Autowired
     private WCIClubGraduateService mClubGraduateService;
+    private WCIJiGuangPushService mJiGuangPushService;
+    private WCIClubService mClubService;
 
     @Autowired
-    public WCNotificationService(WCIUserService mUserService, WCNotificationMapper mNotificationMapper) {
+    public WCNotificationService(WCIUserService mUserService, WCNotificationMapper mNotificationMapper,
+                                 WCIClubGraduateService clubGraduateService, WCIJiGuangPushService jiGuangPushService,
+                                 WCIClubService clubService) {
         this.mUserService = mUserService;
         this.mNotificationMapper = mNotificationMapper;
+        this.mClubGraduateService = clubGraduateService;
+        this.mJiGuangPushService = jiGuangPushService;
+        this.mClubService = clubService;
     }
 
     public void createNotification(WCClubMissionBean notificationBean) {
@@ -260,6 +268,13 @@ class WCNotificationService implements WCINotificationService {
         }
 
         mNotificationMapper.createStudentRelation(relations);
+
+        long[] receiveIds = new long[relations.size()];
+        for (int i = 0; i < relations.size(); i++) {
+            receiveIds[i] = relations.get(i).getStudentId();
+        }
+        WCClubBean clubBean = mClubService.getClubInfoById(clubId);
+        mJiGuangPushService.pushNewNotifyCreate(clubBean.getName(), content, notifyBean.getMissionId(), receiveIds);
 
         check = WCHttpStatus.SUCCESS;
         return check;
