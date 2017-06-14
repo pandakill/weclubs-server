@@ -1,19 +1,15 @@
 package com.weclubs.application.jiguang_push;
 
-import cn.jiguang.common.resp.APIConnectionException;
-import cn.jiguang.common.resp.APIRequestException;
-import cn.jpush.api.JPushClient;
-import cn.jpush.api.push.PushResult;
-import cn.jpush.api.push.model.Platform;
-import cn.jpush.api.push.model.PushPayload;
-import cn.jpush.api.push.model.audience.Audience;
-import cn.jpush.api.push.model.notification.Notification;
-import com.weclubs.application.token.WCITokenService;
-import com.weclubs.util.Constants;
+import com.alibaba.fastjson.JSONObject;
+import com.weclubs.application.message.WCIMessageService;
+import com.weclubs.bean.WCMessageBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 极光推送的实体
@@ -21,44 +17,54 @@ import org.springframework.stereotype.Service;
  * Created by fangzanpan on 2017/5/23.
  */
 @Service(value = "jiGuangPushService")
-public class WCJiGuangPushImpl implements WCIJiGuangPushService {
+class WCJiGuangPushImpl implements WCIJiGuangPushService {
 
     protected static Logger log = LoggerFactory.getLogger(WCJiGuangPushImpl.class);
 
-    private WCITokenService mTokenService;
-
-    public static final String TITLE = "申通快递";
-    public static final String ALERT = "有人拉取了接口";
-    public static final String MSG_CONTENT = "申通快递祝新老客户新春快乐";
-    public static final String REGISTRATION_ID = "0900e8d85ef";
+    private WCIMessageService mMessageService;
 
     @Autowired
-    public WCJiGuangPushImpl(WCITokenService mTokenService) {
-        this.mTokenService = mTokenService;
+    public WCJiGuangPushImpl(WCIMessageService messageService) {
+        this.mMessageService = messageService;
     }
 
-    public void pushNotify() {
-        JPushClient jPushClient = new JPushClient(Constants.JIGUANG_SECRET_KEY, Constants.JIGUANG_APP_KEY, 3);
+    /*
+     * 通知样式格式：
+     * Android
+     *      title：有人通知任务了
+     *      content：【XXX】确认了【由于三号台风来临，紧急听课一天】通知
+     * iOS
+     *      content：【XXX】确认了【由于三号台风来临，紧急听课一天】通知
+     */
+    public void pushDynamicStatusChange(String activity, String chineseType, String userName,
+                                        String attribution, String dynamicType, long dynamicId, long... receiverId) {
 
-        PushPayload pushPayload = buildPushObject_all_alias_alert();
-        log.error(pushPayload.toString());
+        String title = "有人" + activity + chineseType + "了";
 
-        try {
-            PushResult pushResult = jPushClient.sendPush(pushPayload);
-            log.error(pushResult.toString());
-        } catch (APIConnectionException e) {
-            e.printStackTrace();
-        } catch (APIRequestException e) {
-            e.printStackTrace();
+        String missionAttr = attribution.length() > 10
+                ? (attribution.substring(0, 10) + "...")
+                : attribution;
+        String content = "【" + userName + "】"
+                + activity + "了【" + missionAttr + "】" + chineseType;
+
+        // 发送推送通知
+        WCJPushClient.getInstance().pushNotifyToPerson(title, content, receiverId);
+
+        // 发送通知之后需要记录到服务器当中
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("dynamic_id", dynamicId);
+        jsonObject.put("dynamic_type", dynamicId);
+
+        WCMessageBean messageBean = new WCMessageBean();
+        messageBean.setTitle(title);
+        messageBean.setContent(content);
+        messageBean.setData(jsonObject.toJSONString());
+
+        // 消息接收者
+        List<Long> msgReceiver = new ArrayList<Long>();
+        for (long l : receiverId) {
+            msgReceiver.add(l);
         }
-
-    }
-
-    private PushPayload buildPushObject_all_alias_alert() {
-        return PushPayload.newBuilder()
-                .setPlatform(Platform.all())//设置接受的平台
-                .setAudience(Audience.all())//Audience设置为all，说明采用广播方式推送，所有用户都可以接收到
-                .setNotification(Notification.alert(ALERT))
-                .build();
+        mMessageService.publicMessage(messageBean, msgReceiver);
     }
 }

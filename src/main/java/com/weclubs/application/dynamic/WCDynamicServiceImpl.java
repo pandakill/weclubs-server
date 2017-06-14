@@ -1,13 +1,12 @@
 package com.weclubs.application.dynamic;
 
-import com.alibaba.fastjson.JSONObject;
+import com.weclubs.application.jiguang_push.WCIJiGuangPushService;
 import com.weclubs.application.meeting.WCIClubMeetingService;
 import com.weclubs.application.message.WCIMessageService;
 import com.weclubs.application.mission.WCIClubMissionService;
 import com.weclubs.application.notification.WCINotificationService;
 import com.weclubs.application.user.WCIUserService;
 import com.weclubs.bean.WCClubMissionBean;
-import com.weclubs.bean.WCMessageBean;
 import com.weclubs.bean.WCStudentBean;
 import com.weclubs.bean.WCStudentMissionRelationBean;
 import com.weclubs.mapper.WCDynamicMapper;
@@ -17,9 +16,6 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 动态的 service 实现类
@@ -36,19 +32,22 @@ class WCDynamicServiceImpl implements WCIDynamicService {
     private WCINotificationService mNotifyService;
     private WCIMessageService mMessageService;
     private WCIUserService mUserService;
+    private WCIJiGuangPushService mJiGuangPushService;
 
     private WCDynamicMapper mDynamicMapper;
 
     @Autowired
     public WCDynamicServiceImpl(WCIClubMissionService mMissionService, WCIClubMeetingService mMeetingService,
                                 WCINotificationService mNotifyService, WCDynamicMapper dynamicMapper,
-                                WCIMessageService messageService, WCIUserService mUserService) {
+                                WCIMessageService messageService, WCIUserService mUserService,
+                                WCIJiGuangPushService jiGuangPushService) {
         this.mMissionService = mMissionService;
         this.mMeetingService = mMeetingService;
         this.mNotifyService = mNotifyService;
         this.mDynamicMapper = dynamicMapper;
         this.mMessageService = messageService;
         this.mUserService = mUserService;
+        this.mJiGuangPushService = jiGuangPushService;
     }
 
     public WCStudentMissionRelationBean getDynamicStudentRelationByDynamicId(long studentId, long dynamicId, String dynamicType) {
@@ -94,17 +93,6 @@ class WCDynamicServiceImpl implements WCIDynamicService {
             return check;
         }
 
-        String title;
-        String content;
-        String chineseType = "";
-        if (type.equals(Constants.TODO_MEETING)) {
-            chineseType = "会议";
-        } else if (type.equals(Constants.TODO_MISSION)) {
-            chineseType = "任务";
-        } else if (type.equals(Constants.TODO_NOTIFY)) {
-            chineseType = "通知";
-        }
-
         WCClubMissionBean missionBean = relationBean.getClubMissionBean();
         if (missionBean == null) {
             log.warn("setDynamicStatus：信息不完整，请检查");
@@ -127,8 +115,6 @@ class WCDynamicServiceImpl implements WCIDynamicService {
             }
 
             relationBean.setStatus(1);
-
-            title = "有人确认" + chineseType + "了！";
         } else if (status[0].equals("leave")) {
 
             if (missionBean.getType() != 2) {
@@ -144,8 +130,6 @@ class WCDynamicServiceImpl implements WCIDynamicService {
             }
 
             relationBean.setStatus(3);
-
-            title = "有人请假" + chineseType + "了！";
         } else if (status[0].equals("finish")) {
 
             if (missionBean.getType() != 2) {
@@ -165,8 +149,6 @@ class WCDynamicServiceImpl implements WCIDynamicService {
             }
 
             relationBean.setStatus(2);
-
-            title = "有人完成" + chineseType + "了！";
         } else {
             log.warn("setDynamicStatus：提交的状态有误：status = " + status[0]);
             check.msg = "设置的状态有误，请检查后重新提交";
@@ -179,7 +161,6 @@ class WCDynamicServiceImpl implements WCIDynamicService {
         mDynamicMapper.updateDynamicStatus(relationBean);
         check = WCHttpStatus.SUCCESS;
 
-        // 推送消息的内容
         String activity = "";
         if (status[0].equals("confirm")) {
             activity += "确认";
@@ -188,25 +169,18 @@ class WCDynamicServiceImpl implements WCIDynamicService {
         } else if (status[0].equals("finish")) {
             activity += "完成";
         }
-        String missionAttr = missionBean.getAttribution().length() > 20
-                ? (missionBean.getAttribution().substring(0, 20) + "...")
-                : missionBean.getAttribution();
-        content = "【" + studentBean.getRealName() + "】"
-                + activity + "了【" + missionAttr + "】" + chineseType + "了";
 
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("dynamic_id", dynamicId);
-        jsonObject.put("dynamic_type", type);
+        String chineseType = "";
+        if (type.equals(Constants.TODO_MEETING)) {
+            chineseType = "会议";
+        } else if (type.equals(Constants.TODO_MISSION)) {
+            chineseType = "任务";
+        } else if (type.equals(Constants.TODO_NOTIFY)) {
+            chineseType = "通知";
+        }
 
-        WCMessageBean messageBean = new WCMessageBean();
-        messageBean.setTitle(title);
-        messageBean.setContent(content);
-        messageBean.setData(jsonObject.toJSONString());
-
-        // 推送消息的接收者
-        List<Long> msgReceiver = new ArrayList<Long>();
-        msgReceiver.add(missionBean.getSponsorId());
-        mMessageService.publicMessage(messageBean, msgReceiver);
+        mJiGuangPushService.pushDynamicStatusChange(activity, chineseType, studentBean.getRealName(), missionBean.getAttribution(),
+                type, dynamicId, missionBean.getSponsorId());
 
         return check;
     }
