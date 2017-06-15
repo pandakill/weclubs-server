@@ -62,10 +62,10 @@ class WCServiceAPI {
             return WCResultData.getHttpStatusData(check, null);
         }
 
-        check = mSecurityService.checkTokenAvailable(requestModel);
-        if (check != WCHttpStatus.SUCCESS) {
-            return WCResultData.getHttpStatusData(check, null);
-        }
+//        check = mSecurityService.checkTokenAvailable(requestModel);
+//        if (check != WCHttpStatus.SUCCESS) {
+//            return WCResultData.getHttpStatusData(check, null);
+//        }
 
         HashMap<String, Object> result = new HashMap<String, Object>();
         result.put("config", mQiNiuService.getUploadConfig());

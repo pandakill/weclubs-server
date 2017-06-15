@@ -29,14 +29,10 @@ class WCSecurityServiceImpl implements WCISecurityService {
 
     private Logger log = Logger.getLogger(WCSecurityServiceImpl.class);
 
-    private WCITokenService mTokenService;
-    private WCIUserService mUserService;
-
     @Autowired
-    public WCSecurityServiceImpl(WCITokenService mTokenService, WCIUserService mUserService) {
-        this.mTokenService = mTokenService;
-        this.mUserService = mUserService;
-    }
+    private WCITokenService mTokenService;
+    @Autowired
+    private WCIUserService mUserService;
 
     public WCHttpStatus checkTokenAvailable(long userId, String caller, String token) {
         if (mTokenService.isTokenAvailable(userId, caller, token)) {
