@@ -165,7 +165,7 @@ class WCUserAPI {
             check = mSecurityService.checkPasswordAvailable(student,  password);
             if (check != WCHttpStatus.SUCCESS) {
                 log.error("用户密码输入错误");
-                check = WCHttpStatus.FAIL_REQUEST;
+                check = WCHttpStatus.FAIL_USER_PSW_UNVALID;
                 check.msg = "用户名或密码错误，请重新输入";
                 return WCResultData.getHttpStatusData(check, null);
             } else {
