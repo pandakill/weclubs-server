@@ -678,37 +678,29 @@ class WCManageClubAPI {
         result.put("jobs", manageClubModel.getJobs());
 
         result.put("honor_finish", manageClubModel.getHonorCount() > 0 ? 1 : 0);
-        result.put("member_finish", manageClubModel.getMemberCount() > 1 ? 1 : 0);
+//        result.put("member_finish", manageClubModel.getMemberCount() > 1 ? 1 : 0);
 
         // 完成情况 START
-        // 有 头像、slogan、介绍、荣誉介绍、人员情况、部门配置、职位设定 共七项评定指标
-        float finishCount = 0;
-        if (!StringUtils.isEmpty(manageClubModel.getAvatarUrl())) {
-            finishCount ++;
-        }
+        // 有 slogan、介绍、荣誉介绍、部门配置、职位设定 共五项评定指标
+        // 头像初始化为完成 25%
+        float finishCount = 25;
         if (!StringUtils.isEmpty(manageClubModel.getSlogan())) {
-            finishCount ++;
+            finishCount += 15;
         }
         if (!StringUtils.isEmpty(manageClubModel.getIntroduction())) {
-            finishCount ++;
+            finishCount += 15;
         }
         if (manageClubModel.getHonorCount() > 0) {
-            finishCount ++;
-        }
-        if (manageClubModel.getMemberCount() > 1) {
-            finishCount ++;
+            finishCount += 15;
         }
         if (!StringUtils.isEmpty(manageClubModel.getDepartments())) {
-            finishCount ++;
+            finishCount += 15;
         }
         if (!StringUtils.isEmpty(manageClubModel.getJobs())) {
-            finishCount ++;
+            finishCount += 15;
         }
 
-        if (finishCount > 0) {
-            finishCount = finishCount / 7;
-        }
-        result.put("finish_count", String.format("%.2f", finishCount * 100));
+        result.put("finish_count", String.format("%.2f", finishCount));
         // 完成情况 END
 
         return result;
