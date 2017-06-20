@@ -121,4 +121,12 @@ public interface WCIClubMeetingService {
      */
     WCHttpStatus editMeeting(String content, String address, long deadline, int needSign,
                                String leaders, long clubId, long meetingId);
+
+    /**
+     * 向尚未确认的与会人员发送提醒通知
+     *
+     * @param meetingId 会议 id
+     * @return  发送的状态
+     */
+    WCHttpStatus remindToUnConfirm(long meetingId);
 }

@@ -7,6 +7,7 @@ import com.weclubs.application.user.WCIUserService;
 import com.weclubs.bean.*;
 import com.weclubs.mapper.WCNotificationMapper;
 import com.weclubs.model.WCSponsorNotifyModel;
+import com.weclubs.util.Constants;
 import com.weclubs.util.WCHttpStatus;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -296,5 +297,51 @@ class WCNotificationService implements WCINotificationService {
         sponsorNotifyModel.setUnreadCount(unread == null ? 0 : unread.size());
 
         return sponsorNotifyModel;
+    }
+
+    public WCHttpStatus remindToUnConfirm(long notifyId) {
+
+        WCHttpStatus check = WCHttpStatus.FAIL_REQUEST;
+
+        if (notifyId <= 0) {
+            check.msg = "notify_id 不能小于等于0";
+            log.error("remindToUnConfirm：" + check.msg);
+            return check;
+        }
+
+        WCClubMissionBean meetingBean = getNotificationDetailById(notifyId);
+        if (meetingBean == null) {
+            log.warn("remindToUnConfirm：找不到对应的通知内容");
+            check.msg = "找不到该通知，请检查后重新操作";
+            return check;
+        }
+
+        WCClubBean clubBean = mClubService.getClubInfoById(meetingBean.getClubId());
+        if (clubBean == null) {
+            log.warn("remindToUnConfirm：找不到对应的社团");
+            check = WCHttpStatus.FAIL_APPLICATION_ERROR;
+            return check;
+        }
+
+        List<WCStudentMissionRelationBean> unConfirmStudent =
+                mNotificationMapper.getUnConfirmRelationByNotifyId(meetingBean.getMissionId());
+
+        if (unConfirmStudent == null || unConfirmStudent.size() == 0) {
+            log.warn("remindToUnConfirm：该通知已经全部确认完毕");
+            check.msg = "该通知已经全部确认完毕";
+            return check;
+        }
+
+        long[] userIds = new long[unConfirmStudent.size()];
+        for (int i = 0; i < unConfirmStudent.size(); i++) {
+            userIds[i] = unConfirmStudent.get(i).getStudentId();
+        }
+
+        mJiGuangPushService.pushUnConfirmDynamic(clubBean.getName(),
+                Constants.TODO_NOTIFY, meetingBean.getAttribution(), notifyId, userIds);
+
+        check = WCHttpStatus.SUCCESS;
+
+        return check;
     }
 }

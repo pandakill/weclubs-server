@@ -148,4 +148,29 @@ class WCJiGuangPushImpl implements WCIJiGuangPushService {
         }
         mMessageService.publicMessage(messageBean, msgReceiver);
     }
+
+    public void pushUnConfirmDynamic(String clubName, String dynamicType, String dynamic, long dynamicId, long... receiverId) {
+
+        String chineseType = "";
+        if (dynamicType.equals(Constants.TODO_MEETING)) {
+            chineseType = "会议";
+        } else if (dynamicType.equals(Constants.TODO_MISSION)) {
+            chineseType = "任务";
+        } else if (dynamicType.equals(Constants.TODO_NOTIFY)) {
+            chineseType = "通知";
+        }
+
+
+        String title = "你有" + chineseType + "需要确认";
+
+        dynamic = dynamic.length() > 20 ? (dynamic.substring(0, 20) + "...") : dynamic;
+        String content = clubName + "：需要你确认收到" + chineseType + "【" + dynamic + "】";
+
+        Map<String, String > jsonObject = new HashMap<String, String>();
+        jsonObject.put("scene_id", Constants.SCENE_PERSON_DYNAMIC + "");
+        jsonObject.put("dynamic_id", dynamicId + "");
+        jsonObject.put("dynamic_type", dynamicType);
+
+        WCJPushClient.getInstance().pushNotifyToPerson(title, content, jsonObject, receiverId);
+    }
 }

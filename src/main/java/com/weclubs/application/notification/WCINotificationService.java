@@ -78,4 +78,12 @@ public interface WCINotificationService {
      * @return  返回该通知的实体
      */
     WCSponsorNotifyModel getMyNotificationDetailById(long notificationId);
+
+    /**
+     * 向尚未确认的通知接收人员发送提醒通知
+     *
+     * @param notifyId 通知 id
+     * @return  发送的状态
+     */
+    WCHttpStatus remindToUnConfirm(long notifyId);
 }

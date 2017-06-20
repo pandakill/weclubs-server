@@ -8,6 +8,7 @@ import com.weclubs.bean.*;
 import com.weclubs.mapper.WCMeetingMapper;
 import com.weclubs.model.WCMeetingParticipationModel;
 import com.weclubs.model.WCSponsorMeetingModel;
+import com.weclubs.util.Constants;
 import com.weclubs.util.WCCommonUtil;
 import com.weclubs.util.WCHttpStatus;
 import org.apache.log4j.Logger;
@@ -488,6 +489,50 @@ class WCClubMeetingService implements WCIClubMeetingService {
                 mMeetingMapper.updateStudentRelation(relationBean);
             }
         }
+
+        check = WCHttpStatus.SUCCESS;
+
+        return check;
+    }
+
+    public WCHttpStatus remindToUnConfirm(long meetingId) {
+
+        WCHttpStatus check = WCHttpStatus.FAIL_REQUEST;
+
+        if (meetingId <= 0) {
+            check.msg = "meeting_id 不能小于等于0";
+            log.error("editMeeting：" + check.msg);
+            return check;
+        }
+
+        WCClubMissionBean meetingBean = getMeetingDetailById(meetingId);
+        if (meetingBean == null) {
+            log.warn("sendNotifyToUnConfirm：找不到对应的会议内容");
+            check.msg = "找不到该会议，请检查后重新操作";
+            return check;
+        }
+
+        WCClubBean clubBean = mClubService.getClubInfoById(meetingBean.getClubId());
+        if (clubBean == null) {
+            log.warn("sendNotifyToUnConfirm：找不到对应的社团");
+            check = WCHttpStatus.FAIL_APPLICATION_ERROR;
+            return check;
+        }
+
+        List<WCStudentMissionRelationBean> unConfirmStudent = getUnConfirmMeetingRelationByMeetingId(meetingBean.getMissionId());
+        if (unConfirmStudent == null || unConfirmStudent.size() == 0) {
+            log.warn("sendNotifyToUnConfirm：该会议已经全部确认完毕");
+            check.msg = "该会议已经全部确认完毕";
+            return check;
+        }
+
+        long[] userIds = new long[unConfirmStudent.size()];
+        for (int i = 0; i < unConfirmStudent.size(); i++) {
+            userIds[i] = unConfirmStudent.get(i).getStudentId();
+        }
+
+        mJiGuangPushService.pushUnConfirmDynamic(clubBean.getName(),
+                Constants.TODO_MEETING, meetingBean.getAttribution(), meetingId, userIds);
 
         check = WCHttpStatus.SUCCESS;
 

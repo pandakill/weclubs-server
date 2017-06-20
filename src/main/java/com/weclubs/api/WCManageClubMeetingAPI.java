@@ -215,6 +215,32 @@ class WCManageClubMeetingAPI {
         return WCResultData.getHttpStatusData(check, null);
     }
 
+    @RequestMapping(value = "/remind_confirm_meeting", method = RequestMethod.POST)
+    public WCResultData remindToConfirm(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        check = mSecurityService.checkTokenAvailable(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        if (requestData == null || requestData.size() == 0) {
+            check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        long meetingId = WCCommonUtil.getLongData(requestData.get("meeting_id"));
+
+        check = mClubMeetingService.remindToUnConfirm(meetingId);
+
+        return WCResultData.getHttpStatusData(check, new HashMap<String, Object>());
+    }
+
     private HashMap<String, Object> getSponsorMeetingHash(WCSponsorMeetingModel meetingModel) {
         HashMap<String, Object> result = new HashMap<String, Object>();
         result.put("meeting_id", meetingModel.getMissionId());

@@ -1,14 +1,14 @@
 package com.weclubs.application.mission;
 
 import com.weclubs.application.club.WCIClubGraduateService;
+import com.weclubs.application.club.WCIClubService;
+import com.weclubs.application.jiguang_push.WCIJiGuangPushService;
 import com.weclubs.application.user.WCIUserService;
-import com.weclubs.bean.WCClubGraduateBean;
-import com.weclubs.bean.WCClubMissionBean;
-import com.weclubs.bean.WCStudentBean;
-import com.weclubs.bean.WCStudentMissionRelationBean;
+import com.weclubs.bean.*;
 import com.weclubs.mapper.WCClubMissionMapper;
 import com.weclubs.model.WCMissionBaseModel;
 import com.weclubs.model.WCSponsorMissionModel;
+import com.weclubs.util.Constants;
 import com.weclubs.util.WCCommonUtil;
 import com.weclubs.util.WCHttpStatus;
 import org.apache.log4j.Logger;
@@ -33,13 +33,18 @@ class WCClubMissionServiceImpl implements WCIClubMissionService {
     private WCClubMissionMapper mClubMissionMapper;
     private WCIUserService mUserService;
     private WCIClubGraduateService mClubGraudateService;
+    private WCIClubService mClubService;
+    private WCIJiGuangPushService mJiGuangPushService;
 
     @Autowired
     public WCClubMissionServiceImpl(WCIUserService mUserService, WCClubMissionMapper mClubMissionMapper,
-                                    WCIClubGraduateService clubGraudateService) {
+                                    WCIClubGraduateService clubGraudateService, WCIClubService clubService,
+                                    WCIJiGuangPushService jiGuangPushService) {
         this.mUserService = mUserService;
         this.mClubMissionMapper = mClubMissionMapper;
         this.mClubGraudateService = clubGraudateService;
+        this.mClubService = clubService;
+        this.mJiGuangPushService = jiGuangPushService;
     }
 
     public void updateMission(WCClubMissionBean clubMissionBean) {
@@ -140,14 +145,14 @@ class WCClubMissionServiceImpl implements WCIClubMissionService {
         return mClubMissionMapper.getClubMissionsByStudentId(studentId, clubId);
     }
 
-    public List<WCStudentMissionRelationBean> getUnConfirmMissionByClubId(long studentId) {
+    public List<WCStudentMissionRelationBean> getUnConfirmMissionByMissionId(long missionId) {
 
-        if (studentId <= 0) {
-            log.error("getUnConfirmMissionByClubId：studentId不能小于等于0。");
+        if (missionId <= 0) {
+            log.error("getUnConfirmMissionByClubId：missionId 不能小于等于0。");
             return null;
         }
 
-        return mClubMissionMapper.getUnConfirmClubMissionsByStudentId(studentId);
+        return mClubMissionMapper.getUnConfirmClubMissionsByStudentId(missionId);
     }
 
     public List<WCClubMissionBean> getChildMissionByMissionId(long missionId) {
@@ -384,5 +389,51 @@ class WCClubMissionServiceImpl implements WCIClubMissionService {
         }
 
         return mClubMissionMapper.getMissionRelationsByMissionId(missionId);
+    }
+
+    public WCHttpStatus remindToUnConfirm(long missionId) {
+
+        WCHttpStatus check = WCHttpStatus.FAIL_REQUEST;
+
+        if (missionId <= 0) {
+            check.msg = "mission_id 不能小于等于0";
+            log.error("remindToUnConfirm：" + check.msg);
+            return check;
+        }
+
+        WCClubMissionBean meetingBean = getMissionDetailById(missionId);
+        if (meetingBean == null) {
+            log.warn("remindToUnConfirm：找不到对应的任务内容");
+            check.msg = "找不到该任务，请检查后重新操作";
+            return check;
+        }
+
+        WCClubBean clubBean = mClubService.getClubInfoById(meetingBean.getClubId());
+        if (clubBean == null) {
+            log.warn("remindToUnConfirm：找不到对应的社团");
+            check = WCHttpStatus.FAIL_APPLICATION_ERROR;
+            return check;
+        }
+
+        List<WCStudentMissionRelationBean> unConfirmStudent =
+                mClubMissionMapper.getUnConfirmClubMissionsByMissionId(meetingBean.getMissionId());
+
+        if (unConfirmStudent == null || unConfirmStudent.size() == 0) {
+            log.warn("remindToUnConfirm：该任务已经全部确认完毕");
+            check.msg = "该任务已经全部确认完毕";
+            return check;
+        }
+
+        long[] userIds = new long[unConfirmStudent.size()];
+        for (int i = 0; i < unConfirmStudent.size(); i++) {
+            userIds[i] = unConfirmStudent.get(i).getStudentId();
+        }
+
+        mJiGuangPushService.pushUnConfirmDynamic(clubBean.getName(),
+                Constants.TODO_MISSION, meetingBean.getAttribution(), missionId, userIds);
+
+        check = WCHttpStatus.SUCCESS;
+
+        return check;
     }
 }

@@ -42,4 +42,15 @@ public interface WCIJiGuangPushService {
      * @param receiverId    推送通知的接收者
      */
     void pushNewNotifyCreate(String clubName, String notify, long notifyId, long... receiverId);
+
+    /**
+     * 提醒尚未确认动态的人需要确认操作
+     *
+     * @param clubName  社团名称
+     * @param dynamicType   动态的类型
+     * @param dynamic   动态的内容
+     * @param dynamicId 动态 id
+     * @param receiverId    推送通知的接收者
+     */
+    void pushUnConfirmDynamic(String clubName, String dynamicType, String dynamic, long dynamicId, long... receiverId);
 }

@@ -31,7 +31,7 @@ public interface WCIClubMissionService {
 
     List<WCStudentMissionRelationBean> getMissionsByStudentId(long studentId, long clubId);
 
-    List<WCStudentMissionRelationBean> getUnConfirmMissionByClubId(long studentId);
+    List<WCStudentMissionRelationBean> getUnConfirmMissionByMissionId(long studentId);
 
     List<WCClubMissionBean> getChildMissionByMissionId(long missionId);
 
@@ -73,4 +73,12 @@ public interface WCIClubMissionService {
      * @return  某个任务关系列表
      */
     List<WCStudentMissionRelationBean> getMissionRelationsByMissionId(long missionId);
+
+    /**
+     * 向尚未确认的任务接收人员发送提醒通知
+     *
+     * @param missionId 任务 id
+     * @return  发送的状态
+     */
+    WCHttpStatus remindToUnConfirm(long missionId);
 }
