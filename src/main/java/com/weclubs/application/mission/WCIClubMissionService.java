@@ -81,4 +81,12 @@ public interface WCIClubMissionService {
      * @return  发送的状态
      */
     WCHttpStatus remindToUnConfirm(long missionId);
+
+    /**
+     * 向尚未完成的任务接收人员发送提醒通知
+     *
+     * @param missionId 任务 id
+     * @return  发送的状态
+     */
+    WCHttpStatus remindToUnFinish(long missionId);
 }

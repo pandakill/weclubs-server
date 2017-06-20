@@ -53,4 +53,14 @@ public interface WCIJiGuangPushService {
      * @param receiverId    推送通知的接收者
      */
     void pushUnConfirmDynamic(String clubName, String dynamicType, String dynamic, long dynamicId, long... receiverId);
+
+    /**
+     * 提醒尚未完成任务的人需要抓紧完成
+     *
+     * @param clubName  社团名称
+     * @param dynamic   动态的内容
+     * @param dynamicId 动态 id
+     * @param receiverId    推送通知的接收者
+     */
+    void pushUnFinishMission(String clubName, String dynamic, long dynamicId, long... receiverId);
 }

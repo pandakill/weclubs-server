@@ -77,4 +77,13 @@ public interface WCClubMissionMapper {
      * @return  人员列表
      */
     List<WCStudentMissionRelationBean> getUnConfirmClubMissionsByMissionId(@Param("missionId") long missionId);
+
+    /**
+     * 根据任务 ID 获取该任务尚未确认的人员列表
+     *
+     * @param missionId 任务id
+     *
+     * @return  人员列表
+     */
+    List<WCStudentMissionRelationBean> getUnFinishClubMissionsByMissionId(@Param("missionId") long missionId);
 }

@@ -279,4 +279,15 @@
         AND relation.`is_del` = 0
     </select>
 
+    <select id="getUnFinishClubMissionsByMissionId" resultMap="missionRelationWithStudentMap" resultType="list">
+        SELECT *
+        FROM `t_student_mission_relation` relation, `t_club_mission` club_mission
+        WHERE club_mission.`is_del` = 0
+        AND club_mission.`type` = 1
+        AND club_mission.`mission_id` = #{missionId}
+        AND club_mission.`mission_id` = relation.`mission_id`
+        AND relation.`status` &lt; 2
+        AND relation.`is_del` = 0
+    </select>
+
 </mapper>

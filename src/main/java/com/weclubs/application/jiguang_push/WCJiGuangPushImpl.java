@@ -160,7 +160,6 @@ class WCJiGuangPushImpl implements WCIJiGuangPushService {
             chineseType = "通知";
         }
 
-
         String title = "你有" + chineseType + "需要确认";
 
         dynamic = dynamic.length() > 20 ? (dynamic.substring(0, 20) + "...") : dynamic;
@@ -170,6 +169,21 @@ class WCJiGuangPushImpl implements WCIJiGuangPushService {
         jsonObject.put("scene_id", Constants.SCENE_PERSON_DYNAMIC + "");
         jsonObject.put("dynamic_id", dynamicId + "");
         jsonObject.put("dynamic_type", dynamicType);
+
+        WCJPushClient.getInstance().pushNotifyToPerson(title, content, jsonObject, receiverId);
+    }
+
+    public void pushUnFinishMission(String clubName, String dynamic, long dynamicId, long... receiverId) {
+
+        String title = "你有任务需要抓紧完成";
+
+        dynamic = dynamic.length() > 20 ? (dynamic.substring(0, 20) + "...") : dynamic;
+        String content = clubName + "：记得准时完成任务【" + dynamic + "】";
+
+        Map<String, String > jsonObject = new HashMap<String, String>();
+        jsonObject.put("scene_id", Constants.SCENE_PERSON_DYNAMIC + "");
+        jsonObject.put("dynamic_id", dynamicId + "");
+        jsonObject.put("dynamic_type", Constants.TODO_MISSION);
 
         WCJPushClient.getInstance().pushNotifyToPerson(title, content, jsonObject, receiverId);
     }

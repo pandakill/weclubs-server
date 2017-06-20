@@ -436,4 +436,49 @@ class WCClubMissionServiceImpl implements WCIClubMissionService {
 
         return check;
     }
+
+    public WCHttpStatus remindToUnFinish(long missionId) {
+
+        WCHttpStatus check = WCHttpStatus.FAIL_REQUEST;
+
+        if (missionId <= 0) {
+            check.msg = "mission_id 不能小于等于0";
+            log.error("remindToUnConfirm：" + check.msg);
+            return check;
+        }
+
+        WCClubMissionBean meetingBean = getMissionDetailById(missionId);
+        if (meetingBean == null) {
+            log.warn("remindToUnConfirm：找不到对应的任务内容");
+            check.msg = "找不到该任务，请检查后重新操作";
+            return check;
+        }
+
+        WCClubBean clubBean = mClubService.getClubInfoById(meetingBean.getClubId());
+        if (clubBean == null) {
+            log.warn("remindToUnConfirm：找不到对应的社团");
+            check = WCHttpStatus.FAIL_APPLICATION_ERROR;
+            return check;
+        }
+
+        List<WCStudentMissionRelationBean> unConfirmStudent =
+                mClubMissionMapper.getUnFinishClubMissionsByMissionId(meetingBean.getMissionId());
+
+        if (unConfirmStudent == null || unConfirmStudent.size() == 0) {
+            log.warn("remindToUnConfirm：该任务已经全部完成");
+            check.msg = "该任务已经全部完成";
+            return check;
+        }
+
+        long[] userIds = new long[unConfirmStudent.size()];
+        for (int i = 0; i < unConfirmStudent.size(); i++) {
+            userIds[i] = unConfirmStudent.get(i).getStudentId();
+        }
+
+        mJiGuangPushService.pushUnFinishMission(clubBean.getName(), meetingBean.getAttribution(), missionId, userIds);
+
+        check = WCHttpStatus.SUCCESS;
+
+        return check;
+    }
 }
