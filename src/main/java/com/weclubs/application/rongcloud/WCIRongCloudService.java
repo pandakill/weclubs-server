@@ -1,8 +1,10 @@
 package com.weclubs.application.rongcloud;
 
 import com.weclubs.bean.WCStudentBean;
+import com.weclubs.model.WCGroupChatListModel;
 import com.weclubs.util.WCHttpStatus;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -57,6 +59,15 @@ public interface WCIRongCloudService {
      * 根据 id 等 获取融云服务器的 token
      *
      * @param userId    用户 id
+     *
+     * @return  返回融云服务器的 token
+     */
+    String getUserToken(long userId);
+
+    /**
+     * 根据 id 等 获取融云服务器的 token
+     *
+     * @param userId    用户 id
      * @param userName  用户昵称
      * @param avatarUrl 用户头像地址
      *
@@ -81,4 +92,22 @@ public interface WCIRongCloudService {
      * @return  群组成员
      */
     List<WCStudentBean> getStudentsByGroupId(long clubId);
+
+    /**
+     * 根据学生 id 获取该学生的群聊列表
+     *
+     * @param studentId 学生 ID
+     *
+     * @return  返回当前学生的群聊列表
+     */
+    List<WCGroupChatListModel> getMyClubChatList(long studentId);
+
+    /**
+     * 根据学生 id 获取该学生的群聊列表
+     *
+     * @param studentId 学生 ID
+     *
+     * @return  返回当前学生的群聊列表
+     */
+    List<HashMap<String, Object>> getMyClubChatListForMap(long studentId);
 }

@@ -1,7 +1,11 @@
 package com.weclubs.application.rongcloud;
 
+import com.weclubs.application.club.WCIClubGraduateService;
+import com.weclubs.application.club.WCIClubService;
 import com.weclubs.application.user.WCIUserService;
+import com.weclubs.bean.WCClubBean;
 import com.weclubs.bean.WCStudentBean;
+import com.weclubs.model.WCGroupChatListModel;
 import com.weclubs.util.Constants;
 import com.weclubs.util.WCHttpStatus;
 import io.rong.RongCloud;
@@ -14,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -24,13 +29,17 @@ import java.util.List;
 @Service(value = "rongCloudService")
 public class WCRongCloudServiceImpl implements WCIRongCloudService {
 
-    private final String RONG_USER_ID_TAG = "im_user_id_";
-    private final String RONG_CLUB_ID_TAG = "im_club_id_";
+    public static final String RONG_USER_ID_TAG = "im_user_id_";
+    public static final String RONG_CLUB_ID_TAG = "im_club_id_";
 
     private Logger log = Logger.getLogger(WCRongCloudServiceImpl.class);
 
     @Autowired
     private WCIUserService mUserService;
+    @Autowired
+    private WCIClubGraduateService mClubGraduateService;
+    @Autowired
+    private WCIClubService mClubService;
 
     public String getSystemMsgId() {
         return "weclubs_system_msg";
@@ -54,6 +63,17 @@ public class WCRongCloudServiceImpl implements WCIRongCloudService {
         rongClubId = rongClubId.substring(RONG_CLUB_ID_TAG.length(), rongClubId.length());
         log.info("getClubIdFromRongClubId：剪裁后的 clubId = " + rongClubId);
         return Long.parseLong(rongClubId);
+    }
+
+    public String getUserToken(long userId) {
+
+        WCStudentBean userBean = mUserService.getUserInfoById(userId);
+
+        if (userBean != null) {
+            return getUserToken(userId, userBean.getRealName(), userBean.getAvatarUrl());
+        }
+
+        return null;
     }
 
     public String getUserToken(long userId, String userName, String avatarUrl) {
@@ -120,6 +140,34 @@ public class WCRongCloudServiceImpl implements WCIRongCloudService {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        return null;
+    }
+
+    public List<WCGroupChatListModel> getMyClubChatList(long studentId) {
+
+        List<WCClubBean> clubs = mClubService.getClubsByStudentId(studentId);
+
+        List<WCGroupChatListModel> results = new ArrayList<WCGroupChatListModel>();
+
+        if (clubs != null && clubs.size() > 0) {
+            for (WCClubBean club : clubs) {
+                results.add(new WCGroupChatListModel(club));
+            }
+        }
+        return results;
+    }
+
+    public List<HashMap<String, Object>> getMyClubChatListForMap(long studentId) {
+        List<WCGroupChatListModel> list = getMyClubChatList(studentId);
+
+        if (list != null && list.size() > 0) {
+            List<HashMap<String, Object>> result = new ArrayList<HashMap<String, Object>>();
+            for (WCGroupChatListModel groupChatListModel : list) {
+                result.add(groupChatListModel.toHashMap());
+            }
+
+            return result;
         }
         return null;
     }
