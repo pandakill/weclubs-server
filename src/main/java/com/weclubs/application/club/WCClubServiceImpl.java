@@ -1,6 +1,7 @@
 package com.weclubs.application.club;
 
 import com.weclubs.application.club_responsibility.WCIClubResponsibilityService;
+import com.weclubs.application.rongcloud.WCIRongCloudService;
 import com.weclubs.application.user.WCIUserService;
 import com.weclubs.bean.*;
 import com.weclubs.mapper.WCClubHonorMapper;
@@ -44,6 +45,7 @@ public class WCClubServiceImpl implements WCIClubService {
     private WCIClubGraduateService mClubGraduateService;
     private WCIUserService mUserService;
     private WCIClubResponsibilityService mClubResponsibilityService;
+    private WCIRongCloudService mRongCloudService;
 
     @Autowired
     public WCClubServiceImpl(WCDynamicMapper mDynamicMapper, WCClubMapper mClubMapper,
@@ -105,6 +107,9 @@ public class WCClubServiceImpl implements WCIClubService {
                 log.info("createClub：创建社团成功，clubBean = " + clubBean.toString());
                 log.info("createClub：创建社团成功，clubGraduateBean = " + graduateBean.toString());
                 log.info("createClub：创建社团成功，studentRelation = " + relationBean.toString());
+
+                WCHttpStatus check = mRongCloudService.createGroupChat(clubBean.getClubId());
+                log.info("createClub：创建群聊结果 = " + check.toString());
 
                 return clubBean.getClubId();
             } catch (InterruptedException e) {
