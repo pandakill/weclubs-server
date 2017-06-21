@@ -21,7 +21,7 @@ public class Example {
 	 * @param args
 	 * @throws Exception
 	 */
-	public static void main(String[] args) throws Exception {
+	public static void test(String[] args) throws Exception {
 		
 		Reader reader = null ;
 		RongCloud rongCloud = RongCloud.getInstance(Constants.RONGCLOUD_APP_KEY, Constants.RONGCLOUD_SECRET_KEY);
