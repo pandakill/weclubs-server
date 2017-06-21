@@ -79,6 +79,13 @@ public interface WCIRongCloudService {
      * 创建群聊
      *
      * @param clubId    社团 id
+     */
+    WCHttpStatus createGroupChat(long clubId);
+
+    /**
+     * 创建群聊
+     *
+     * @param clubId    社团 id
      * @param clubName  社团名称
      * @param userId    需要加入到群聊的用户 id
      */

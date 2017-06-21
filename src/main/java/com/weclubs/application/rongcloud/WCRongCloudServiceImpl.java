@@ -4,15 +4,14 @@ import com.weclubs.application.club.WCIClubGraduateService;
 import com.weclubs.application.club.WCIClubService;
 import com.weclubs.application.user.WCIUserService;
 import com.weclubs.bean.WCClubBean;
+import com.weclubs.bean.WCClubStudentBean;
 import com.weclubs.bean.WCStudentBean;
+import com.weclubs.mapper.WCClubMapper;
 import com.weclubs.model.WCGroupChatListModel;
 import com.weclubs.util.Constants;
 import com.weclubs.util.WCHttpStatus;
 import io.rong.RongCloud;
-import io.rong.models.CodeSuccessResult;
-import io.rong.models.GroupUser;
-import io.rong.models.GroupUserQueryResult;
-import io.rong.models.TokenResult;
+import io.rong.models.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,6 +39,8 @@ public class WCRongCloudServiceImpl implements WCIRongCloudService {
     private WCIClubGraduateService mClubGraduateService;
     @Autowired
     private WCIClubService mClubService;
+    @Autowired
+    private WCClubMapper mClubMapper;
 
     public String getSystemMsgId() {
         return "weclubs_system_msg";
@@ -92,6 +93,25 @@ public class WCRongCloudServiceImpl implements WCIRongCloudService {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public WCHttpStatus createGroupChat(long clubId) {
+        WCHttpStatus check = WCHttpStatus.FAIL_REQUEST;
+
+        WCClubBean clubBean = mClubService.getClubInfoById(clubId);
+        if (clubBean == null) {
+            check.msg = "找不到该社团";
+            return check;
+        }
+
+        List<WCClubStudentBean> students = mClubMapper.getCurrentGraduateStudents(clubId);
+
+        long[] studentIds = new long[students.size()];
+        for (int i = 0; i < students.size(); i++) {
+            studentIds[i] = students.get(i).getStudentId();
+        }
+
+        return createGroupChat(clubId, clubBean.getName(), studentIds);
     }
 
     public WCHttpStatus createGroupChat(long clubId, String clubName, long... userId) {
@@ -149,12 +169,30 @@ public class WCRongCloudServiceImpl implements WCIRongCloudService {
         List<WCClubBean> clubs = mClubService.getClubsByStudentId(studentId);
 
         List<WCGroupChatListModel> results = new ArrayList<WCGroupChatListModel>();
+        GroupInfo[] groupInfos = null;
 
         if (clubs != null && clubs.size() > 0) {
-            for (WCClubBean club : clubs) {
-                results.add(new WCGroupChatListModel(club));
+            groupInfos = new GroupInfo[clubs.size()];
+
+            for (int i = 0; i < clubs.size(); i++) {
+                results.add(new WCGroupChatListModel(clubs.get(i)));
+
+                // 同步到融云服务器列表
+                GroupInfo groupInfo = new GroupInfo(getRongClubId(clubs.get(i).getClubId()), clubs.get(i).getName());
+                groupInfos[i] = groupInfo;
             }
         }
+
+        // 执行同步到融云服务器列表的操作
+        if (groupInfos != null && groupInfos.length > 0) {
+            try {
+                RongCloud.getInstance(Constants.RONGCLOUD_APP_KEY, Constants.RONGCLOUD_SECRET_KEY)
+                        .group.sync(getRongUserId(studentId), groupInfos);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
         return results;
     }
 
