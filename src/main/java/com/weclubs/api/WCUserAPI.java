@@ -247,7 +247,7 @@ class WCUserAPI {
             String mobile = (String) requestData.get("mobile");
             String code = (String) requestData.get("code");
 
-            WCStudentBean studentBean = mUserService.createUserByMobile(mobile);
+            WCStudentBean studentBean = mUserService.getUserInfoByMobile(mobile);
             if (studentBean == null) {
                 check = WCHttpStatus.FAIL_REQUEST;
                 return WCResultData.getHttpStatusData(check, null);

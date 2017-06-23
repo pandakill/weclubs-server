@@ -74,7 +74,13 @@ public class WCUserSeriviceImpl implements WCIUserService {
             return null;
         }
 
-        WCStudentBean studentBean = new WCStudentBean();
+        WCStudentBean studentBean = getUserInfoByMobile(mobile);
+        if (studentBean != null) {
+            log.error("createUserByMobile：已经存在该用户" + mobile);
+            return null;
+        }
+
+        studentBean = new WCStudentBean();
         studentBean.setMobile(mobile);
 
         mStudentMapper.createStudent(studentBean);
