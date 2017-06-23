@@ -71,4 +71,19 @@ class WCServiceAPI {
         result.put("config", mQiNiuService.getUploadConfig());
         return WCResultData.getSuccessData(result);
     }
+
+    @RequestMapping(value = "/get_index_list", method = RequestMethod.POST)
+    public WCResultData getIndexList(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("hot_club", null);
+        result.put("banner", null);
+
+        return WCResultData.getSuccessData(result);
+    }
 }
