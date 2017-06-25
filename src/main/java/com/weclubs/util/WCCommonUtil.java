@@ -2,6 +2,7 @@ package com.weclubs.util;
 
 import org.apache.log4j.Logger;
 
+import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -93,6 +94,17 @@ public class WCCommonUtil {
      */
     public static boolean isExpire(long date) {
         return System.currentTimeMillis() >= date;
+    }
+
+    /**
+     * 获取当前年份
+     *
+     * @return  当前年份
+     */
+    public static int getCurrentYear() {
+        Calendar cal = Calendar.getInstance();
+
+        return cal.get(Calendar.YEAR);
     }
 
     /**

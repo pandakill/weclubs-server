@@ -100,10 +100,10 @@
     <update id="updateStudent" parameterType="com.weclubs.bean.WCStudentBean">
         UPDATE `t_student`
         SET `school_id` = #{schoolId}, `mobile` = #{mobile}, `nick_name` = #{nickName},
-         `real_name` = #{real_name}, `password` = #{password}, `avatar_url` = #{avatarUrl},
-         `birthday` = #{birthday}, `qrcord_url` = #{qrcordUrl}, `class_name` = #{className},
+         `real_name` = #{realName}, `password` = #{password}, `avatar_url` = #{avatarUrl},
+         `birthday` = #{birthday}, `qrcode_url` = #{qrcodeUrl}, `class_name` = #{className},
          `graduate_year` = #{graduateYear}, `status` = #{status}, `is_del` = #{isDel}
-        WHERE `student_id` = #{id}
+        WHERE `student_id` = #{studentId}
     </update>
 
     <!-- 更新学生密码 -->

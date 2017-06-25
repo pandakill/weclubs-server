@@ -6,6 +6,8 @@ import com.weclubs.bean.WCSchoolBean;
 import com.weclubs.bean.WCStudentBean;
 import com.weclubs.mapper.WCStudentMapper;
 import com.weclubs.model.WCStudentBaseInfoModel;
+import com.weclubs.util.WCCommonUtil;
+import com.weclubs.util.WCHttpStatus;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -215,5 +217,63 @@ public class WCUserSeriviceImpl implements WCIUserService {
         }
 
         return studentBaseInfoModel;
+    }
+
+    @Override
+    public WCHttpStatus initUserInfo(long userId, String nickName, long schoolId, long majorId, int gender,
+                                     String className, String avatarUrl, int graduateYear) {
+
+        WCHttpStatus check = WCHttpStatus.FAIL_REQUEST;
+        WCStudentBean studentBean = getUserInfoById(userId);
+
+        if (studentBean == null) {
+            check = WCHttpStatus.FAIL_USER_UNKNOWK;
+            return check;
+        }
+
+        WCSchoolBean schoolBean = mSchoolService.getSchoolById(schoolId);
+        WCSchoolBean majorBean = mSchoolService.getCollegeById(majorId);
+        if (schoolBean == null) {
+            check.msg = "找不到该学校，请检查后重试！";
+            return check;
+        }
+
+        if (majorBean == null) {
+            check.msg = "找不到该院系，请检查后重试！";
+            return check;
+        }
+
+        if (majorBean.getParentId() != schoolBean.getSchoolId()) {
+            check.msg = "学校和院系不匹配，请检查后重试！";
+            return check;
+        }
+
+        if (StringUtils.isEmpty(avatarUrl)) {
+            check.msg = "头像不能为空，请上传头像后再重试！";
+            return check;
+        }
+
+        if (StringUtils.isEmpty(className)) {
+            check.msg = "专业不能为空，请完善专业！";
+            return check;
+        }
+
+        if (graduateYear > WCCommonUtil.getCurrentYear()) {
+            log.warn("currentYear = " + WCCommonUtil.getCurrentYear());
+            check.msg = "入学年份不能超过今年！";
+            return check;
+        }
+
+        studentBean.setNickName(nickName);
+        studentBean.setSchoolId(majorId);
+        studentBean.setGender(gender);
+        studentBean.setClassName(className);
+        studentBean.setAvatarUrl(avatarUrl);
+        studentBean.setGraduateYear(graduateYear);
+
+        mStudentMapper.updateStudent(studentBean);
+
+        check = WCHttpStatus.SUCCESS;
+        return check;
     }
 }

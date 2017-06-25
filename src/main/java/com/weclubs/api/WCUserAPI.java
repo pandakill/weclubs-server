@@ -7,6 +7,7 @@ import com.weclubs.application.user.WCIUserService;
 import com.weclubs.bean.WCStudentBean;
 import com.weclubs.model.request.WCRequestModel;
 import com.weclubs.model.response.WCResultData;
+import com.weclubs.util.WCCommonUtil;
 import com.weclubs.util.WCHttpStatus;
 import com.weclubs.util.WCRequestParamsUtil;
 import org.apache.log4j.Logger;
@@ -318,6 +319,42 @@ class WCUserAPI {
 
         HashMap<String, Object> result = new HashMap<String, Object>();
         return WCResultData.getSuccessData(result);
+    }
+
+    @RequestMapping(value = "/init_user_info", method = RequestMethod.POST)
+    public WCResultData initUserInfo(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            log.error("initUserInfo：请求参数违法");
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        if (requestData == null || requestData.size() == 0) {
+            log.error("initUserInfo：请求参数为空");
+            check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        check = mSecurityService.checkTokenAvailable(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            log.error("updateUserInfo：token失效");
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        long userId = WCRequestParamsUtil.getUserId(requestModel);
+        long schoolId = WCCommonUtil.getLongData(requestData.get("school_id"));
+        long majorId = WCCommonUtil.getLongData(requestData.get("major_id"));
+        int gender = WCCommonUtil.getIntegerData(requestData.get("gender"));
+        String nickName = String.valueOf(requestData.get("nick_name"));
+        String className = String.valueOf(requestData.get("class_name"));
+        String avatarUrl = String.valueOf(requestData.get("avatar_url"));
+        int graduateYear = WCCommonUtil.getIntegerData(requestData.get("graduate_year"));
+
+        check = mUserService.initUserInfo(userId, nickName, schoolId, majorId, gender, className, avatarUrl, graduateYear);
+
+        return WCResultData.getHttpStatusData(check, new HashMap<>());
     }
 
 //    @RequestMapping(value = "/setup_password", method = RequestMethod.POST)
