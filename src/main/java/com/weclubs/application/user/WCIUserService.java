@@ -45,4 +45,15 @@ public interface WCIUserService {
      */
     WCHttpStatus initUserInfo(long userId, String nickName, long schoolId, long majorId,
                               int gender, String className, String avatarUrl, int graduateYear);
+
+    /**
+     * 修改绑定手机号码
+     *
+     * @param userId    用户ID
+     * @param mobile    用户昵称
+     * @param code      手机验证码
+     *
+     * @return      如果修改成功，则返回 {@link WCHttpStatus#SUCCESS}
+     */
+    WCHttpStatus changeMobile(long userId, String mobile, String code);
 }

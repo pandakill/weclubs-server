@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.weclubs.util.Constants.*;
+
 /**
  * 正则判断
  *

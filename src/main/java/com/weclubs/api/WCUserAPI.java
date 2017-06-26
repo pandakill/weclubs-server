@@ -339,7 +339,7 @@ class WCUserAPI {
 
         check = mSecurityService.checkTokenAvailable(requestModel);
         if (check != WCHttpStatus.SUCCESS) {
-            log.error("updateUserInfo：token失效");
+            log.error("initUserInfo：token失效");
             return WCResultData.getHttpStatusData(check, null);
         }
 
@@ -353,6 +353,37 @@ class WCUserAPI {
         int graduateYear = WCCommonUtil.getIntegerData(requestData.get("graduate_year"));
 
         check = mUserService.initUserInfo(userId, nickName, schoolId, majorId, gender, className, avatarUrl, graduateYear);
+
+        return WCResultData.getHttpStatusData(check, new HashMap<>());
+    }
+
+    @RequestMapping(value = "/change_mobile", method = RequestMethod.POST)
+    public WCResultData changeMobile(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            log.error("changeMobile：请求参数违法");
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        if (requestData == null || requestData.size() == 0) {
+            log.error("changeMobile：请求参数为空");
+            check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        check = mSecurityService.checkTokenAvailable(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            log.error("changeMobile：token失效");
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        long userId = WCRequestParamsUtil.getUserId(requestModel);
+        String mobile = String.valueOf(requestData.get("mobile"));
+        String code = String.valueOf(requestData.get("code"));
+
+        check = mUserService.changeMobile(userId, mobile, code);
 
         return WCResultData.getHttpStatusData(check, new HashMap<>());
     }

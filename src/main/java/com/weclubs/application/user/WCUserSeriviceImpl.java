@@ -8,6 +8,7 @@ import com.weclubs.mapper.WCStudentMapper;
 import com.weclubs.model.WCStudentBaseInfoModel;
 import com.weclubs.util.WCCommonUtil;
 import com.weclubs.util.WCHttpStatus;
+import com.weclubs.util.WCRegexUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -272,6 +273,34 @@ public class WCUserSeriviceImpl implements WCIUserService {
         studentBean.setGraduateYear(graduateYear);
 
         mStudentMapper.updateStudent(studentBean);
+
+        check = WCHttpStatus.SUCCESS;
+        return check;
+    }
+
+    @Override
+    public WCHttpStatus changeMobile(long userId, String mobile, String code) {
+
+        WCHttpStatus check = WCHttpStatus.FAIL_REQUEST;
+
+        if (!WCRegexUtils.isMobileSimple(mobile)) {
+            check.msg = "输入的手机号码不正确，请重新输入！";
+            return check;
+        }
+
+        if (StringUtils.isEmpty(code)) {
+            check.msg = "验证码不能为空，请重新输入！";
+            return check;
+        }
+
+        WCStudentBean user = getUserInfoById(userId);
+        if (user == null) {
+            check = WCHttpStatus.FAIL_USER_UNKNOWK;
+            return check;
+        }
+
+        user.setMobile(mobile);
+        mStudentMapper.updateStudent(user);
 
         check = WCHttpStatus.SUCCESS;
         return check;
