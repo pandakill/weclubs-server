@@ -43,6 +43,8 @@ public class WCStudentBean implements Serializable {
     private int isDel;
     private String idCardNo;
     private String studentIdNo;
+    private String stuCertificationFront;
+    private String stuCertificationBg;
 
     private WCSchoolBean schoolBean;
 
@@ -180,6 +182,22 @@ public class WCStudentBean implements Serializable {
 
     public void setStudentIdNo(String studentIdNo) {
         this.studentIdNo = studentIdNo;
+    }
+
+    public String getStuCertificationFront() {
+        return stuCertificationFront;
+    }
+
+    public void setStuCertificationFront(String stuCertificationFront) {
+        this.stuCertificationFront = stuCertificationFront;
+    }
+
+    public String getStuCertificationBg() {
+        return stuCertificationBg;
+    }
+
+    public void setStuCertificationBg(String stuCertificationBg) {
+        this.stuCertificationBg = stuCertificationBg;
     }
 
     @Override

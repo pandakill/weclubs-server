@@ -330,6 +330,8 @@ public class WCUserSeriviceImpl implements WCIUserService {
         result.put("school_name", schoolBean.getName());
         result.put("major_id", collegeBean.getSchoolId());
         result.put("major_name", collegeBean.getName());
+        result.put("certification_front", userBean.getStuCertificationFront());
+        result.put("certification_bg", userBean.getStuCertificationBg());
 
         //学生状态，0未认证，1已认证，2认证中，3认证失败
         result.put("certify_status", userBean.getStatus());
