@@ -388,6 +388,41 @@ class WCUserAPI {
         return WCResultData.getHttpStatusData(check, new HashMap<>());
     }
 
+    @RequestMapping(value = "/get_certification_info", method = RequestMethod.POST)
+    public WCResultData getCertificationInfo(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            log.error("getCertificationInfo：请求参数违法");
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        if (requestData == null || requestData.size() == 0) {
+            log.error("getCertificationInfo：请求参数为空");
+            check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        check = mSecurityService.checkTokenAvailable(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            log.error("getCertificationInfo：token失效");
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        long userId = WCRequestParamsUtil.getUserId(requestModel);
+
+        HashMap<String, Object> result = mUserService.getUserCertificationInfo(userId);
+
+        if (result.containsKey("error_code")) {
+            check.code = (int) result.get("error_code");
+            check.msg = (String) result.get("error_msg");
+            return WCResultData.getHttpStatusData(check, new HashMap<>());
+        }
+
+        return WCResultData.getSuccessData(result);
+    }
+
 //    @RequestMapping(value = "/setup_password", method = RequestMethod.POST)
     public WCResultData setPassword(@RequestBody WCRequestModel requestModel) {
 

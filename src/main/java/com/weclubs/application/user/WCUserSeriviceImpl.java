@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.HashMap;
+
 /**
  * 用户的service实现类
  *
@@ -304,5 +306,34 @@ public class WCUserSeriviceImpl implements WCIUserService {
 
         check = WCHttpStatus.SUCCESS;
         return check;
+    }
+
+    @Override
+    public HashMap<String, Object> getUserCertificationInfo(long userId) {
+        HashMap<String, Object> result = new HashMap<>();
+
+        WCStudentBean userBean = getUserInfoById(userId);
+        if (userBean == null) {
+            result.put("error_code", WCHttpStatus.FAIL_USER_UNKNOWK.code);
+            result.put("error_msg", WCHttpStatus.FAIL_USER_UNKNOWK.msg);
+            return result;
+        }
+
+        WCSchoolBean schoolBean = mSchoolService.getSchoolById(userBean.getSchoolId());
+        WCSchoolBean collegeBean = mSchoolService.getCollegeById(userBean.getSchoolId());
+
+        result.put("real_name", userBean.getRealName());
+        result.put("graduate_year", userBean.getGraduateYear());
+        result.put("class_name", userBean.getClassName());
+        result.put("id_card", userBean.getIdCardNo());
+        result.put("school_id", schoolBean.getSchoolId());
+        result.put("school_name", schoolBean.getName());
+        result.put("major_id", collegeBean.getSchoolId());
+        result.put("major_name", collegeBean.getName());
+
+        //学生状态，0未认证，1已认证，2认证中，3认证失败
+        result.put("certify_status", userBean.getStatus());
+
+        return result;
     }
 }

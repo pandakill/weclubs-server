@@ -4,6 +4,8 @@ import com.weclubs.bean.WCStudentBean;
 import com.weclubs.model.WCStudentBaseInfoModel;
 import com.weclubs.util.WCHttpStatus;
 
+import java.util.HashMap;
+
 /**
  * 用户service接口层
  *
@@ -56,4 +58,13 @@ public interface WCIUserService {
      * @return      如果修改成功，则返回 {@link WCHttpStatus#SUCCESS}
      */
     WCHttpStatus changeMobile(long userId, String mobile, String code);
+
+    /**
+     * 获取用户的认证信息
+     *
+     * @param userId    用户id
+     *
+     * @return
+     */
+    HashMap<String, Object> getUserCertificationInfo(long userId);
 }

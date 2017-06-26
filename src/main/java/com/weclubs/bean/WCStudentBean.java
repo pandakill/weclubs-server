@@ -1,5 +1,7 @@
 package com.weclubs.bean;
 
+import com.alibaba.fastjson.JSON;
+
 import java.io.Serializable;
 
 /**
@@ -39,6 +41,8 @@ public class WCStudentBean implements Serializable {
     private int graduateYear;
     private int status;
     private int isDel;
+    private String idCardNo;
+    private String studentIdNo;
 
     private WCSchoolBean schoolBean;
 
@@ -162,23 +166,24 @@ public class WCStudentBean implements Serializable {
         this.gender = gender;
     }
 
+    public String getIdCardNo() {
+        return idCardNo;
+    }
+
+    public void setIdCardNo(String idCardNo) {
+        this.idCardNo = idCardNo;
+    }
+
+    public String getStudentIdNo() {
+        return studentIdNo;
+    }
+
+    public void setStudentIdNo(String studentIdNo) {
+        this.studentIdNo = studentIdNo;
+    }
+
     @Override
     public String toString() {
-        return "WCStudentBean{" +
-                "studentId=" + studentId +
-                ", schoolId=" + schoolId +
-                ", mobile='" + mobile + '\'' +
-                ", nickName='" + nickName + '\'' +
-                ", realName='" + realName + '\'' +
-                ", password='" + password + '\'' +
-                ", avatarUrl='" + avatarUrl + '\'' +
-                ", birthday='" + birthday + '\'' +
-                ", qrcodeUrl='" + qrcodeUrl + '\'' +
-                ", className='" + className + '\'' +
-                ", graduateYear=" + graduateYear +
-                ", status=" + status +
-                ", isDel=" + isDel +
-                ", schoolBean=" + schoolBean +
-                '}';
+        return JSON.toJSONString(this);
     }
 }

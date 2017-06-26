@@ -34,6 +34,8 @@
         <result property="status" column="status" />
         <result property="isDel" column="is_Del" />
         <result property="gender" column="gender" />
+        <result property="idCardNo" column="id_card_no" />
+        <result property="studentIdNo" column="student_id_no" />
 
         <association property="schoolBean" javaType="com.weclubs.bean.WCSchoolBean">
             <id property="schoolId" column="school_id" />
@@ -102,7 +104,8 @@
         SET `school_id` = #{schoolId}, `mobile` = #{mobile}, `nick_name` = #{nickName},
          `real_name` = #{realName}, `password` = #{password}, `avatar_url` = #{avatarUrl},
          `birthday` = #{birthday}, `qrcode_url` = #{qrcodeUrl}, `class_name` = #{className},
-         `graduate_year` = #{graduateYear}, `status` = #{status}, `is_del` = #{isDel}
+         `graduate_year` = #{graduateYear}, `status` = #{status}, `is_del` = #{isDel},
+         `id_card_no` = #{idCardNo}, `student_id_no` = #{studentIdNo}
         WHERE `student_id` = #{studentId}
     </update>
 
