@@ -2,6 +2,13 @@ package com.weclubs.util;
 
 import org.apache.log4j.Logger;
 
+import javax.imageio.ImageIO;
+import javax.imageio.stream.ImageOutputStream;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -163,5 +170,26 @@ public class WCCommonUtil {
             sb.replace(position-1,position+1,sb.substring(position,position+1).toUpperCase());
         }
         return sb.toString();
+    }
+
+    /**
+     * 将 BufferedImage 转成 inputStream
+     *
+     * @param bimage    源 bufferedImage
+     *
+     * @return  转成功之后的 inputStream
+     */
+    public static InputStream getImageStream(BufferedImage bimage){
+        InputStream is = null;
+        ByteArrayOutputStream bs = new ByteArrayOutputStream();
+        ImageOutputStream imOut;
+        try {
+            imOut = ImageIO.createImageOutputStream(bs);
+            ImageIO.write(bimage, "jpg", imOut);
+            is= new ByteArrayInputStream(bs.toByteArray());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return is;
     }
 }

@@ -1,5 +1,8 @@
 package com.weclubs.application.qiniu;
 
+import com.weclubs.util.WCHttpStatus;
+
+import java.io.InputStream;
 import java.util.HashMap;
 
 /**
@@ -12,4 +15,6 @@ public interface WCIQiNiuService {
     HashMap<String, Object> getUploadConfig();
 
     String getUploadToken();
+
+    WCHttpStatus uploadFile(InputStream inputStream);
 }
