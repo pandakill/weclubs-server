@@ -64,7 +64,15 @@ public interface WCIUserService {
      *
      * @param userId    用户id
      *
-     * @return
+     * @return  如果获取成功，则返回信息键值对；否则返回带有"error_code"的键值对
      */
     HashMap<String, Object> getUserCertificationInfo(long userId);
+
+    /**
+     * 设置认证信息
+     *
+     * @param certificationInfo 认证信息键值对
+     * @return  如果设置成功，则返回{@link WCHttpStatus#SUCCESS}
+     */
+    WCHttpStatus setCertificationInfo(HashMap<String, Object> certificationInfo);
 }

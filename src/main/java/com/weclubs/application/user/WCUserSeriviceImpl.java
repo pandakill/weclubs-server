@@ -332,10 +332,91 @@ public class WCUserSeriviceImpl implements WCIUserService {
         result.put("major_name", collegeBean.getName());
         result.put("certification_front", userBean.getStuCertificationFront());
         result.put("certification_bg", userBean.getStuCertificationBg());
+        result.put("student_card_id", userBean.getStudentIdNo());
 
         //学生状态，0未认证，1已认证，2认证中，3认证失败
         result.put("certify_status", userBean.getStatus());
 
         return result;
+    }
+
+    @Override
+    public WCHttpStatus setCertificationInfo(HashMap<String, Object> certificationInfo) {
+
+        WCHttpStatus check = WCHttpStatus.FAIL_REQUEST;
+
+        long userId = WCCommonUtil.getLongData(certificationInfo);
+
+        WCStudentBean userBean = getUserInfoById(userId);
+        if (userBean == null) {
+            check = WCHttpStatus.FAIL_USER_UNKNOWK;
+            return check;
+        }
+
+        String certificationFront = String.valueOf(certificationInfo.get("certification_front"));
+        String certificationBg = String.valueOf(certificationInfo.get("certification_bg"));
+
+        if (StringUtils.isEmpty(certificationFront) || StringUtils.isEmpty(certificationBg)) {
+            check.msg = "学生证照片不能为空！";
+            return check;
+        }
+
+        String realName = String.valueOf(certificationInfo.get("real_name"));
+        if (StringUtils.isEmpty(realName)) {
+            check.msg = "真实姓名不能为空！";
+            return check;
+        }
+
+        String stuCardId = String.valueOf(certificationInfo.get("student_card_id"));
+        if (StringUtils.isEmpty(stuCardId)) {
+            check.msg = "学号不能为空！";
+            return check;
+        }
+
+        int graduateYear = WCCommonUtil.getIntegerData(certificationInfo.get("graduate_year"));
+        if (graduateYear > 0) {
+            check.msg = "入学年份不能为空！";
+            return check;
+        }
+
+        long schoolId = WCCommonUtil.getLongData(certificationInfo.get("school_id"));
+        WCSchoolBean schoolBean = mSchoolService.getSchoolById(schoolId);
+        if (schoolBean == null) {
+            check.msg = "找不到该学校！";
+            return check;
+        }
+
+        long majorId = WCCommonUtil.getLongData(certificationInfo.get("major_id"));
+        WCSchoolBean majorBean = mSchoolService.getCollegeById(majorId);
+        if (majorBean == null) {
+            check.msg = "找不到该院系！";
+            return check;
+        }
+
+        String className = String.valueOf(certificationInfo.get("class_name"));
+        if (StringUtils.isEmpty(className)) {
+            check.msg = "专业不能为空";
+            return check;
+        }
+
+        String idCardNo = String.valueOf(certificationInfo.get("id_card_no"));
+        if (StringUtils.isEmpty(idCardNo)
+                || !WCRegexUtils.isIDCard18(idCardNo)) {
+            check.msg = "身份证号码错误！";
+        }
+
+        userBean.setRealName(realName);
+        userBean.setStuCertificationFront(certificationFront);
+        userBean.setStuCertificationBg(certificationBg);
+        userBean.setStudentIdNo(stuCardId);
+        userBean.setSchoolId(majorId);
+        userBean.setClassName(className);
+        userBean.setIdCardNo(idCardNo);
+        userBean.setGraduateYear(graduateYear);
+
+        mStudentMapper.updateStudent(userBean);
+
+        check = WCHttpStatus.SUCCESS;
+        return check;
     }
 }

@@ -423,6 +423,34 @@ class WCUserAPI {
         return WCResultData.getSuccessData(result);
     }
 
+    @RequestMapping(value = "/set_certification", method = RequestMethod.POST)
+    public WCResultData setCertification(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            log.error("setCertification：请求参数违法");
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        if (requestData == null || requestData.size() == 0) {
+            log.error("setCertification：请求参数为空");
+            check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        check = mSecurityService.checkTokenAvailable(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            log.error("setCertification：token失效");
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        check = mUserService.setCertificationInfo(requestData);
+
+
+        return WCResultData.getHttpStatusData(check, null);
+    }
+
 //    @RequestMapping(value = "/setup_password", method = RequestMethod.POST)
     public WCResultData setPassword(@RequestBody WCRequestModel requestModel) {
 
