@@ -50,13 +50,15 @@ public class WCClubServiceImpl implements WCIClubService {
     @Autowired
     public WCClubServiceImpl(WCDynamicMapper mDynamicMapper, WCClubMapper mClubMapper,
                              WCIUserService mUserService, WCIClubResponsibilityService mClubResponsibilityService,
-                             WCClubHonorMapper mClubHonorMapper, WCIClubGraduateService mClubGraduateService) {
+                             WCClubHonorMapper mClubHonorMapper, WCIClubGraduateService mClubGraduateService,
+                             WCIRongCloudService rongCloudService) {
         this.mDynamicMapper = mDynamicMapper;
         this.mClubMapper = mClubMapper;
         this.mUserService = mUserService;
         this.mClubResponsibilityService = mClubResponsibilityService;
         this.mClubHonorMapper = mClubHonorMapper;
         this.mClubGraduateService = mClubGraduateService;
+        this.mRongCloudService = rongCloudService;
     }
 
     public WCClubBean getClubInfoById(long clubId) {

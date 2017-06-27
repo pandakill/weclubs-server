@@ -1,11 +1,8 @@
 package com.weclubs.api;
 
-import com.weclubs.application.club.WCIClubService;
 import com.weclubs.application.qiniu.WCIQiNiuService;
 import com.weclubs.application.rongcloud.WCIRongCloudService;
 import com.weclubs.application.user.WCIUserService;
-import com.weclubs.bean.WCClubBean;
-import com.weclubs.bean.WCClubStudentBean;
 import com.weclubs.bean.WCStudentBean;
 import com.weclubs.mapper.WCClubMapper;
 import com.weclubs.model.response.WCResultData;
@@ -22,7 +19,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  *
@@ -32,8 +28,8 @@ import java.util.List;
 @RequestMapping(value = "/test")
 public class TestAPI {
 
-    @Autowired
-    private WCIClubService mClubService;
+//    @Autowired
+//    private WCIClubService mClubService;
     @Autowired
     private WCIRongCloudService mRongCloudService;
     @Autowired
@@ -47,20 +43,20 @@ public class TestAPI {
     public WCResultData createGroupChat() {
         WCHttpStatus check = WCHttpStatus.SUCCESS;
 
-        List<WCClubBean> clubs = mClubService.getClubsBySchoolId(1);
+//        List<WCClubBean> clubs = mClubService.getClubsBySchoolId(1);
 
-        for (WCClubBean club : clubs) {
-            long clubId = club.getClubId();
-            WCClubBean clubBean = mClubService.getClubInfoById(clubId);
-            List<WCClubStudentBean> students = mClubMapper.getCurrentGraduateStudents(clubId);
-
-            long[] studentIds = new long[students.size()];
-            for (int i = 0; i < students.size(); i++) {
-                studentIds[i] = students.get(i).getStudentId();
-            }
-
-            check = mRongCloudService.createGroupChat(clubId, clubBean.getName(), studentIds);
-        }
+//        for (WCClubBean club : clubs) {
+//            long clubId = club.getClubId();
+//            WCClubBean clubBean = mClubService.getClubInfoById(clubId);
+//            List<WCClubStudentBean> students = mClubMapper.getCurrentGraduateStudents(clubId);
+//
+//            long[] studentIds = new long[students.size()];
+//            for (int i = 0; i < students.size(); i++) {
+//                studentIds[i] = students.get(i).getStudentId();
+//            }
+//
+//            check = mRongCloudService.createGroupChat(clubId, clubBean.getName(), studentIds);
+//        }
 
         try {
             Image image = ImageIO.read(new URL("http://on633pcgq.bkt.clouddn.com/activity/chengji/img/chengji.png"));
