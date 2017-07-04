@@ -509,10 +509,11 @@ class WCUserAPI {
         result.put("nick_name", student.getNickName());
         result.put("real_name", student.getRealName());
         result.put("avatar_url", student.getAvatarUrl());
-        result.put("gender", 1);
+        result.put("gender", student.getGender());
         result.put("class_name", student.getClassName());
-        result.put("graduate_year", student.getGraduateYear() + "级");
-        result.put("is_auth", student.getStatus() == WCStudentBean.STATUS.ALREADY_AUTH.status ? 1 : 0);
+        result.put("graduate_year", student.getGraduateYear());
+        result.put("is_auth", student.getStatus());
+        result.put("student_card_id", student.getStudentIdNo());
 
         result.put("school_id", student.getSchoolId());
         result.put("school_name", student.getSchoolBean() == null ? "" : student.getSchoolBean().getName());
