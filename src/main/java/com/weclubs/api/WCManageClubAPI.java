@@ -225,9 +225,13 @@ class WCManageClubAPI {
         } else if (requestData.get("club_id") instanceof Integer) {
             clubId = (Integer) requestData.get("club_id");
         }
+        int pureSelected = 0;
+        if (requestData.containsKey("pure_selected")) {
+            pureSelected = WCCommonUtil.getIntegerData(requestData.get("pure_selected"));
+        }
 
         ArrayList<HashMap<String, Object>> jobArrayHash = new ArrayList<HashMap<String, Object>>();
-        List<WCClubJobBean> suggestJobs = mClubResponsibilityService.getJobsByClubId(clubId);
+        List<WCClubJobBean> suggestJobs = mClubResponsibilityService.getJobsByClubId(clubId, pureSelected == 1);
         if (suggestJobs != null && suggestJobs.size() > 0) {
             for (WCClubJobBean suggestJob : suggestJobs) {
                 HashMap<String, Object> hash = getJobHash(suggestJob);

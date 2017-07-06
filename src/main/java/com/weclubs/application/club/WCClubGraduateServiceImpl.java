@@ -187,7 +187,7 @@ class WCClubGraduateServiceImpl implements WCIClubGraduateService {
             return check;
         }
 
-        List<WCClubJobBean> jobs = mClubResponsibilityService.getJobsByClubId(clubId);
+        List<WCClubJobBean> jobs = mClubResponsibilityService.getJobsByClubId(clubId, true);
         if (jobs == null || jobs.size() == 0) {
             log.error("updateClubCurrentGraduateStudentJob：该社团尚未设置职位");
             check.msg = "该社团尚未设置职位";

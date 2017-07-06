@@ -390,7 +390,7 @@ class WCClubResponsibilityServiceImpl implements WCIClubResponsibilityService {
         return resultArray;
     }
 
-    public List<WCClubJobBean> getJobsByClubId(long clubId) {
+    public List<WCClubJobBean> getJobsByClubId(long clubId, boolean pureSelected) {
 
         if (clubId <= 0) {
             log.error("getJobsByClubId：获取社团职能失败，clubId不能小于等于0。");
@@ -437,8 +437,30 @@ class WCClubResponsibilityServiceImpl implements WCIClubResponsibilityService {
 
             } catch (NumberFormatException e) {
                 e.printStackTrace();
+                return null;
             } catch (JSONException e) {
                 e.printStackTrace();
+                return null;
+            }
+        }
+
+        if (pureSelected) {
+            return result;
+        }
+
+        List<WCClubJobBean> suggestJobs = mJobMapper.getClubJobBySuggest();
+        if (suggestJobs != null && suggestJobs.size() > 0) {
+            for (WCClubJobBean suggestJob : suggestJobs) {  // 这是推荐的列表
+                boolean isEquale = false;
+                for (WCClubJobBean jobBean : result) {  // 这是选中的列表
+                    if (suggestJob.getJobId() == jobBean.getJobId()) {
+                        isEquale = true;
+                        break;
+                    }
+                }
+                if (!isEquale) {
+                    result.add(suggestJob);
+                }
             }
         }
 
