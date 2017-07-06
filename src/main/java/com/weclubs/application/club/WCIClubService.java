@@ -2,6 +2,7 @@ package com.weclubs.application.club;
 
 import com.weclubs.bean.WCClubBean;
 import com.weclubs.bean.WCClubHonorBean;
+import com.weclubs.bean.WCClubStudentBean;
 import com.weclubs.model.WCManageClubModel;
 import com.weclubs.model.WCMyClubModel;
 import com.weclubs.model.WCStudentForClubModel;
@@ -79,4 +80,21 @@ public interface WCIClubService {
      *          否则返回 {@link WCHttpStatus#FAIL_REQUEST}
      */
     WCHttpStatus setClubAvatar(String avatarUrl, long clubId);
+
+    /**
+     * 获取当前届的所有学生
+     *
+     * @param clubId    社团id
+     * @return  返回当前届的所有学生
+     */
+    List<WCClubStudentBean> getCurrentGraduateStudentsByClubId(long clubId);
+
+    /**
+     * 判断该学生是否在此社团
+     *
+     * @param studentId 学生id
+     * @param clubId    社团id
+     * @return  该学生是否已经加入该当前届社团
+     */
+    boolean checkStudentExitCurrentGraduate(long studentId, long clubId);
 }

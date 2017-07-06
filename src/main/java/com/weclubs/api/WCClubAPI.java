@@ -7,6 +7,7 @@ import com.weclubs.application.club.WCIClubService;
 import com.weclubs.application.security.WCISecurityService;
 import com.weclubs.bean.WCClubBean;
 import com.weclubs.bean.WCClubHonorBean;
+import com.weclubs.bean.WCClubStudentBean;
 import com.weclubs.model.WCMyClubModel;
 import com.weclubs.model.request.WCRequestModel;
 import com.weclubs.model.response.WCResultData;
@@ -66,6 +67,7 @@ class WCClubAPI {
             }
 
             long clubId = Long.parseLong((String) requestData.get("club_id"));
+            long userId = WCCommonUtil.getLongData(requestData.get("user_id"));
 
             WCClubBean clubBean = mClubService.getClubInfoById(clubId);
             if (clubBean == null) {
@@ -82,11 +84,16 @@ class WCClubAPI {
             result.put("slogan", clubBean.getSlogan());
             result.put("attribution", clubBean.getIntroduction());
 
-            result.put("member_count", "10");
-            result.put("member", null);
+            List<WCClubStudentBean> members = mClubService.getCurrentGraduateStudentsByClubId(clubId);
+            result.put("member_count", members != null ? members.size() : 0);
+            if (members == null) {
+                result.put("member", null);
+            } else {
+                result.put("member", getClubMember(members));
+            }
 
-            result.put("activity_count", "9");
-            result.put("activity", null);
+            boolean isJoined = mClubService.checkStudentExitCurrentGraduate(userId, clubId);
+            result.put("is_joined", isJoined ? 1 : 0);
 
             List<WCClubHonorBean> honors = mClubService.getClubHonorByClubId(clubId);
             result.put("club_honor", getClubHonorList(honors));
@@ -269,6 +276,20 @@ class WCClubAPI {
             honorHash.put("get_date", honor.getGetDate());
             honorHash.put("name", honor.getContent());
             result.add(honorHash);
+        }
+        return result;
+    }
+
+    private ArrayList<HashMap<String, Object>> getClubMember(List<WCClubStudentBean> list) {
+        ArrayList<HashMap<String, Object>> result = new ArrayList<>();
+
+        int max = list.size() > 6 ? 6 : list.size();
+        for (int i = 0; i < max; i++) {
+            HashMap<String, Object> student = new HashMap<>();
+            student.put("student_id", list.get(i).getStudentId());
+            student.put("student_name", list.get(i).getRealName());
+            student.put("avatar_url", list.get(i).getAvatarUrl());
+            result.add(student);
         }
         return result;
     }

@@ -439,6 +439,34 @@ public class WCClubServiceImpl implements WCIClubService {
         return check;
     }
 
+    @Override
+    public List<WCClubStudentBean> getCurrentGraduateStudentsByClubId(long clubId) {
+        WCClubBean clubBean = getClubInfoById(clubId);
+        if (clubBean == null) {
+            log.error("找不到该社团");
+            return null;
+        }
+
+        return mClubMapper.getCurrentGraduateStudents(clubId);
+    }
+
+    @Override
+    public boolean checkStudentExitCurrentGraduate(long studentId, long clubId) {
+        List<WCClubStudentBean> members = getCurrentGraduateStudentsByClubId(clubId);
+        if (members == null || members.size() == 0) {
+            log.error("该社团当前届人数为0");
+            return false;
+        }
+
+        for (WCClubStudentBean member : members) {
+            if (studentId == member.getStudentId()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 
     /**
      * 根据真实姓名首字母进行排序
