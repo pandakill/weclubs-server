@@ -467,6 +467,11 @@ public class WCClubServiceImpl implements WCIClubService {
         return false;
     }
 
+    @Override
+    public List<WCClubBean> searchClubList(String... keywords) {
+        String k = "%" + keywords[0] +  "%";
+        return mClubMapper.searchClubListByKeyword(k);
+    }
 
     /**
      * 根据真实姓名首字母进行排序

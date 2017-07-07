@@ -83,4 +83,12 @@ public interface WCClubMapper {
      * @return  该学生所有管理的社团
      */
     List<WCManageClubModel> getMyManageCurrentGraClub(@Param("studentId") long studentId);
+
+    /**
+     * 根据关键词查找社团列表
+     *
+     * @param keyword 关键词
+     * @return  社团列表
+     */
+    List<WCClubBean> searchClubListByKeyword(@Param("keyword") String keyword);
 }

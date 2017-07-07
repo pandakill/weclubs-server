@@ -97,4 +97,13 @@ public interface WCIClubService {
      * @return  该学生是否已经加入该当前届社团
      */
     boolean checkStudentExitCurrentGraduate(long studentId, long clubId);
+
+    /**
+     * 搜索社团名字
+     *
+     * @param keywords  关键词
+     *
+     * @return  搜索结果
+     */
+    List<WCClubBean> searchClubList(String... keywords);
 }

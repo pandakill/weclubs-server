@@ -212,4 +212,12 @@
         AND stu_clu_gra_relation.`student_id` = #{studentId}
     </select>
 
+    <select id="searchClubListByKeyword" resultMap="clubMap" resultType="list" >
+        SELECT * FROM `t_club` club, `t_club_graduate` club_graduate
+        WHERE club_graduate.`club_id` = club.`club_id`
+        AND club_graduate.`is_current` = 1
+        AND club.`status` = 1
+        AND club.`name` LIKE #{keyword}
+    </select>
+
 </mapper>

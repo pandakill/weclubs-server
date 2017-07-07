@@ -1,10 +1,14 @@
 package com.weclubs.api;
 
+import com.weclubs.application.club.WCIClubService;
 import com.weclubs.application.qiniu.WCIQiNiuService;
 import com.weclubs.application.security.WCISecurityService;
+import com.weclubs.bean.WCClubBean;
+import com.weclubs.bean.WCClubStudentBean;
 import com.weclubs.model.request.WCRequestModel;
 import com.weclubs.model.response.WCResultData;
 import com.weclubs.util.WCHttpStatus;
+import com.weclubs.util.WCRequestParamsUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * 综合类接口
@@ -27,11 +33,14 @@ class WCServiceAPI {
 
     private WCISecurityService mSecurityService;
     private WCIQiNiuService mQiNiuService;
+    private WCIClubService mClubService;
 
     @Autowired
-    public WCServiceAPI(WCISecurityService mSecurityService, WCIQiNiuService mQiNiuService) {
+    public WCServiceAPI(WCISecurityService mSecurityService, WCIQiNiuService mQiNiuService,
+                        WCIClubService clubService) {
         this.mSecurityService = mSecurityService;
         this.mQiNiuService = mQiNiuService;
+        this.mClubService = clubService;
     }
 
     @RequestMapping(value = "/get_upload_token", method = RequestMethod.POST)
@@ -85,5 +94,63 @@ class WCServiceAPI {
         result.put("banner", null);
 
         return WCResultData.getSuccessData(result);
+    }
+
+    @RequestMapping(value = "/search_club", method = RequestMethod.POST)
+    public WCResultData searchClub(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap<String, Object> requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        if (requestData == null || requestData.size() == 0) {
+            return WCResultData.getHttpStatusData(WCHttpStatus.FAIL_REQUEST_NULL_PARAMS, null);
+        }
+
+        String keyword = (String) requestData.get("keyword");
+        List<WCClubBean> clubList = mClubService.searchClubList(keyword);
+        ArrayList<HashMap<String, Object>> clubHash = new ArrayList<>();
+        if (clubList != null) {
+            for (WCClubBean clubBean : clubList) {
+                clubHash.add(getIndexClubModel(clubBean));
+            }
+        }
+
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("club_list", clubHash);
+        return WCResultData.getSuccessData(result);
+    }
+
+    private HashMap<String, Object> getIndexClubModel(WCClubBean clubBean) {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("club_id", clubBean.getClubId());
+        result.put("club_name", clubBean.getName());
+        result.put("avatar_url", clubBean.getAvatarUrl());
+        result.put("level", clubBean.getLevel());
+        result.put("slogan", clubBean.getSlogan());
+        result.put("attribution", clubBean.getIntroduction());
+
+        List<WCClubStudentBean> studentList = mClubService.getCurrentGraduateStudentsByClubId(clubBean.getClubId());
+        int suggestNumber = 0;
+        if (studentList != null) {
+            suggestNumber = studentList.size() > 6 ? 6 : studentList.size();
+        }
+
+        ArrayList<HashMap<String, Object>> studentSuggest = new ArrayList<>();
+        if (suggestNumber > 0) {
+            for (int i = 0; i < suggestNumber; i++) {
+                HashMap<String, Object> student = new HashMap<>();
+                student.put("student_id", studentList.get(i).getStudentId());
+                student.put("student_name", studentList.get(i).getRealName());
+                student.put("avatar_url", studentList.get(i).getAvatarUrl());
+                studentSuggest.add(student);
+            }
+        }
+
+        result.put("student", studentSuggest);
+
+        return result;
     }
 }
