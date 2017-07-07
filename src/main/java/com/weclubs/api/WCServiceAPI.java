@@ -1,5 +1,7 @@
 package com.weclubs.api;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.weclubs.application.club.WCIClubService;
 import com.weclubs.application.qiniu.WCIQiNiuService;
 import com.weclubs.application.security.WCISecurityService;
@@ -7,6 +9,7 @@ import com.weclubs.bean.WCClubBean;
 import com.weclubs.bean.WCClubStudentBean;
 import com.weclubs.model.request.WCRequestModel;
 import com.weclubs.model.response.WCResultData;
+import com.weclubs.util.WCCommonUtil;
 import com.weclubs.util.WCHttpStatus;
 import com.weclubs.util.WCRequestParamsUtil;
 import org.apache.log4j.Logger;
@@ -93,6 +96,42 @@ class WCServiceAPI {
         result.put("hot_club", null);
         result.put("banner", null);
 
+        return WCResultData.getSuccessData(result);
+    }
+
+    @RequestMapping(value = "/get_index_club", method = RequestMethod.POST)
+    public WCResultData getIndexClub(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap<String, Object> requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        if (requestData == null || requestData.size() == 0) {
+            return WCResultData.getHttpStatusData(WCHttpStatus.FAIL_REQUEST_NULL_PARAMS, null);
+        }
+
+        // TODO: 2017/7/8 这里需要完成判断如果用户没有选择学校或者没有认证
+        long userId = WCCommonUtil.getLongData(requestData.get("user_id"));
+        long schoolId = WCCommonUtil.getLongData(requestData.get("school_id"));
+
+        int pageNo = WCRequestParamsUtil.getPageNo(requestModel);
+        int pageSize = WCRequestParamsUtil.getPageSize(requestModel);
+
+        PageHelper.startPage(pageNo, pageSize);
+        List<WCClubBean> suggestClubs = mClubService.getClubsBySchoolId(schoolId);
+        PageInfo<WCClubBean> pageInfo = new PageInfo<WCClubBean>(suggestClubs);
+
+        ArrayList<HashMap<String, Object>> clubHash = new ArrayList<>();
+        if (pageInfo.getList() != null) {
+            for (WCClubBean clubBean : pageInfo.getList()) {
+                clubHash.add(getIndexClubModel(clubBean));
+            }
+        }
+
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("club_list", clubHash);
         return WCResultData.getSuccessData(result);
     }
 

@@ -120,11 +120,18 @@ class WCClubAPI {
             return WCResultData.getHttpStatusData(check, null);
         }
 
+        HashMap<String, Object> requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        if (requestData == null || requestData.size() == 0) {
+            check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
         int pageNo = WCRequestParamsUtil.getPageNo(requestModel);
         int pageSize = WCRequestParamsUtil.getPageSize(requestModel);
+        long schoolId = WCCommonUtil.getLongData(requestData.get("school_id"));
 
         PageHelper.startPage(pageNo, pageSize);
-        List<WCClubBean> suggestClubs = mClubService.getClubsBySchoolId(1);
+        List<WCClubBean> suggestClubs = mClubService.getClubsBySchoolId(schoolId);
         PageInfo<WCClubBean> pageInfo = new PageInfo<WCClubBean>(suggestClubs);
 
         List<HashMap<String, Object>> resultSuggest = new ArrayList<HashMap<String, Object>>();
