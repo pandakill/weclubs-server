@@ -75,4 +75,12 @@ public interface WCIUserService {
      * @return  如果设置成功，则返回{@link WCHttpStatus#SUCCESS}
      */
     WCHttpStatus setCertificationInfo(HashMap<String, Object> certificationInfo);
+
+    /**
+     * 更新用户信息
+     *
+     * @param userInfo 用户信息
+     * @return  如果更新成功，则返回{@link WCHttpStatus#SUCCESS}
+     */
+    WCHttpStatus updateUserInfo(WCStudentBean userInfo);
 }

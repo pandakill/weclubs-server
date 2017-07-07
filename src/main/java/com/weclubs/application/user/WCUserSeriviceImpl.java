@@ -419,4 +419,14 @@ public class WCUserSeriviceImpl implements WCIUserService {
         check = WCHttpStatus.SUCCESS;
         return check;
     }
+
+    @Override
+    public WCHttpStatus updateUserInfo(WCStudentBean userInfo) {
+        if (userInfo == null) {
+            return WCHttpStatus.FAIL_USER_UNKNOWK;
+        }
+
+        mStudentMapper.updateStudent(userInfo);
+        return WCHttpStatus.SUCCESS;
+    }
 }

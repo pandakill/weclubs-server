@@ -451,6 +451,63 @@ class WCUserAPI {
         return WCResultData.getHttpStatusData(check, null);
     }
 
+    @RequestMapping(value = "/update_user_info", method = RequestMethod.POST)
+    public WCResultData updateUserInfo(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            log.error("updateUserInfo：请求参数违法");
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        if (requestData == null || requestData.size() == 0) {
+            log.error("updateUserInfo：请求参数为空");
+            check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        check = mSecurityService.checkTokenAvailable(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            log.error("updateUserInfo：token失效");
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        long userId = WCCommonUtil.getLongData(requestData.get("user_id"));
+        WCStudentBean userBean = mUserService.getUserInfoById(userId);
+        if (userBean == null) {
+            check = WCHttpStatus.FAIL_USER_UNKNOWK;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        if (requestData.containsKey("avatar_url")) {
+            String avatarUrl = (String) requestData.get("avatar_url");
+            if (StringUtils.isEmpty(avatarUrl)) {
+                check.msg = "头像地址不能为空";
+                return WCResultData.getHttpStatusData(check, null);
+            }
+            userBean.setAvatarUrl(avatarUrl);
+        } else if (requestData.containsKey("nick_name")) {
+            String nickName = (String) requestData.get("nick_name");
+            if (StringUtils.isEmpty(nickName)) {
+                check.msg = "昵称不能为空";
+                return WCResultData.getHttpStatusData(check, null);
+            }
+            userBean.setNickName(nickName);
+        } else if (requestData.containsKey("birthday")) {
+            long birthday = WCCommonUtil.getLongData(requestData.get("birthday"));
+            if (StringUtils.isEmpty(birthday)) {
+                check.msg = "昵称不能为空";
+                return WCResultData.getHttpStatusData(check, null);
+            }
+            userBean.setBirthday(birthday + "");
+        }
+
+        mUserService.updateUserInfo(userBean);
+
+        return WCResultData.getHttpStatusData(check, null);
+    }
+
 //    @RequestMapping(value = "/setup_password", method = RequestMethod.POST)
     public WCResultData setPassword(@RequestBody WCRequestModel requestModel) {
 
