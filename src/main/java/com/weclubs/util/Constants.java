@@ -22,6 +22,7 @@ public class Constants {
     public final static String RONGCLOUD_SECRET_KEY = "OSe4Pcbk0y"; // 测试服务器
     private final static String RONGCLOUD_RELEASE_APP_KEY = "sfci50a7s1xji";
     private final static String RONGCLOUD_RELEASE_SECRET_KEY = "OSe4Pcbk0y";
+    public final static String RONGCLOUD_SYSTEM_MSG_ID = "wc_system";
 
     /* 跳转协议的场景 ID 定义 */
     public final static int SCENE_PERSON_DYNAMIC = 101; // 参与者的动态详情页面

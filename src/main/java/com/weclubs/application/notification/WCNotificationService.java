@@ -275,7 +275,7 @@ class WCNotificationService implements WCINotificationService {
             receiveIds[i] = relations.get(i).getStudentId();
         }
         WCClubBean clubBean = mClubService.getClubInfoById(clubId);
-        mJiGuangPushService.pushNewNotifyCreate(clubBean.getName(), content, notifyBean.getMissionId(), receiveIds);
+        mJiGuangPushService.pushNewNotifyCreate(clubBean, content, notifyBean.getMissionId(), receiveIds);
 
         check = WCHttpStatus.SUCCESS;
         return check;

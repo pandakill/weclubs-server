@@ -1,5 +1,6 @@
 package com.weclubs.application.rongcloud;
 
+import com.weclubs.bean.WCClubBean;
 import com.weclubs.bean.WCStudentBean;
 import com.weclubs.model.WCGroupChatListModel;
 import com.weclubs.util.WCHttpStatus;
@@ -117,4 +118,20 @@ public interface WCIRongCloudService {
      * @return  返回当前学生的群聊列表
      */
     List<HashMap<String, Object>> getMyClubChatListForMap(long studentId);
+
+    /**
+     * 发布系统消息
+     *
+     * @return  发送成功则返回 {@link WCHttpStatus#SUCCESS}
+     */
+    WCHttpStatus publicDynamicNotifyMsg(String activity, String chineseType, WCStudentBean studentBean,
+                              String attribution, String dynamicType, long dynamicId, long... receiverId);
+
+    /**
+     * 发布动态创建消息
+     *
+     * @return  发送成功则返回 {@link WCHttpStatus#SUCCESS}
+     */
+    WCHttpStatus publicDynamicCreatedMsg(WCClubBean clubBean, String attribution, String dynamicType,
+                                         long dynamicId, long... receiverId);
 }

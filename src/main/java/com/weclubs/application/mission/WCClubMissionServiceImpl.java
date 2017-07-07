@@ -375,6 +375,14 @@ class WCClubMissionServiceImpl implements WCIClubMissionService {
             }
 
             mClubMissionMapper.createStudentRelation(relationBeanList);
+
+            long[] receiveIds = new long[relationBeanList.size()];
+            for (int i = 0; i < relationBeanList.size(); i++) {
+                receiveIds[i] = relationBeanList.get(i).getStudentId();
+            }
+            WCClubBean clubBean = mClubService.getClubInfoById(clubId);
+            mJiGuangPushService.pushNewMissionCreate(clubBean, content, missionBean.getMissionId(), receiveIds);
+
             check = WCHttpStatus.SUCCESS;
         }
 

@@ -2,7 +2,6 @@ package com.weclubs.application.dynamic;
 
 import com.weclubs.application.jiguang_push.WCIJiGuangPushService;
 import com.weclubs.application.meeting.WCIClubMeetingService;
-import com.weclubs.application.message.WCIMessageService;
 import com.weclubs.application.mission.WCIClubMissionService;
 import com.weclubs.application.notification.WCINotificationService;
 import com.weclubs.application.user.WCIUserService;
@@ -30,7 +29,6 @@ class WCDynamicServiceImpl implements WCIDynamicService {
     private WCIClubMissionService mMissionService;
     private WCIClubMeetingService mMeetingService;
     private WCINotificationService mNotifyService;
-    private WCIMessageService mMessageService;
     private WCIUserService mUserService;
     private WCIJiGuangPushService mJiGuangPushService;
 
@@ -39,13 +37,11 @@ class WCDynamicServiceImpl implements WCIDynamicService {
     @Autowired
     public WCDynamicServiceImpl(WCIClubMissionService mMissionService, WCIClubMeetingService mMeetingService,
                                 WCINotificationService mNotifyService, WCDynamicMapper dynamicMapper,
-                                WCIMessageService messageService, WCIUserService mUserService,
-                                WCIJiGuangPushService jiGuangPushService) {
+                                WCIUserService mUserService, WCIJiGuangPushService jiGuangPushService) {
         this.mMissionService = mMissionService;
         this.mMeetingService = mMeetingService;
         this.mNotifyService = mNotifyService;
         this.mDynamicMapper = dynamicMapper;
-        this.mMessageService = messageService;
         this.mUserService = mUserService;
         this.mJiGuangPushService = jiGuangPushService;
     }
@@ -179,7 +175,7 @@ class WCDynamicServiceImpl implements WCIDynamicService {
             chineseType = "通知";
         }
 
-        mJiGuangPushService.pushDynamicStatusChange(activity, chineseType, studentBean.getRealName(), missionBean.getAttribution(),
+        mJiGuangPushService.pushDynamicStatusChange(activity, chineseType, studentBean, missionBean.getAttribution(),
                 type, dynamicId, missionBean.getSponsorId());
 
         return check;

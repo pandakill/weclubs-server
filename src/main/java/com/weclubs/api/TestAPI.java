@@ -3,12 +3,16 @@ package com.weclubs.api;
 import com.weclubs.application.qiniu.WCIQiNiuService;
 import com.weclubs.application.rongcloud.WCIRongCloudService;
 import com.weclubs.application.user.WCIUserService;
+import com.weclubs.bean.WCClubBean;
 import com.weclubs.bean.WCStudentBean;
 import com.weclubs.mapper.WCClubMapper;
+import com.weclubs.model.request.WCRequestModel;
 import com.weclubs.model.response.WCResultData;
+import com.weclubs.util.Constants;
 import com.weclubs.util.WCCommonUtil;
 import com.weclubs.util.WCHttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -107,5 +111,22 @@ public class TestAPI {
         HashMap<String, Object> result = new HashMap<String, Object>();
         result.put("user", mRongCloudService.getStudentsByGroupId(clubId));
         return WCResultData.getSuccessData(result);
+    }
+
+    @RequestMapping(value = "/push_system_msg", method = RequestMethod.POST)
+    public WCResultData pushSystemMsg(@RequestBody WCRequestModel requestModel) {
+
+        HashMap<String, Object> requestData = (HashMap<String, Object>) requestModel.getData();
+        long studentId = WCCommonUtil.getLongData(requestData.get("user_id"));
+        long clubId = WCCommonUtil.getLongData(requestData.get("club_id"));
+        WCClubBean clubBean = mClubMapper.getClubById(clubId);
+
+        long[] recieved = new long[3];
+        recieved[0] = 1;
+        recieved[1] = 3;
+        recieved[2] = 2;
+
+        WCHttpStatus check = mRongCloudService.publicDynamicCreatedMsg(clubBean, "这是测试的~~添加了任务", Constants.TODO_MISSION, 1, recieved);
+        return WCResultData.getHttpStatusData(check, null);
     }
 }

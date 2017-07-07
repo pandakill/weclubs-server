@@ -392,7 +392,7 @@ class WCClubMeetingService implements WCIClubMeetingService {
         }
 
         WCClubBean clubBean = mClubService.getClubInfoById(clubId);
-        mJiGuangPushService.pushNewMeetingCreate(deadline, meeting.getAddress(), clubBean.getName(),
+        mJiGuangPushService.pushNewMeetingCreate(deadline, meeting.getAddress(), clubBean,
                 meeting.getAttribution(), meeting.getMissionId(), participationArray);
 
         check = WCHttpStatus.SUCCESS;

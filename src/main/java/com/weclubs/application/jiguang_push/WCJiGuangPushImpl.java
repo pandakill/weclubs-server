@@ -2,7 +2,10 @@ package com.weclubs.application.jiguang_push;
 
 import com.alibaba.fastjson.JSON;
 import com.weclubs.application.message.WCIMessageService;
+import com.weclubs.application.rongcloud.WCIRongCloudService;
+import com.weclubs.bean.WCClubBean;
 import com.weclubs.bean.WCMessageBean;
+import com.weclubs.bean.WCStudentBean;
 import com.weclubs.util.Constants;
 import org.apache.http.client.utils.DateUtils;
 import org.slf4j.Logger;
@@ -23,10 +26,12 @@ class WCJiGuangPushImpl implements WCIJiGuangPushService {
     protected static Logger log = LoggerFactory.getLogger(WCJiGuangPushImpl.class);
 
     private WCIMessageService mMessageService;
+    private WCIRongCloudService mRongCloudService;
 
     @Autowired
-    public WCJiGuangPushImpl(WCIMessageService messageService) {
+    public WCJiGuangPushImpl(WCIMessageService messageService, WCIRongCloudService rongCloudService) {
         this.mMessageService = messageService;
+        this.mRongCloudService = rongCloudService;
     }
 
     /*
@@ -72,6 +77,14 @@ class WCJiGuangPushImpl implements WCIJiGuangPushService {
         mMessageService.publicMessage(messageBean, msgReceiver);
     }
 
+    @Override
+    public void pushDynamicStatusChange(String activity, String chineseType, WCStudentBean studentBean,
+                                        String attribution, String dynamicType, long dynamicId, long... receiverId) {
+        pushDynamicStatusChange(activity, chineseType, studentBean.getRealName(), attribution, dynamicType, dynamicId, receiverId);
+
+        mRongCloudService.publicDynamicNotifyMsg(activity, chineseType, studentBean, attribution, dynamicType, dynamicId, receiverId);
+    }
+
     /*
      * 通知样式格式：
      * Android
@@ -113,6 +126,14 @@ class WCJiGuangPushImpl implements WCIJiGuangPushService {
         mMessageService.publicMessage(messageBean, msgReceiver);
     }
 
+    @Override
+    public void pushNewMeetingCreate(long date, String address, WCClubBean clubBean, String meeting,
+                                     long meetingId, long... receiverId) {
+        pushNewMeetingCreate(date, address, clubBean.getName(), meeting, meetingId, receiverId);
+
+        mRongCloudService.publicDynamicCreatedMsg(clubBean, meeting, Constants.TODO_MEETING, meetingId, receiverId);
+    }
+
     /*
      * 通知样式格式：
      * Android
@@ -147,6 +168,47 @@ class WCJiGuangPushImpl implements WCIJiGuangPushService {
             msgReceiver.add(l);
         }
         mMessageService.publicMessage(messageBean, msgReceiver);
+    }
+
+    @Override
+    public void pushNewNotifyCreate(WCClubBean clubBean, String notify, long notifyId, long... receiverId) {
+        pushNewNotifyCreate(clubBean.getName(), notify, notifyId, receiverId);
+
+        mRongCloudService.publicDynamicCreatedMsg(clubBean, notify, Constants.TODO_NOTIFY, notifyId, receiverId);
+    }
+
+    @Override
+    public void pushNewMissionCreate(String clubName, String mission, long missionId, long... receiverId) {
+        String title = "你有新的任务需要完成";
+
+        mission = mission.length() > 20 ? (mission.substring(0, 19) + "...") : mission;
+        String content = clubName + "：发布了新任务【" + mission + "】";
+
+        Map<String, String > jsonObject = new HashMap<String, String>();
+        jsonObject.put("scene_id", Constants.SCENE_PERSON_DYNAMIC + "");
+        jsonObject.put("dynamic_id", missionId + "");
+        jsonObject.put("dynamic_type", Constants.TODO_NOTIFY);
+
+        WCJPushClient.getInstance().pushNotifyToPerson(title, content, jsonObject, receiverId);
+
+        WCMessageBean messageBean = new WCMessageBean();
+        messageBean.setTitle(title);
+        messageBean.setContent(content);
+        messageBean.setData(JSON.toJSONString(jsonObject));
+
+        // 消息接收者
+        List<Long> msgReceiver = new ArrayList<Long>();
+        for (long l : receiverId) {
+            msgReceiver.add(l);
+        }
+        mMessageService.publicMessage(messageBean, msgReceiver);
+    }
+
+    @Override
+    public void pushNewMissionCreate(WCClubBean clubBean, String mission, long missionId, long... receiverId) {
+        pushNewMissionCreate(clubBean.getName(), mission, missionId, receiverId);
+
+        mRongCloudService.publicDynamicCreatedMsg(clubBean, mission, Constants.TODO_MISSION, missionId, receiverId);
     }
 
     public void pushUnConfirmDynamic(String clubName, String dynamicType, String dynamic, long dynamicId, long... receiverId) {
