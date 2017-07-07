@@ -217,6 +217,7 @@
         WHERE club_graduate.`club_id` = club.`club_id`
         AND club_graduate.`is_current` = 1
         AND club.`status` = 1
+        AND club.`school_id` = #{schoolId}
         AND club.`name` LIKE #{keyword}
     </select>
 

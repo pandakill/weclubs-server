@@ -90,5 +90,5 @@ public interface WCClubMapper {
      * @param keyword 关键词
      * @return  社团列表
      */
-    List<WCClubBean> searchClubListByKeyword(@Param("keyword") String keyword);
+    List<WCClubBean> searchClubListByKeyword(@Param("schoolId") long schoolId, @Param("keyword") String keyword);
 }

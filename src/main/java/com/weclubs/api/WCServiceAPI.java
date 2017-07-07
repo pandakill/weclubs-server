@@ -132,6 +132,7 @@ class WCServiceAPI {
 
         HashMap<String, Object> result = new HashMap<>();
         result.put("club_list", clubHash);
+        result.put("is_more", pageInfo.isHasNextPage() ? 1 : 0);
         return WCResultData.getSuccessData(result);
     }
 
@@ -149,16 +150,25 @@ class WCServiceAPI {
         }
 
         String keyword = (String) requestData.get("keyword");
-        List<WCClubBean> clubList = mClubService.searchClubList(keyword);
+        long schoolId = WCCommonUtil.getLongData(requestData.get("school_id"));
+
+        int pageNo = WCRequestParamsUtil.getPageNo(requestModel);
+        int pageSize = WCRequestParamsUtil.getPageSize(requestModel);
+
+        PageHelper.startPage(pageNo, pageSize);
+        List<WCClubBean> suggestClubs = mClubService.searchClubList(schoolId, keyword);
+        PageInfo<WCClubBean> pageInfo = new PageInfo<WCClubBean>(suggestClubs);
+
         ArrayList<HashMap<String, Object>> clubHash = new ArrayList<>();
-        if (clubList != null) {
-            for (WCClubBean clubBean : clubList) {
+        if (pageInfo.getList() != null) {
+            for (WCClubBean clubBean : pageInfo.getList()) {
                 clubHash.add(getIndexClubModel(clubBean));
             }
         }
 
         HashMap<String, Object> result = new HashMap<>();
         result.put("club_list", clubHash);
+        result.put("has_more", pageInfo.isHasNextPage() ? 1 : 0);
         return WCResultData.getSuccessData(result);
     }
 

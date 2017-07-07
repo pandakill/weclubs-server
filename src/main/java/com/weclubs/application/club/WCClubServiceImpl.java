@@ -468,9 +468,9 @@ public class WCClubServiceImpl implements WCIClubService {
     }
 
     @Override
-    public List<WCClubBean> searchClubList(String... keywords) {
+    public List<WCClubBean> searchClubList(long schoolId, String... keywords) {
         String k = "%" + keywords[0] +  "%";
-        return mClubMapper.searchClubListByKeyword(k);
+        return mClubMapper.searchClubListByKeyword(schoolId, k);
     }
 
     /**

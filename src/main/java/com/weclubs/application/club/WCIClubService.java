@@ -105,5 +105,5 @@ public interface WCIClubService {
      *
      * @return  搜索结果
      */
-    List<WCClubBean> searchClubList(String... keywords);
+    List<WCClubBean> searchClubList(long schoolId, String... keywords);
 }
