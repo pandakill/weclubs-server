@@ -497,7 +497,7 @@ class WCUserAPI {
         } else if (requestData.containsKey("birthday")) {
             long birthday = WCCommonUtil.getLongData(requestData.get("birthday"));
             if (StringUtils.isEmpty(birthday)) {
-                check.msg = "昵称不能为空";
+                check.msg = "生日不能为空";
                 return WCResultData.getHttpStatusData(check, null);
             }
             userBean.setBirthday(birthday + "");
