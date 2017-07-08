@@ -4,9 +4,11 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.weclubs.application.club.WCIClubService;
 import com.weclubs.application.qiniu.WCIQiNiuService;
+import com.weclubs.application.school.WCISchoolService;
 import com.weclubs.application.security.WCISecurityService;
 import com.weclubs.bean.WCClubBean;
 import com.weclubs.bean.WCClubStudentBean;
+import com.weclubs.bean.WCSchoolBean;
 import com.weclubs.model.request.WCRequestModel;
 import com.weclubs.model.response.WCResultData;
 import com.weclubs.util.WCCommonUtil;
@@ -37,13 +39,15 @@ class WCServiceAPI {
     private WCISecurityService mSecurityService;
     private WCIQiNiuService mQiNiuService;
     private WCIClubService mClubService;
+    private WCISchoolService mSchoolService;
 
     @Autowired
     public WCServiceAPI(WCISecurityService mSecurityService, WCIQiNiuService mQiNiuService,
-                        WCIClubService clubService) {
+                        WCIClubService clubService, WCISchoolService schoolService) {
         this.mSecurityService = mSecurityService;
         this.mQiNiuService = mQiNiuService;
         this.mClubService = clubService;
+        this.mSchoolService = schoolService;
     }
 
     @RequestMapping(value = "/get_upload_token", method = RequestMethod.POST)
@@ -116,11 +120,18 @@ class WCServiceAPI {
         long userId = WCCommonUtil.getLongData(requestData.get("user_id"));
         long schoolId = WCCommonUtil.getLongData(requestData.get("school_id"));
 
+        WCSchoolBean schoolBean = mSchoolService.getSchoolById(schoolId);
+        if (schoolBean == null) {
+            check.msg = "找不到该学校";
+            return WCResultData.getHttpStatusData(check, null);
+        }
+        log.debug("getIndexClub：schoolBean = " + schoolBean.toString());
+
         int pageNo = WCRequestParamsUtil.getPageNo(requestModel);
         int pageSize = WCRequestParamsUtil.getPageSize(requestModel);
 
         PageHelper.startPage(pageNo, pageSize);
-        List<WCClubBean> suggestClubs = mClubService.getClubsBySchoolId(schoolId);
+        List<WCClubBean> suggestClubs = mClubService.getClubsBySchoolId(schoolBean.getSchoolId());
         PageInfo<WCClubBean> pageInfo = new PageInfo<WCClubBean>(suggestClubs);
 
         ArrayList<HashMap<String, Object>> clubHash = new ArrayList<>();
@@ -152,11 +163,18 @@ class WCServiceAPI {
         String keyword = (String) requestData.get("keyword");
         long schoolId = WCCommonUtil.getLongData(requestData.get("school_id"));
 
+        WCSchoolBean schoolBean = mSchoolService.getSchoolById(schoolId);
+        if (schoolBean == null) {
+            check.msg = "找不到该学校";
+            return WCResultData.getHttpStatusData(check, null);
+        }
+        log.debug("searchClub：schoolBean = " + schoolBean.toString());
+
         int pageNo = WCRequestParamsUtil.getPageNo(requestModel);
         int pageSize = WCRequestParamsUtil.getPageSize(requestModel);
 
         PageHelper.startPage(pageNo, pageSize);
-        List<WCClubBean> suggestClubs = mClubService.searchClubList(schoolId, keyword);
+        List<WCClubBean> suggestClubs = mClubService.searchClubList(schoolBean.getSchoolId(), keyword);
         PageInfo<WCClubBean> pageInfo = new PageInfo<WCClubBean>(suggestClubs);
 
         ArrayList<HashMap<String, Object>> clubHash = new ArrayList<>();

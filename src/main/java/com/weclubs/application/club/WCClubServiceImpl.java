@@ -2,6 +2,7 @@ package com.weclubs.application.club;
 
 import com.weclubs.application.club_responsibility.WCIClubResponsibilityService;
 import com.weclubs.application.rongcloud.WCIRongCloudService;
+import com.weclubs.application.school.WCISchoolService;
 import com.weclubs.application.user.WCIUserService;
 import com.weclubs.bean.*;
 import com.weclubs.mapper.WCClubHonorMapper;
@@ -46,12 +47,13 @@ public class WCClubServiceImpl implements WCIClubService {
     private WCIUserService mUserService;
     private WCIClubResponsibilityService mClubResponsibilityService;
     private WCIRongCloudService mRongCloudService;
+    private WCISchoolService mSchoolService;
 
     @Autowired
     public WCClubServiceImpl(WCDynamicMapper mDynamicMapper, WCClubMapper mClubMapper,
                              WCIUserService mUserService, WCIClubResponsibilityService mClubResponsibilityService,
                              WCClubHonorMapper mClubHonorMapper, WCIClubGraduateService mClubGraduateService,
-                             WCIRongCloudService rongCloudService) {
+                             WCIRongCloudService rongCloudService, WCISchoolService schoolService) {
         this.mDynamicMapper = mDynamicMapper;
         this.mClubMapper = mClubMapper;
         this.mUserService = mUserService;
@@ -59,6 +61,7 @@ public class WCClubServiceImpl implements WCIClubService {
         this.mClubHonorMapper = mClubHonorMapper;
         this.mClubGraduateService = mClubGraduateService;
         this.mRongCloudService = rongCloudService;
+        this.mSchoolService = schoolService;
     }
 
     public WCClubBean getClubInfoById(long clubId) {
