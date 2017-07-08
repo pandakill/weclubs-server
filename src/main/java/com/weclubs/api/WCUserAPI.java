@@ -1,9 +1,11 @@
 package com.weclubs.api;
 
 import com.weclubs.application.mob_sms.SmsVerifyKit;
+import com.weclubs.application.school.WCISchoolService;
 import com.weclubs.application.security.WCISecurityService;
 import com.weclubs.application.token.WCITokenService;
 import com.weclubs.application.user.WCIUserService;
+import com.weclubs.bean.WCSchoolBean;
 import com.weclubs.bean.WCStudentBean;
 import com.weclubs.model.request.WCRequestModel;
 import com.weclubs.model.response.WCResultData;
@@ -34,12 +36,15 @@ class WCUserAPI {
     private WCISecurityService mSecurityService;
     private WCIUserService mUserService;
     private WCITokenService mTokenService;
+    private WCISchoolService mSchoolService;
 
     @Autowired
-    public WCUserAPI(WCIUserService mUserService, WCITokenService mTokenService, WCISecurityService mSecurityService) {
+    public WCUserAPI(WCIUserService mUserService, WCITokenService mTokenService, WCISecurityService mSecurityService,
+                     WCISchoolService schoolService) {
         this.mUserService = mUserService;
         this.mTokenService = mTokenService;
         this.mSecurityService = mSecurityService;
+        this.mSchoolService = schoolService;
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
@@ -572,8 +577,9 @@ class WCUserAPI {
         result.put("is_auth", student.getStatus());
         result.put("student_card_id", student.getStudentIdNo());
 
-        result.put("school_id", student.getSchoolId());
-        result.put("school_name", student.getSchoolBean() == null ? "" : student.getSchoolBean().getName());
+        WCSchoolBean schoolBean = mSchoolService.getSchoolById(student.getSchoolId());
+        result.put("school_id", schoolBean != null ? schoolBean.getSchoolId() : 0);
+        result.put("school_name", schoolBean == null ? "" : schoolBean.getName());
 
         return result;
     }
