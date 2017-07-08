@@ -66,7 +66,7 @@ class WCClubAPI {
                 return WCResultData.getHttpStatusData(WCHttpStatus.FAIL_REQUEST_NULL_PARAMS, null);
             }
 
-            long clubId = Long.parseLong((String) requestData.get("club_id"));
+            long clubId = WCCommonUtil.getLongData(requestData.get("club_id"));
             long userId = WCCommonUtil.getLongData(requestData.get("user_id"));
 
             WCClubBean clubBean = mClubService.getClubInfoById(clubId);
