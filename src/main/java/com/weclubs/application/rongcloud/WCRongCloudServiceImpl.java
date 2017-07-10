@@ -7,7 +7,7 @@ import com.weclubs.bean.WCClubBean;
 import com.weclubs.bean.WCClubStudentBean;
 import com.weclubs.bean.WCStudentBean;
 import com.weclubs.mapper.WCClubMapper;
-import com.weclubs.model.WCDynamicMessage;
+import com.weclubs.model.WCMessageNotify;
 import com.weclubs.model.WCGroupChatListModel;
 import com.weclubs.util.Constants;
 import com.weclubs.util.WCHttpStatus;
@@ -228,7 +228,7 @@ public class WCRongCloudServiceImpl implements WCIRongCloudService {
         jsonObject.put("dynamic_id", dynamicId + "");
         jsonObject.put("dynamic_type", dynamicType);
 
-        WCDynamicMessage message = new WCDynamicMessage();
+        WCMessageNotify message = new WCMessageNotify(WCMessageNotify.TYPE_NOTIFY);
         message.setTitle(title);
         message.setContent(missionAttr);
         message.setUser_name(studentBean.getRealName());
@@ -294,7 +294,7 @@ public class WCRongCloudServiceImpl implements WCIRongCloudService {
         jsonObject.put("dynamic_id", dynamicId + "");
         jsonObject.put("dynamic_type", dynamicType);
 
-        WCDynamicMessage message = new WCDynamicMessage();
+        WCMessageNotify message = new WCMessageNotify(WCMessageNotify.TYPE_NOTIFY);
         message.setTitle(title);
         message.setContent(missionAttr);
         message.setUser_name(clubBean.getName());

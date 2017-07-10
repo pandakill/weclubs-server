@@ -8,8 +8,12 @@ import io.rong.util.GsonUtil;
  *
  * Created by fangzanpan on 2017/7/7.
  */
-public class WCDynamicMessage extends BaseMessage {
+public class WCMessageNotify extends BaseMessage {
 
+    public static final String TYPE_NOTIFY = "dynamic_notify";
+    public static final String TYPE_ADD_USER = "add_new_user";
+
+    private String message_type = "";
     private String title = "";
     private String content = "";
     private long user_id = 0;
@@ -21,7 +25,9 @@ public class WCDynamicMessage extends BaseMessage {
 
     private transient static final String TYPE = "WC:DynamicMsg";
 
-    public WCDynamicMessage() {}
+    public WCMessageNotify(String messageType) {
+        this.message_type = messageType;
+    }
 
     public String getTitle() {
         return title;
@@ -94,6 +100,6 @@ public class WCDynamicMessage extends BaseMessage {
 
     @Override
     public String toString() {
-        return GsonUtil.toJson(this, WCDynamicMessage.class);
+        return GsonUtil.toJson(this, WCMessageNotify.class);
     }
 }
