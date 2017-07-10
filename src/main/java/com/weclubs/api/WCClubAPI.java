@@ -295,28 +295,26 @@ class WCClubAPI {
 
         long userId = WCCommonUtil.getLongData(requestData.get("user_id"));
         long studentId = WCCommonUtil.getLongData(requestData.get("student_id"));
+        long clubId = WCCommonUtil.getLongData(requestData.get("club_id"));
         WCStudentBean studentBean = mUserService.getUserInfoById(studentId);
         if (studentBean == null) {
             check.msg = "找不到该学生";
             return WCResultData.getHttpStatusData(check, null);
         }
 
-        List<WCClubBean> userClubs = mClubService.getClubsByStudentId(userId);
         List<WCClubBean> studentClubs = mClubService.getClubsByStudentId(studentId);
         boolean isEqual = false;
-        if (userClubs != null && studentClubs != null) {
-            log.error("getParticipationDetail: userClubs = " + userClubs.toString() + "; studentClubs = " + studentClubs.toString());
-            for (WCClubBean userClub : userClubs) {
-                for (WCClubBean studentClub : studentClubs) {
-                    if (userClub.getClubId() == studentClub.getClubId()) {
-                        isEqual = true;
-                        break;
-                    }
+        if (studentClubs != null) {
+            log.error("getParticipationDetail: studentClubs = " + studentClubs.toString());
+            for (WCClubBean studentClub : studentClubs) {
+                if (clubId == studentClub.getClubId()) {
+                    isEqual = true;
+                    break;
                 }
             }
         }
 
-        HashMap<String, Object> result = getUserInfoByStudent(studentBean);
+        HashMap<String, Object> result = getUserInfoByStudent(studentBean, isEqual);
         result.put("is_together", isEqual ? 1 : 0);
 
         return WCResultData.getSuccessData(result);
@@ -361,23 +359,31 @@ class WCClubAPI {
      *
      * @return  userInfo 的字典
      */
-    private HashMap<String, Object> getUserInfoByStudent(WCStudentBean student) {
+    private HashMap<String, Object> getUserInfoByStudent(WCStudentBean student, boolean isEqual) {
 
         HashMap<String, Object> result = new HashMap<String, Object>();
         result.put("user_id", student.getStudentId());
-        result.put("mobile", student.getMobile());
         result.put("nick_name", student.getNickName());
         result.put("real_name", student.getRealName());
         result.put("avatar_url", student.getAvatarUrl());
         result.put("gender", student.getGender());
         result.put("class_name", student.getClassName());
         result.put("graduate_year", student.getGraduateYear());
-        result.put("is_auth", student.getStatus());
-        result.put("student_card_id", student.getStudentIdNo());
 
-        WCSchoolBean schoolBean = mSchoolService.getSchoolById(student.getSchoolId());
-        result.put("school_id", schoolBean != null ? schoolBean.getSchoolId() : 0);
-        result.put("school_name", schoolBean == null ? "" : schoolBean.getName());
+        WCSchoolBean majorBean = mSchoolService.getCollegeById(student.getSchoolId());
+        result.put("major_id", majorBean != null ? majorBean.getSchoolId() : 0);
+        result.put("major_name", majorBean != null ? majorBean.getName() : "");
+
+        if (isEqual) {
+            result.put("mobile", student.getMobile());
+            result.put("is_auth", student.getStatus());
+            result.put("student_card_id", student.getStudentIdNo());
+
+            WCSchoolBean schoolBean = mSchoolService.getSchoolById(student.getSchoolId());
+            result.put("school_id", schoolBean != null ? schoolBean.getSchoolId() : 0);
+            result.put("school_name", schoolBean == null ? "" : schoolBean.getName());
+            result.put("birthday", student.getBirthday());
+        }
 
         return result;
     }
