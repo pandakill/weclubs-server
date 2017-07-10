@@ -7,6 +7,7 @@ import com.weclubs.application.security.WCISecurityService;
 import com.weclubs.model.WCCommentDetailModel;
 import com.weclubs.model.request.WCRequestModel;
 import com.weclubs.model.response.WCResultData;
+import com.weclubs.util.WCCommonUtil;
 import com.weclubs.util.WCHttpStatus;
 import com.weclubs.util.WCRequestParamsUtil;
 import org.apache.log4j.Logger;
@@ -36,7 +37,7 @@ class WCCommentAPI {
     @Autowired
     private WCICommentService mCommentService;
 
-    @RequestMapping(value = "get_comment_list", method = RequestMethod.POST)
+    @RequestMapping(value = "/get_comment_list", method = RequestMethod.POST)
     public WCResultData getCommentList(@RequestBody WCRequestModel requestModel) {
 
         WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
@@ -82,6 +83,36 @@ class WCCommentAPI {
         result.put("comment", resultHash);
         result.put("has_more", pageInfo.isHasNextPage() ? 1 : 0);
         return WCResultData.getSuccessData(result);
+    }
+
+    @RequestMapping(value = "/public_comment", method = RequestMethod.POST)
+    public WCResultData publicComment(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        check = mSecurityService.checkTokenAvailable(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        if (requestData == null || requestData.size() == 0) {
+            check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        long userId = WCRequestParamsUtil.getUserId(requestModel);
+        String content = (String) requestData.get("content");
+        long sourceId = WCCommonUtil.getLongData(requestData.get("source_id"));
+        String sourceType = (String) requestData.get("source_type");
+
+
+        check = mCommentService.createComment(userId, content, sourceType, sourceId);
+
+        return WCResultData.getHttpStatusData(check, null);
     }
 
     private HashMap<String, Object> getCommentDetail(WCCommentDetailModel model, String sourceType) {

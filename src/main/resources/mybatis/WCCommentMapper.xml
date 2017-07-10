@@ -26,4 +26,9 @@
         AND comment.`is_del` = 0
     </select>
 
+    <insert id="createComment" useGeneratedKeys="true" keyProperty="clubAuthorityId" parameterType="com.weclubs.bean.WCClubAuthorityBean">
+        INSERT INTO `t_comment`(`content`, `create_date`, `status`, `source_type`, `source_id`)
+        VALUES (#{content}, #{createDate}, #{status}, #{sourceType}, #{sourceId})
+    </insert>
+
 </mapper>

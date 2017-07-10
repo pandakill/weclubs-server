@@ -1,5 +1,6 @@
 package com.weclubs.mapper;
 
+import com.weclubs.bean.WCCommentBean;
 import com.weclubs.model.WCCommentDetailModel;
 import org.apache.ibatis.annotations.Param;
 
@@ -13,4 +14,6 @@ import java.util.List;
 public interface WCCommentMapper {
 
     List<WCCommentDetailModel> getCommentListById(@Param("sourceType") int sourceType, @Param("sourceId") long sourceId);
+
+    void createComment(WCCommentBean commentBean);
 }

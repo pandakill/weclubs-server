@@ -190,6 +190,24 @@ class WCServiceAPI {
         return WCResultData.getSuccessData(result);
     }
 
+    @RequestMapping(value = "/feed_back", method = RequestMethod.POST)
+    public WCResultData feedBack(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap<String, Object> requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        if (requestData == null || requestData.size() == 0) {
+            return WCResultData.getHttpStatusData(WCHttpStatus.FAIL_REQUEST_NULL_PARAMS, null);
+        }
+
+        log.debug("feedBack：" + requestData.toString());
+
+        return WCResultData.getSuccessData(null);
+    }
+
     private HashMap<String, Object> getIndexClubModel(WCClubBean clubBean) {
         HashMap<String, Object> result = new HashMap<>();
         result.put("club_id", clubBean.getClubId());

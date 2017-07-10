@@ -4,10 +4,10 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.weclubs.application.club.WCClubServiceImpl;
 import com.weclubs.application.club.WCIClubService;
+import com.weclubs.application.school.WCISchoolService;
 import com.weclubs.application.security.WCISecurityService;
-import com.weclubs.bean.WCClubBean;
-import com.weclubs.bean.WCClubHonorBean;
-import com.weclubs.bean.WCClubStudentBean;
+import com.weclubs.application.user.WCIUserService;
+import com.weclubs.bean.*;
 import com.weclubs.model.WCMyClubModel;
 import com.weclubs.model.request.WCRequestModel;
 import com.weclubs.model.response.WCResultData;
@@ -38,11 +38,16 @@ class WCClubAPI {
 
     private WCISecurityService mSecurityService;
     private WCIClubService mClubService;
+    private WCISchoolService mSchoolService;
+    private WCIUserService mUserService;
 
     @Autowired
-    public WCClubAPI(WCIClubService mClubService, WCISecurityService mSecurityService) {
+    public WCClubAPI(WCIClubService mClubService, WCISecurityService mSecurityService,
+                     WCISchoolService schoolService, WCIUserService userService) {
         this.mClubService = mClubService;
         this.mSecurityService = mSecurityService;
+        this.mSchoolService = schoolService;
+        this.mUserService = userService;
     }
 
     @RequestMapping(value = "/get_club_detail", method = RequestMethod.POST)
@@ -269,6 +274,54 @@ class WCClubAPI {
         return WCResultData.getSuccessData(result);
     }
 
+    @RequestMapping(value = "/get_participation_detail")
+    public WCResultData getParticipationDetail(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        check = mSecurityService.checkTokenAvailable(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap<String, Object> requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        if (requestData == null || requestData.size() == 0) {
+            check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        long userId = WCCommonUtil.getLongData(requestData.get("user_id"));
+        long studentId = WCCommonUtil.getLongData(requestData.get("student_id"));
+        WCStudentBean studentBean = mUserService.getUserInfoById(studentId);
+        if (studentBean == null) {
+            check.msg = "找不到该学生";
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        List<WCClubBean> userClubs = mClubService.getClubsByStudentId(userId);
+        List<WCClubBean> studentClubs = mClubService.getClubsByStudentId(studentId);
+        boolean isEqual = false;
+        if (userClubs != null && studentClubs != null) {
+            log.error("getParticipationDetail: userClubs = " + userClubs.toString() + "; studentClubs = " + studentClubs.toString());
+            for (WCClubBean userClub : userClubs) {
+                for (WCClubBean studentClub : studentClubs) {
+                    if (userClub.getClubId() == studentClub.getClubId()) {
+                        isEqual = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        HashMap<String, Object> result = getUserInfoByStudent(studentBean);
+        result.put("is_together", isEqual ? 1 : 0);
+
+        return WCResultData.getSuccessData(result);
+    }
+
     private HashMap<String, Object> getClubBaseInfo(WCClubBean clubBean, HashMap<String, Object> result) {
         result.put("club_id", clubBean.getClubId());
         result.put("club_name", clubBean.getName());
@@ -298,6 +351,34 @@ class WCClubAPI {
             student.put("avatar_url", list.get(i).getAvatarUrl());
             result.add(student);
         }
+        return result;
+    }
+
+    /**
+     * 根据 student 实体获取得到 userInfo 的字典
+     *
+     * @param student   学生实体
+     *
+     * @return  userInfo 的字典
+     */
+    private HashMap<String, Object> getUserInfoByStudent(WCStudentBean student) {
+
+        HashMap<String, Object> result = new HashMap<String, Object>();
+        result.put("user_id", student.getStudentId());
+        result.put("mobile", student.getMobile());
+        result.put("nick_name", student.getNickName());
+        result.put("real_name", student.getRealName());
+        result.put("avatar_url", student.getAvatarUrl());
+        result.put("gender", student.getGender());
+        result.put("class_name", student.getClassName());
+        result.put("graduate_year", student.getGraduateYear());
+        result.put("is_auth", student.getStatus());
+        result.put("student_card_id", student.getStudentIdNo());
+
+        WCSchoolBean schoolBean = mSchoolService.getSchoolById(student.getSchoolId());
+        result.put("school_id", schoolBean != null ? schoolBean.getSchoolId() : 0);
+        result.put("school_name", schoolBean == null ? "" : schoolBean.getName());
+
         return result;
     }
 }
