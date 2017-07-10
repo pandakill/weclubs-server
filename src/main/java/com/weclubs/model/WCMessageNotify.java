@@ -23,7 +23,7 @@ public class WCMessageNotify extends BaseMessage {
     private long sponsor_date = 0;
     private String extra = "";
 
-    private transient static final String TYPE = "WC:DynamicMsg";
+    private transient static final String TYPE = "WCDynamicMsg";
 
     public WCMessageNotify(String messageType) {
         this.message_type = messageType;
