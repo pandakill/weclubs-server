@@ -106,4 +106,12 @@ public interface WCIClubService {
      * @return  搜索结果
      */
     List<WCClubBean> searchClubList(long schoolId, String... keywords);
+
+    /**
+     * 根据学校 id 获取该学校的热门社团
+     *
+     * @param schoolId  学校 id
+     * @return  返回热门社团的列表
+     */
+    List<HashMap<String, Object>> getHotClubBySchool(long schoolId);
 }

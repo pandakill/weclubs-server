@@ -1,8 +1,10 @@
 package com.weclubs.bean;
 
 import com.alibaba.fastjson.JSON;
+import io.rong.util.GsonUtil;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 /**
  * 广告图的实体 bean
@@ -23,8 +25,6 @@ public class WCBannerBean implements Serializable {
     private String attribution;
     private String imgUrl;
     private String sourceType;
-    private long beginDate;
-    private long endDate;
     private long createDate;
     private int status;
     private String extra;
@@ -77,22 +77,6 @@ public class WCBannerBean implements Serializable {
         this.sourceType = sourceType;
     }
 
-    public long getBeginDate() {
-        return beginDate;
-    }
-
-    public void setBeginDate(long beginDate) {
-        this.beginDate = beginDate;
-    }
-
-    public long getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(long endDate) {
-        this.endDate = endDate;
-    }
-
     public long getCreateDate() {
         return createDate;
     }
@@ -120,5 +104,16 @@ public class WCBannerBean implements Serializable {
     @Override
     public String toString() {
         return JSON.toJSONString(this);
+    }
+
+    public HashMap<String, Object> toHashMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("banner_id", getBannerId());
+        result.put("title", getTitle());
+        result.put("content", getAttribution());
+        result.put("img_url", getImgUrl());
+        result.put("status", getStatus());
+        result.put("extra", GsonUtil.fromJson(getExtra(), HashMap.class));
+        return result;
     }
 }

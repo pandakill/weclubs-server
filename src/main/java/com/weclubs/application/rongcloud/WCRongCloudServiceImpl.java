@@ -17,6 +17,7 @@ import io.rong.util.GsonUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -74,7 +75,15 @@ public class WCRongCloudServiceImpl implements WCIRongCloudService {
         WCStudentBean userBean = mUserService.getUserInfoById(userId);
 
         if (userBean != null) {
-            return getUserToken(userId, userBean.getRealName(), userBean.getAvatarUrl());
+            String nickName;
+            if (!StringUtils.isEmpty(userBean.getRealName())) {
+                nickName = userBean.getRealName();
+            } else if (!StringUtils.isEmpty(userBean.getNickName())) {
+                nickName = userBean.getNickName();
+            } else {
+                nickName = "";
+            }
+            return getUserToken(userId, nickName, userBean.getAvatarUrl() == null ? "" : userBean.getAvatarUrl());
         }
 
         return null;

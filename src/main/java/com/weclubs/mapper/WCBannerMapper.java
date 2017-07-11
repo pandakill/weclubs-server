@@ -1,6 +1,7 @@
 package com.weclubs.mapper;
 
 import com.weclubs.bean.WCBannerBean;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -11,7 +12,11 @@ import java.util.List;
  */
 public interface WCBannerMapper {
 
-    List<WCBannerBean> getBannerList(long schoolId);
+    void createBanner(WCBannerBean bannerBean);
 
+    void createBannerByList(List<WCBannerBean> list);
 
+    List<WCBannerBean> getBannerListBySource(@Param("schoolId") long schoolId, @Param("sourceType") String sourceType);
+
+    List<WCBannerBean> getBannerListByAll(@Param("schoolId") long schoolId);
 }

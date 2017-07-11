@@ -2,6 +2,7 @@ package com.weclubs.api;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.weclubs.application.banner.WCIBannerService;
 import com.weclubs.application.club.WCIClubService;
 import com.weclubs.application.qiniu.WCIQiNiuService;
 import com.weclubs.application.school.WCISchoolService;
@@ -40,14 +41,16 @@ class WCServiceAPI {
     private WCIQiNiuService mQiNiuService;
     private WCIClubService mClubService;
     private WCISchoolService mSchoolService;
+    private WCIBannerService mBannerService;
 
     @Autowired
     public WCServiceAPI(WCISecurityService mSecurityService, WCIQiNiuService mQiNiuService,
-                        WCIClubService clubService, WCISchoolService schoolService) {
+                        WCIClubService clubService, WCISchoolService schoolService, WCIBannerService bannerService) {
         this.mSecurityService = mSecurityService;
         this.mQiNiuService = mQiNiuService;
         this.mClubService = clubService;
         this.mSchoolService = schoolService;
+        this.mBannerService = bannerService;
     }
 
     @RequestMapping(value = "/get_upload_token", method = RequestMethod.POST)
@@ -88,7 +91,7 @@ class WCServiceAPI {
         return WCResultData.getSuccessData(result);
     }
 
-    @RequestMapping(value = "/get_index_list", method = RequestMethod.POST)
+    @RequestMapping(value = "/get_index_data", method = RequestMethod.POST)
     public WCResultData getIndexList(@RequestBody WCRequestModel requestModel) {
 
         WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
@@ -96,9 +99,22 @@ class WCServiceAPI {
             return WCResultData.getHttpStatusData(check, null);
         }
 
+        HashMap<String, Object> requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        if (requestData == null || requestData.size() == 0) {
+            return WCResultData.getHttpStatusData(WCHttpStatus.FAIL_REQUEST_NULL_PARAMS, null);
+        }
+
+        long schoolId = WCCommonUtil.getLongData(requestData.get("school_id"));
+
+        WCSchoolBean schoolBean = mSchoolService.getSchoolById(schoolId);
+        if (schoolBean == null) {
+            check.msg = "找不到学校";
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
         HashMap<String, Object> result = new HashMap<>();
-        result.put("hot_club", null);
-        result.put("banner", null);
+        result.put("hot_club", mClubService.getHotClubBySchool(schoolBean.getSchoolId()));
+        result.put("banner", mBannerService.getIndexBannerHashListBySchool(schoolBean.getSchoolId()));
 
         return WCResultData.getSuccessData(result);
     }

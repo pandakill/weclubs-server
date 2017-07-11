@@ -476,6 +476,25 @@ public class WCClubServiceImpl implements WCIClubService {
         return mClubMapper.searchClubListByKeyword(schoolId, k);
     }
 
+    @Override
+    public List<HashMap<String, Object>> getHotClubBySchool(long schoolId) {
+        List<WCClubBean> clubList = getClubsBySchoolId(schoolId);
+
+        if (clubList != null && clubList.size() > 0) {
+            int maxSize = clubList.size() > 6 ? 6 : clubList.size();
+            ArrayList<HashMap<String, Object>> result = new ArrayList<>();
+            for (int i = 0; i < maxSize; i++) {
+                HashMap<String, Object> hash = new HashMap<>();
+                hash.put("club_id", clubList.get(i).getClubId());
+                hash.put("club_name", clubList.get(i).getName());
+                hash.put("avatar_url", clubList.get(i).getAvatarUrl());
+                result.add(hash);
+            }
+            return result;
+        }
+        return null;
+    }
+
     /**
      * 根据真实姓名首字母进行排序
      *
