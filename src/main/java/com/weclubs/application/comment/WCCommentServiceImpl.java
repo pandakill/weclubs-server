@@ -72,6 +72,7 @@ class WCCommentServiceImpl implements WCICommentService {
         commentBean.setSourceType(getSourceType(sourceType));
         commentBean.setStatus(1);
         commentBean.setStudentId(studentId);
+        commentBean.setCreateDate(System.currentTimeMillis());
 
         mCommentMapper.createComment(commentBean);
 

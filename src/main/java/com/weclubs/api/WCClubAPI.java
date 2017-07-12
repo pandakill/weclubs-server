@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.weclubs.application.club.WCClubServiceImpl;
 import com.weclubs.application.club.WCIClubService;
+import com.weclubs.application.rongcloud.WCRongCloudServiceImpl;
 import com.weclubs.application.school.WCISchoolService;
 import com.weclubs.application.security.WCISecurityService;
 import com.weclubs.application.user.WCIUserService;
@@ -264,6 +265,7 @@ class WCClubAPI {
                 hash.put("todo_count", myClub.getTodoCount());
                 hash.put("activity_count", myClub.getActivityCount());
                 hash.put("level", myClub.getLevel());
+                hash.put("im_group_id", WCRongCloudServiceImpl.RONG_CLUB_ID_TAG + myClub.getClubId());
 
                 myClubHash.add(hash);
             }
