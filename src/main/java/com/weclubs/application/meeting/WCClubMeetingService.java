@@ -501,27 +501,27 @@ class WCClubMeetingService implements WCIClubMeetingService {
 
         if (meetingId <= 0) {
             check.msg = "meeting_id 不能小于等于0";
-            log.error("editMeeting：" + check.msg);
+            log.error("remindToUnConfirm：" + check.msg);
             return check;
         }
 
         WCClubMissionBean meetingBean = getMeetingDetailById(meetingId);
         if (meetingBean == null) {
-            log.warn("sendNotifyToUnConfirm：找不到对应的会议内容");
+            log.warn("remindToUnConfirm：找不到对应的会议内容");
             check.msg = "找不到该会议，请检查后重新操作";
             return check;
         }
 
         WCClubBean clubBean = mClubService.getClubInfoById(meetingBean.getClubId());
         if (clubBean == null) {
-            log.warn("sendNotifyToUnConfirm：找不到对应的社团");
+            log.warn("remindToUnConfirm：找不到对应的社团");
             check = WCHttpStatus.FAIL_APPLICATION_ERROR;
             return check;
         }
 
         List<WCStudentMissionRelationBean> unConfirmStudent = getUnConfirmMeetingRelationByMeetingId(meetingBean.getMissionId());
         if (unConfirmStudent == null || unConfirmStudent.size() == 0) {
-            log.warn("sendNotifyToUnConfirm：该会议已经全部确认完毕");
+            log.warn("remindToUnConfirm：该会议已经全部确认完毕");
             check.msg = "该会议已经全部确认完毕";
             return check;
         }
@@ -540,7 +540,82 @@ class WCClubMeetingService implements WCIClubMeetingService {
     }
 
     @Override
-    public WCHttpStatus endMeeting(long meetingId) {
-        return null;
+    public WCHttpStatus revertMeeting(long meetingId, long userId) {
+        WCHttpStatus check = WCHttpStatus.FAIL_REQUEST;
+
+        if (meetingId <= 0) {
+            check.msg = "meeting_id 不能小于等于0";
+            log.error("revertMeeting：" + check.msg);
+            return check;
+        }
+
+        WCClubMissionBean meetingBean = getMeetingDetailById(meetingId);
+        if (meetingBean == null) {
+            log.warn("revertMeeting：找不到对应的会议内容");
+            check.msg = "找不到该会议，请检查后重新操作";
+            return check;
+        }
+
+        // 只有会议发起人有权力撤销会议
+        if (meetingBean.getSponsorId() != userId) {
+            check.msg = "您没有权限撤销该会议";
+            return check;
+        }
+
+        meetingBean.setIsDel(1);
+        mMeetingMapper.updateMeeting(meetingBean);
+
+        check = WCHttpStatus.SUCCESS;
+
+        return check;
+    }
+
+    @Override
+    public WCHttpStatus endMeeting(long meetingId, long userId) {
+        WCHttpStatus check = WCHttpStatus.FAIL_REQUEST;
+
+        if (meetingId <= 0) {
+            check.msg = "meeting_id 不能小于等于0";
+            log.error("revertMeeting：" + check.msg);
+            return check;
+        }
+
+        WCClubMissionBean meetingBean = getMeetingDetailById(meetingId);
+        if (meetingBean == null) {
+            log.warn("revertMeeting：找不到对应的会议内容");
+            check.msg = "找不到该会议，请检查后重新操作";
+            return check;
+        }
+
+        boolean canRevert = false;
+
+        if (meetingBean.getSponsorId() == userId) {
+            canRevert = true;
+        }
+
+        if (meetingBean.getSignType() == 1) {   // 如果是需要签到的，则签到负责人也有权力结束会议
+            List<WCStudentBean> leader = getMeetingLeaderByMeetingId(meetingId);
+
+            if (leader != null) {
+                for (WCStudentBean studentBean : leader) {
+                    if (studentBean.getStudentId() == userId) {
+                        canRevert = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+
+        if (!canRevert) {
+            check.msg = "您没有权限撤销该会议";
+            return check;
+        }
+
+        meetingBean.setIsDel(2);
+        mMeetingMapper.updateMeeting(meetingBean);
+
+        check = WCHttpStatus.SUCCESS;
+        return check;
     }
 }

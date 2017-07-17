@@ -344,4 +344,35 @@ class WCNotificationService implements WCINotificationService {
 
         return check;
     }
+
+    @Override
+    public WCHttpStatus revertNotification(long notifyId, long userId) {
+        WCHttpStatus check = WCHttpStatus.FAIL_REQUEST;
+
+        if (notifyId <= 0) {
+            check.msg = "notify_id 不能小于等于0";
+            log.error("revertNotification：" + check.msg);
+            return check;
+        }
+
+        WCClubMissionBean notificationBean = getNotificationDetailById(notifyId);
+        if (notificationBean == null) {
+            log.warn("revertNotification：找不到对应的通知内容");
+            check.msg = "找不到该通知，请检查后重新操作";
+            return check;
+        }
+
+        // 只有任务发起人有权力撤销会议
+        if (notificationBean.getSponsorId() != userId) {
+            check.msg = "您没有权限撤销该通知";
+            return check;
+        }
+
+        notificationBean.setIsDel(1);
+        mNotificationMapper.updateNotification(notificationBean);
+
+        check = WCHttpStatus.SUCCESS;
+
+        return check;
+    }
 }

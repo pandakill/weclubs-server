@@ -89,4 +89,13 @@ public interface WCIClubMissionService {
      * @return  发送的状态
      */
     WCHttpStatus remindToUnFinish(long missionId);
+
+    /**
+     * 撤销任务
+     *
+     * @param missionId 任务id
+     * @param userId    撤销人id
+     * @return  如果撤销成功返回 {@link WCHttpStatus#SUCCESS}
+     */
+    WCHttpStatus revertMission(long missionId, long userId);
 }

@@ -86,4 +86,13 @@ public interface WCINotificationService {
      * @return  发送的状态
      */
     WCHttpStatus remindToUnConfirm(long notifyId);
+
+    /**
+     * 撤销任务
+     *
+     * @param notifyId 任务id
+     * @param userId    撤销人id
+     * @return  如果撤销成功返回 {@link WCHttpStatus#SUCCESS}
+     */
+    WCHttpStatus revertNotification(long notifyId, long userId);
 }

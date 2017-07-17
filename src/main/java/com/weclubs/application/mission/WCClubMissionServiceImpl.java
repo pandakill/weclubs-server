@@ -489,4 +489,35 @@ class WCClubMissionServiceImpl implements WCIClubMissionService {
 
         return check;
     }
+
+    @Override
+    public WCHttpStatus revertMission(long missionId, long userId) {
+        WCHttpStatus check = WCHttpStatus.FAIL_REQUEST;
+
+        if (missionId <= 0) {
+            check.msg = "mission_id 不能小于等于0";
+            log.error("revertMission：" + check.msg);
+            return check;
+        }
+
+        WCClubMissionBean missionBean = getMissionDetailById(missionId);
+        if (missionBean == null) {
+            log.warn("revertMission：找不到对应的任务内容");
+            check.msg = "找不到该任务，请检查后重新操作";
+            return check;
+        }
+
+        // 只有任务发起人有权力撤销会议
+        if (missionBean.getSponsorId() != userId) {
+            check.msg = "您没有权限撤销该任务";
+            return check;
+        }
+
+        missionBean.setIsDel(1);
+        mClubMissionMapper.updateClubMission(missionBean);
+
+        check = WCHttpStatus.SUCCESS;
+
+        return check;
+    }
 }

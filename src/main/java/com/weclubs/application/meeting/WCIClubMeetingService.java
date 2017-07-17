@@ -130,5 +130,21 @@ public interface WCIClubMeetingService {
      */
     WCHttpStatus remindToUnConfirm(long meetingId);
 
-    WCHttpStatus endMeeting(long meetingId);
+    /**
+     * 撤销会议
+     *
+     * @param meetingId 会议id
+     * @param userId    撤销人id
+     * @return  如果撤销成功返回 {@link WCHttpStatus#SUCCESS}
+     */
+    WCHttpStatus revertMeeting(long meetingId, long userId);
+
+    /**
+     * 结束会议
+     *
+     * @param meetingId 会议id
+     * @param userId    结束会议操作人id
+     * @return  如果结束会议成功返回 {@link WCHttpStatus#SUCCESS}
+     */
+    WCHttpStatus endMeeting(long meetingId, long userId);
 }
