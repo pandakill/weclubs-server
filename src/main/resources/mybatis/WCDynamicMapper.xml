@@ -18,8 +18,8 @@
             <id property="missionId" column="mission_id" />
             <result property="clubId" column="club_id" />
             <result property="attribution" column="attribution" />
-            <result property="type" column="get_date" />
-            <result property="parentId" column="is_del" />
+            <result property="type" column="type" />
+            <result property="parentId" column="parent_id" />
             <result property="address" column="address" />
             <result property="deadline" column="deadline" />
             <result property="sponsorId" column="sponsor_id" />
