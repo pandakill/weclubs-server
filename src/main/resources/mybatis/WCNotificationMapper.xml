@@ -183,7 +183,7 @@
          club_mission.`type`, club_mission.`deadline`, club_mission.`create_date`, club_mission.`is_del`,
          club_mission.`sponsor_id`, club.`name`, club.`status`, club.`avatar_url`, club.`slogan`, club.`level`, club.`school_id`
         FROM `t_club` club, `t_club_mission` club_mission
-        AND club_mission.`type` = 0
+        WHERE club_mission.`type` = 0
         AND club.`club_id` = club_mission.`club_id`
         AND club_mission.`sponsor_id` = #{sponsorId}
     </select>

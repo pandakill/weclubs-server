@@ -128,7 +128,7 @@ class WCDynamicServiceImpl implements WCIDynamicService {
             relationBean.setStatus(3);
         } else if (status[0].equals("finish")) {
 
-            if (missionBean.getType() != 2) {
+            if (missionBean.getType() != 1) {
                 log.warn("setDynamicStatus：该动态的类型为 = " + missionBean.getType());
                 check.msg = "该动态无法进行完成操作";
                 return check;
