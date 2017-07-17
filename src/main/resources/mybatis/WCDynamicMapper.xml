@@ -56,7 +56,6 @@
         AND mission.`mission_id` = #{dynamicId}
         AND mission_relation.`student_id` = #{studentId}
         AND mission.`type` = #{dynamicType}
-        AND mission.`is_del` = 0
         AND mission_relation.`is_del` = 0
     </select>
 

@@ -94,7 +94,6 @@
         SET `is_del` = 1
         WHERE `mission_id` = #{notificationId}
         AND club_mission.`type` = 0
-        AND `is_del` = 0
     </update>
 
     <!-- 根据 id 改变通知的状态 -->
@@ -112,7 +111,6 @@
         WHERE mission.`mission_id` = #{notificationId}
         AND mission.`club_id` = club.`club_id`
         AND mission.`type` = 0
-        AND mission.`is_del` = 0
     </select>
 
     <!-- 根据社团 clubId 获取该社团的所有未删除的通知 -->
@@ -120,7 +118,6 @@
         SELECT *
         FROM `t_club_mission` club_mission, `t_club` club
         WHERE club_mission.`club_id` = club.`club_id`
-        AND club_mission.`is_del` = 0
         AND club_mission.`type` = 0
         AND club.`club_id` = #{clubId}
     </select>
@@ -130,7 +127,6 @@
         SELECT *
         FROM `t_club_mission` club_mission, `t_student_mission_relation` student_mission
         WHERE club_mission.`mission_id` = student_mission.`mission_id`
-        AND club_mission.`is_del` = 0
         AND student_mission.`is_del` = 0
         AND club_mission.`type` = 0
         AND club_mission.`club_id` = #{clubId}
@@ -143,7 +139,6 @@
         FROM `t_club_mission` club_mission, `t_school` school, `t_club` club
         WHERE club_mission.`club_id` = club.`club_id`
         AND club.`school_id` = school.`school_id`
-        AND club_mission.`is_del` = 0
         AND club_mission.`type` = 0
         AND school.`school_id` = #{schoolId}
     </select>
@@ -154,7 +149,6 @@
         FROM `t_club_mission` club_mission, `t_club` club,
          `t_student_mission_relation` student_mission
         WHERE club_mission.`club_id` = club.`club_id`
-        AND club_mission.`is_del` = 0
         AND club_mission.`type` = 0
         AND student_mission.`status` = 0
         AND student_mission.`mission_id` = club_mission.`mission_id`
@@ -167,7 +161,6 @@
         SELECT *
         FROM `t_club_mission` club_mission, `t_student_mission_relation` student_mission
         WHERE club_mission.`mission_id` = student_mission.`mission_id`
-        AND club_mission.`is_del` = 0
         AND student_mission.`is_del` = 0
         AND club_mission.`type` = 0
         AND club_mission.`status` = 0
@@ -180,7 +173,6 @@
         FROM `t_club_mission` club_mission, `t_school` school, `t_club` club
         WHERE club_mission.`club_id` = club.`club_id`
         AND club.`school_id` = school.`school_id`
-        AND club_mission.`is_del` = 0
         AND club_mission.`type` = 0
         AND club_mission.`status` = 0
         AND school.`school_id` = #{schoolId}
@@ -191,7 +183,6 @@
          club_mission.`type`, club_mission.`deadline`, club_mission.`create_date`, club_mission.`is_del`,
          club_mission.`sponsor_id`, club.`name`, club.`status`, club.`avatar_url`, club.`slogan`, club.`level`, club.`school_id`
         FROM `t_club` club, `t_club_mission` club_mission
-        WHERE club_mission.`is_del` = 0
         AND club_mission.`type` = 0
         AND club.`club_id` = club_mission.`club_id`
         AND club_mission.`sponsor_id` = #{sponsorId}
@@ -200,8 +191,7 @@
     <select id="getRelationByNotifyId" resultMap="studentNotificationMap" resultType="List">
         SELECT *
         FROM `t_student_mission_relation` relation, `t_club_mission` club_mission, `t_student` student
-        WHERE club_mission.`is_del` = 0
-        AND club_mission.`type` = 0
+        WHERE club_mission.`type` = 0
         AND club_mission.`mission_id` = #{notifyId}
         AND club_mission.`mission_id` = relation.`mission_id`
         AND student.`student_id` = relation.`student_id`
@@ -212,8 +202,7 @@
     <select id="getUnConfirmRelationByNotifyId" resultMap="studentNotificationMap" resultType="List">
         SELECT *
         FROM `t_student_mission_relation` relation, `t_club_mission` club_mission
-        WHERE club_mission.`is_del` = 0
-        AND club_mission.`type` = 0
+        WHERE club_mission.`type` = 0
         AND club_mission.`mission_id` = #{notifyId}
         AND club_mission.`mission_id` = relation.`mission_id`
         AND relation.`is_del` = 0
