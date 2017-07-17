@@ -129,4 +129,6 @@ public interface WCIClubMeetingService {
      * @return  发送的状态
      */
     WCHttpStatus remindToUnConfirm(long meetingId);
+
+    WCHttpStatus endMeeting(long meetingId);
 }

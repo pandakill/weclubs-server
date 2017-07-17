@@ -89,6 +89,7 @@
         <result property="clubId" column="club_id" />
         <result property="parentId" column="parent_id" />
         <result property="childCount" column="child_count" />
+        <result property="isDel" column="is_del" />
     </resultMap>
 
     <resultMap id="sponsorMissionMap" extends="childMissionDetailMap" type="com.weclubs.model.WCSponsorMissionModel">
@@ -209,7 +210,7 @@
     <select id="getChildMissionDetailListByMissionIdWithStudent" resultMap="childMissionDetailMap" resultType="list">
         SELECT student.`student_id`, student.`real_name` AS `student_name`, student.`avatar_url`,
          miss.`mission_id`, miss.`attribution`, miss.`address`, miss.`create_date`, miss.`deadline`, miss.`type`,
-          miss.`club_id`, miss.`parent_id`, relation.`status`,
+          miss.`club_id`, miss.`parent_id`, relation.`status`, miss.`is_del`,
         (SELECT COUNT(*) FROM `t_student_mission_relation` relation, `t_club_mission` mission
          WHERE relation.`mission_id` = mission.`mission_id`
          AND mission.`parent_id` = miss.`mission_id`)

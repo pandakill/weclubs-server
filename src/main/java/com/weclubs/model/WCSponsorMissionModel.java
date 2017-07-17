@@ -1,5 +1,8 @@
 package com.weclubs.model;
 
+import com.weclubs.util.WCCommonUtil;
+import io.rong.util.GsonUtil;
+
 import java.util.HashMap;
 
 /**
@@ -71,12 +74,7 @@ public class WCSponsorMissionModel extends WCMissionBaseModel {
 
     @Override
     public String toString() {
-        return "WCSponsorMissionModel{" +
-                "clubName='" + clubName + '\'' +
-                ", clubAvatar='" + clubAvatar + '\'' +
-                ", unConfirmCount=" + unConfirmCount +
-                ", unFinishCount=" + unFinishCount +
-                '}';
+        return GsonUtil.toJson(this, WCSponsorMissionModel.class);
     }
 
     public HashMap<String, Object> getMissionHash() {
@@ -95,6 +93,16 @@ public class WCSponsorMissionModel extends WCMissionBaseModel {
         result.put("content", getAttribution());
         result.put("create_date", getCreateDate());
         result.put("deadline", getDeadline());
+
+        int status = 1;
+        if (getIsDel() == 1) {
+            status = 0;
+        } else if (getType() != 0 && WCCommonUtil.getLongData(getDeadline()) == 0) {
+            status = WCCommonUtil.isExpire(WCCommonUtil.getLongData(getCreateDate())) ? 2 : 1;
+        } else if (getType() != 0 && WCCommonUtil.getLongData(getDeadline()) != 0) {
+            status = WCCommonUtil.isExpire(WCCommonUtil.getLongData(getDeadline())) ? 2 : 1;
+        }
+        result.put("status", status);
 
         return result;
     }

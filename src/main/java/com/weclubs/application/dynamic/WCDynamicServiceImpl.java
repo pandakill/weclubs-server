@@ -145,6 +145,16 @@ class WCDynamicServiceImpl implements WCIDynamicService {
             }
 
             relationBean.setStatus(2);
+        } else if (status[0].equals("sign")) {
+
+            if (relationBean.getIsSign() > 0) {
+                log.warn("setDynamicStatus：动态status = " + relationBean.getStatus() + "，无法再次请假");
+                check.msg = "该动态已经签到，请检查后重新提交";
+                return check;
+            }
+
+            relationBean.setIsSign(1);
+            relationBean.setSignDate(System.currentTimeMillis());
         } else {
             log.warn("setDynamicStatus：提交的状态有误：status = " + status[0]);
             check.msg = "设置的状态有误，请检查后重新提交";
@@ -164,6 +174,8 @@ class WCDynamicServiceImpl implements WCIDynamicService {
             activity += "请假";
         } else if (status[0].equals("finish")) {
             activity += "完成";
+        } else if (status[0].equals("sign")) {
+            activity += "签到";
         }
 
         String chineseType = "";

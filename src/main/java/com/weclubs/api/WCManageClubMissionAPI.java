@@ -146,7 +146,7 @@ class WCManageClubMissionAPI {
         result.put("club_name", detailBean.getClubBean().getName());
         result.put("club_avatar", detailBean.getClubBean().getAvatarUrl());
 
-        if (detailBean.getChildMissonDetails() != null && detailBean.getChildMissonDetails().size() > 0) {
+//        if (detailBean.getChildMissonDetails() != null && detailBean.getChildMissonDetails().size() > 0) {
             List<HashMap<String, Object>> childMissionHash = new ArrayList<HashMap<String, Object>>();
             for (WCMissionBaseModel missionBaseModel : detailBean.getChildMissonDetails()) {
                 HashMap<String, Object> hash = new HashMap<String, Object>();
@@ -179,24 +179,34 @@ class WCManageClubMissionAPI {
             }
 
             result.put("child", childMissionHash);
-        } else {
-            List<HashMap<String, Object>> participants = new ArrayList<HashMap<String, Object>>();
-            List<WCStudentMissionRelationBean> participantBeans = mClubMissionService.getMissionRelationsByMissionId(missionId);
-            for (WCStudentMissionRelationBean participation : participantBeans) {
-                HashMap<String, Object> hash = new HashMap<String, Object>();
-                hash.put("student_id", participation.getStudentId());
-                hash.put("student_name", participation.getStudentBean().getRealName());
-                hash.put("student_avatar", participation.getStudentBean().getAvatarUrl());
 
-                hash.put("is_finish", participation.getStatus() == 2 ? 1 : 0);
-                hash.put("is_confirm", participation.getStatus() > 0 ? 1 : 0);
-
-                hash.put("has_child", participation.getChildMissionCount() > 0 ? 1 : 0);
-
-                participants.add(hash);
-            }
-            result.put("participant", participants);
+        int status = 1;
+        if (detailBean.getIsDel() == 1) {
+            status = 0;
+        } else if (detailBean.getDeadline() == 0) {
+            status = WCCommonUtil.isExpire(detailBean.getCreateDate()) ? 2 : 1;
+        } else if (detailBean.getDeadline() != 0) {
+            status = WCCommonUtil.isExpire(detailBean.getDeadline()) ? 2 : 1;
         }
+        result.put("status", status);
+//        } else {
+//            List<HashMap<String, Object>> participants = new ArrayList<HashMap<String, Object>>();
+//            List<WCStudentMissionRelationBean> participantBeans = mClubMissionService.getMissionRelationsByMissionId(missionId);
+//            for (WCStudentMissionRelationBean participation : participantBeans) {
+//                HashMap<String, Object> hash = new HashMap<String, Object>();
+//                hash.put("student_id", participation.getStudentId());
+//                hash.put("student_name", participation.getStudentBean().getRealName());
+//                hash.put("student_avatar", participation.getStudentBean().getAvatarUrl());
+//
+//                hash.put("is_finish", participation.getStatus() == 2 ? 1 : 0);
+//                hash.put("is_confirm", participation.getStatus() > 0 ? 1 : 0);
+//
+//                hash.put("has_child", participation.getChildMissionCount() > 0 ? 1 : 0);
+//
+//                participants.add(hash);
+//            }
+//            result.put("participant", participants);
+//        }
 
         return WCResultData.getSuccessData(result);
     }

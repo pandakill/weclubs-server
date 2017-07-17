@@ -227,6 +227,12 @@ class WCManageClubNotifyAPI {
         result.put("total_count", notifyModel.getTotalCount());
         result.put("already_read_count", notifyModel.getTotalCount() - notifyModel.getUnreadCount());
 
+        int status = 1;
+        if (notifyModel.getIsDel() == 1) {
+            status = 0;
+        }
+        result.put("status", status);
+
         return result;
     }
 

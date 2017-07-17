@@ -1,10 +1,13 @@
 package com.weclubs.api;
 
+import com.weclubs.application.dynamic.WCIDynamicService;
 import com.weclubs.application.meeting.WCIClubMeetingService;
 import com.weclubs.application.security.WCISecurityService;
 import com.weclubs.model.WCMeetingParticipationModel;
 import com.weclubs.model.request.WCRequestModel;
 import com.weclubs.model.response.WCResultData;
+import com.weclubs.util.Constants;
+import com.weclubs.util.WCCommonUtil;
 import com.weclubs.util.WCHttpStatus;
 import com.weclubs.util.WCRequestParamsUtil;
 import org.apache.log4j.Logger;
@@ -33,6 +36,8 @@ class WCMeetingAPI {
     private WCISecurityService mSecurityService;
     @Autowired
     private WCIClubMeetingService mMeetingService;
+    @Autowired
+    private WCIDynamicService mDynamicService;
 
     @RequestMapping(value = "/get_meeting_participation", method = RequestMethod.POST)
     public WCResultData getMeetingParticipation(@RequestBody WCRequestModel requestModel) {
@@ -104,5 +109,57 @@ class WCMeetingAPI {
         result.put("unconfirm_count", unConfirmCount);
         result.put("already_confirm_count", hashArray.size() - unConfirmCount);
         return WCResultData.getSuccessData(result);
+    }
+
+    @RequestMapping(value = "/sign_meeting", method = RequestMethod.POST)
+    public WCResultData sign_meeting(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        check = mSecurityService.checkTokenAvailable(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap requestParams = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        if (requestParams == null || requestParams.size() == 0) {
+            check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        long userId = WCCommonUtil.getLongData(requestParams.get("user_id"));
+        long createDate = WCCommonUtil.getLongData(requestParams.get("create_date"));
+        long meetingId = WCCommonUtil.getLongData(requestParams.get("meeting_id"));
+        long leaderId = WCCommonUtil.getLongData(requestParams.get("leader_id"));
+
+        // TODO: 2017/7/14 需要进行检验
+        check = mDynamicService.setDynamicStatus(userId, meetingId, Constants.TODO_MEETING, "sign");
+
+        return WCResultData.getHttpStatusData(check, null);
+    }
+
+    @RequestMapping(value = "/end_meeting", method = RequestMethod.POST)
+    public WCResultData endMeeting(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        check = mSecurityService.checkTokenAvailable(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap requestParams = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        if (requestParams == null || requestParams.size() == 0) {
+            check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        return WCResultData.getSuccessData(null);
     }
 }

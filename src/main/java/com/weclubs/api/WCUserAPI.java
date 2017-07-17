@@ -388,6 +388,26 @@ class WCUserAPI {
         String mobile = String.valueOf(requestData.get("mobile"));
         String code = String.valueOf(requestData.get("code"));
 
+        SmsVerifyKit smsVerifyKit = new SmsVerifyKit(WCRequestParamsUtil.getClientCaller(requestModel), mobile, code);
+        boolean verifySuccess = true;
+        try {
+            SmsVerifyKit.STATUS verifyStatus = smsVerifyKit.go();
+            if (verifyStatus != SmsVerifyKit.STATUS.SUCCESS) {
+                verifySuccess = false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            verifySuccess = false;
+        }
+
+        log.error("最终结果是：verifySuccess = " + verifySuccess);
+
+        if (!verifySuccess) {
+            check = WCHttpStatus.FAIL_REQUEST;
+            check.msg = "验证码错误";
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
         check = mUserService.changeMobile(userId, mobile, code);
 
         return WCResultData.getHttpStatusData(check, new HashMap<>());

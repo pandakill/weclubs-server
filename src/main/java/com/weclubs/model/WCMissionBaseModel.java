@@ -1,5 +1,7 @@
 package com.weclubs.model;
 
+import io.rong.util.GsonUtil;
+
 /**
  * 任务的基本类，包括完成程度等信息
  *
@@ -24,6 +26,8 @@ public class WCMissionBaseModel {
     private long parentId;
 
     private int childCount;
+
+    private int isDel;
 
     public long getMissionId() {
         return missionId;
@@ -129,22 +133,16 @@ public class WCMissionBaseModel {
         this.childCount = childCount;
     }
 
+    public int getIsDel() {
+        return isDel;
+    }
+
+    public void setIsDel(int isDel) {
+        this.isDel = isDel;
+    }
+
     @Override
     public String toString() {
-        return "WCMissionBaseModel{" +
-                "missionId=" + missionId +
-                ", attribution='" + attribution + '\'' +
-                ", address='" + address + '\'' +
-                ", createDate='" + createDate + '\'' +
-                ", deadline='" + deadline + '\'' +
-                ", type=" + type +
-                ", status=" + status +
-                ", studentId=" + studentId +
-                ", studentName='" + studentName + '\'' +
-                ", avatarUrl='" + avatarUrl + '\'' +
-                ", clubId='" + clubId + '\'' +
-                ", parentId=" + parentId +
-                ", childCount=" + childCount +
-                '}';
+        return GsonUtil.toJson(this, WCMissionBaseModel.class);
     }
 }

@@ -269,6 +269,16 @@ class WCManageClubMeetingAPI {
         result.put("unsign_count", meetingModel.getTotalCount() - meetingModel.getSignCount());
         result.put("already_sign_count", meetingModel.getSignCount());
 
+        int status = 1;
+        if (meetingModel.getIsDel() == 1) {
+            status = 0;
+        } else if (meetingModel.getDeadline() == 0) {
+            status = WCCommonUtil.isExpire(meetingModel.getCreateDate()) ? 2 : 1;
+        } else if (meetingModel.getDeadline() != 0) {
+            status = WCCommonUtil.isExpire(meetingModel.getDeadline()) ? 2 : 1;
+        }
+        result.put("status", status);
+
         return result;
     }
 }

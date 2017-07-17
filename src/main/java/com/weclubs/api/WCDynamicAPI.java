@@ -11,7 +11,6 @@ import com.weclubs.application.security.WCISecurityService;
 import com.weclubs.bean.WCClubMissionBean;
 import com.weclubs.bean.WCStudentBean;
 import com.weclubs.bean.WCStudentMissionRelationBean;
-import com.weclubs.model.WCMissionBaseModel;
 import com.weclubs.model.WCStudentForClubModel;
 import com.weclubs.model.request.WCRequestModel;
 import com.weclubs.model.response.WCResultData;
@@ -248,6 +247,7 @@ class WCDynamicAPI {
             result.put("confirm_join", confirmReceive ? 1 : 0);
 
             result.put("has_sign", relationBean.getIsSign() == 1 ? 1 : 0);
+            result.put("is_leader", relationBean.getIsLeader());
         }
 
         if (detailBean != null) {
@@ -257,6 +257,16 @@ class WCDynamicAPI {
                 sponsor.put("sponsor_avatar", detailBean.getSponsorStudentBean().getAvatarUrl());
             }
             sponsor.put("sponsor_type", "student");
+
+            int status = 1;
+            if (detailBean.getIsDel() == 1) {
+                status = 0;
+            } else if (!Constants.TODO_NOTIFY.equals(dynamicType) && detailBean.getDeadline() == 0) {
+                status = WCCommonUtil.isExpire(detailBean.getCreateDate()) ? 2 : 1;
+            } else if (!Constants.TODO_NOTIFY.equals(dynamicType) && detailBean.getDeadline() != 0) {
+                status = WCCommonUtil.isExpire(detailBean.getDeadline()) ? 2 : 1;
+            }
+            result.put("status", status);
         }
         result.put("sponsor", sponsor);
 
@@ -303,41 +313,45 @@ class WCDynamicAPI {
             result = getTodoHash(relationBean, dynamicType, detailBean);
 
             ArrayList<HashMap<String, Object>> childMissions = new ArrayList<HashMap<String, Object>>();
-            if (detailBean.getChildMissonDetails() != null && detailBean.getChildMissonDetails().size() > 0) {
-                for (WCMissionBaseModel missionBaseModel : detailBean.getChildMissonDetails()) {
-                    HashMap<String, Object> child = new HashMap<String, Object>();
-                    child.put("mission_id", missionBaseModel.getMissionId());
-                    child.put("content", missionBaseModel.getAttribution());
-                    child.put("finish", missionBaseModel.getStatus() == 2 ? 1 : 0);
-                    child.put("has_child", missionBaseModel.getChildCount() > 0 ? 1 : 0);
-
-                    List<HashMap<String, Object>> participants = new ArrayList<HashMap<String, Object>>();
-                    List<WCStudentBean> participantBeans = mMissionService.getRelatedStudentByMissionId(missionBaseModel.getMissionId());
-                    for (WCStudentBean studentBean : participantBeans) {
-                        HashMap<String, Object> hash = new HashMap<String, Object>();
-                        hash.put("student_id", studentBean.getStudentId());
-                        hash.put("student_name", studentBean.getRealName());
-                        hash.put("avatar_url", studentBean.getAvatarUrl());
-                        participants.add(hash);
-                    }
-                    child.put("participant", participants);
-
-                    childMissions.add(child);
-                }
-
-                result.put("child", childMissions);
-            } else {
-                List<HashMap<String, Object>> participants = new ArrayList<HashMap<String, Object>>();
-                List<WCStudentBean> participantBeans = mMissionService.getRelatedStudentByMissionId(dynamicId);
-                for (WCStudentBean studentBean : participantBeans) {
+//            if (detailBean.getChildMissonDetails() != null && detailBean.getChildMissonDetails().size() > 0) {
+//                for (WCMissionBaseModel missionBaseModel : detailBean.getChildMissonDetails()) {
+//                    HashMap<String, Object> child = new HashMap<String, Object>();
+//                    child.put("mission_id", missionBaseModel.getMissionId());
+//                    child.put("content", missionBaseModel.getAttribution());
+//                    child.put("finish", missionBaseModel.getStatus() == 2 ? 1 : 0);
+//                    child.put("has_child", missionBaseModel.getChildCount() > 0 ? 1 : 0);
+//
+////                    List<HashMap<String, Object>> participants = new ArrayList<HashMap<String, Object>>();
+////                    List<WCStudentBean> participantBeans = mMissionService.getRelatedStudentByMissionId(missionBaseModel.getMissionId());
+////                    for (WCStudentBean studentBean : participantBeans) {
+////                        HashMap<String, Object> hash = new HashMap<String, Object>();
+////                        hash.put("student_id", studentBean.getStudentId());
+////                        hash.put("student_name", studentBean.getRealName());
+////                        hash.put("avatar_url", studentBean.getAvatarUrl());
+////                        participants.add(hash);
+////                    }
+////                    child.put("participant", participants);
+//                    child.put("participant", null);
+//
+//                    childMissions.add(child);
+//                }
+//
+//                result.put("child", childMissions);
+//            } else {
+            List<HashMap<String, Object>> participants = new ArrayList<HashMap<String, Object>>();
+            List<WCStudentBean> participantBeans = mMissionService.getRelatedStudentByMissionId(dynamicId);
+            int maxSize = participantBeans != null ? (participantBeans.size() < 8 ? participantBeans.size() : 7) : 0;
+            if (maxSize > 0) {
+                for (int i = 0; i < maxSize; i++) {
                     HashMap<String, Object> hash = new HashMap<String, Object>();
-                    hash.put("student_id", studentBean.getStudentId());
-                    hash.put("student_name", studentBean.getRealName());
-                    hash.put("avatar_url", studentBean.getAvatarUrl());
+                    hash.put("student_id", participantBeans.get(i).getStudentId());
+                    hash.put("student_name", participantBeans.get(i).getRealName());
+                    hash.put("avatar_url", participantBeans.get(i).getAvatarUrl());
                     participants.add(hash);
                 }
-                result.put("participant", participants);
             }
+            result.put("participant", participants);
+//            }
 
 
         } else if (Constants.TODO_NOTIFY.equals(dynamicType)) {

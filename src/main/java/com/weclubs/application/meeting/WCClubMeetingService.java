@@ -538,4 +538,9 @@ class WCClubMeetingService implements WCIClubMeetingService {
 
         return check;
     }
+
+    @Override
+    public WCHttpStatus endMeeting(long meetingId) {
+        return null;
+    }
 }

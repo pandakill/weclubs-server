@@ -138,6 +138,7 @@ class WCServiceAPI {
 
         WCSchoolBean schoolBean = mSchoolService.getSchoolById(schoolId);
         if (schoolBean == null) {
+            check = WCHttpStatus.FAIL_REQUEST;
             check.msg = "找不到该学校";
             return WCResultData.getHttpStatusData(check, null);
         }
