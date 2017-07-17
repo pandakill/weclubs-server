@@ -160,6 +160,11 @@ class WCMeetingAPI {
             return WCResultData.getHttpStatusData(check, null);
         }
 
-        return WCResultData.getSuccessData(null);
+        long userId = WCRequestParamsUtil.getUserId(requestModel);
+        long meetingId = WCCommonUtil.getLongData(requestParams.get("meeting_id"));
+
+        check = mMeetingService.endMeeting(meetingId, userId);
+
+        return WCResultData.getHttpStatusData(check, null);
     }
 }

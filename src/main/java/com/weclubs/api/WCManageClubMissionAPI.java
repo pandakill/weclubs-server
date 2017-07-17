@@ -262,4 +262,31 @@ class WCManageClubMissionAPI {
 
         return WCResultData.getHttpStatusData(check, new HashMap<String, Object>());
     }
+
+    @RequestMapping(value = "/revert_mission", method = RequestMethod.POST)
+    public WCResultData revertMission(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        check = mSecurityService.checkTokenAvailable(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        if (requestData == null || requestData.size() == 0) {
+            check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        long missionId = WCCommonUtil.getLongData(requestData.get("mission_id"));
+        long userId = WCRequestParamsUtil.getUserId(requestModel);
+
+        check = mClubMissionService.revertMission(missionId, userId);
+
+        return WCResultData.getHttpStatusData(check, null);
+    }
 }

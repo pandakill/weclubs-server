@@ -212,6 +212,33 @@ class WCManageClubNotifyAPI {
         return WCResultData.getHttpStatusData(check, new HashMap<String, Object>());
     }
 
+    @RequestMapping(value = "/revert_notify", method = RequestMethod.POST)
+    public WCResultData revertNotify(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        check = mSecurityService.checkTokenAvailable(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        if (requestData == null || requestData.size() == 0) {
+            check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        long notifyId = WCCommonUtil.getLongData(requestData.get("notify_id"));
+        long userId = WCRequestParamsUtil.getUserId(requestModel);
+
+        check = mNotificationService.revertNotification(notifyId, userId);
+
+        return WCResultData.getHttpStatusData(check, null);
+    }
+
     private HashMap<String, Object> getNotifyHash(WCSponsorNotifyModel notifyModel) {
         HashMap<String, Object> result = new HashMap<String, Object>();
         result.put("club_id", notifyModel.getClubId());
