@@ -93,4 +93,9 @@ class WCMessageServiceImpl implements WCIMessageService {
     public WCMessageBean getDynamicMsg() {
         return null;
     }
+
+    @Override
+    public void updateMsg(WCMessageBean messageBean) {
+        mMessageMapper.updateMsg(messageBean);
+    }
 }

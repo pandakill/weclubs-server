@@ -45,4 +45,11 @@ public interface WCIMessageService {
      * @return  推送消息原型
      */
     WCMessageBean getDynamicMsg();
+
+    /**
+     * 更新消息
+     *
+     * @param messageBean   消息实体
+     */
+    void updateMsg(WCMessageBean messageBean);
 }

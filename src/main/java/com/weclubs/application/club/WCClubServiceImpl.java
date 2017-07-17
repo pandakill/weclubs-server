@@ -1,17 +1,14 @@
 package com.weclubs.application.club;
 
 import com.weclubs.application.club_responsibility.WCIClubResponsibilityService;
+import com.weclubs.application.message.WCIMessageService;
 import com.weclubs.application.rongcloud.WCIRongCloudService;
-import com.weclubs.application.school.WCISchoolService;
 import com.weclubs.application.user.WCIUserService;
 import com.weclubs.bean.*;
 import com.weclubs.mapper.WCClubHonorMapper;
 import com.weclubs.mapper.WCClubMapper;
 import com.weclubs.mapper.WCDynamicMapper;
-import com.weclubs.model.WCManageClubModel;
-import com.weclubs.model.WCMyClubModel;
-import com.weclubs.model.WCStudentBaseInfoModel;
-import com.weclubs.model.WCStudentForClubModel;
+import com.weclubs.model.*;
 import com.weclubs.util.PinYinComparator;
 import com.weclubs.util.WCHttpStatus;
 import net.sourceforge.pinyin4j.PinyinHelper;
@@ -47,13 +44,13 @@ public class WCClubServiceImpl implements WCIClubService {
     private WCIUserService mUserService;
     private WCIClubResponsibilityService mClubResponsibilityService;
     private WCIRongCloudService mRongCloudService;
-    private WCISchoolService mSchoolService;
+    private WCIMessageService mMessageService;
 
     @Autowired
     public WCClubServiceImpl(WCDynamicMapper mDynamicMapper, WCClubMapper mClubMapper,
                              WCIUserService mUserService, WCIClubResponsibilityService mClubResponsibilityService,
                              WCClubHonorMapper mClubHonorMapper, WCIClubGraduateService mClubGraduateService,
-                             WCIRongCloudService rongCloudService, WCISchoolService schoolService) {
+                             WCIRongCloudService rongCloudService, WCIMessageService messageService) {
         this.mDynamicMapper = mDynamicMapper;
         this.mClubMapper = mClubMapper;
         this.mUserService = mUserService;
@@ -61,7 +58,7 @@ public class WCClubServiceImpl implements WCIClubService {
         this.mClubHonorMapper = mClubHonorMapper;
         this.mClubGraduateService = mClubGraduateService;
         this.mRongCloudService = rongCloudService;
-        this.mSchoolService = schoolService;
+        this.mMessageService = messageService;
     }
 
     public WCClubBean getClubInfoById(long clubId) {
@@ -493,6 +490,65 @@ public class WCClubServiceImpl implements WCIClubService {
             return result;
         }
         return null;
+    }
+
+    @Override
+    public WCHttpStatus applyForClub(long userId, long clubId) {
+
+        WCHttpStatus check = WCHttpStatus.FAIL_REQUEST;
+
+        WCStudentBean studentBean = mUserService.getUserInfoById(userId);
+        if (studentBean == null) {
+            check.msg = "找不到该学生";
+            return check;
+        }
+
+        WCClubBean clubBean = getClubInfoById(clubId);
+        if (clubBean == null) {
+            check.msg = "找不到该社团";
+            return check;
+        }
+
+        String title = "申请加入社团";
+        String content = clubBean.getName();
+
+        WCMessageBean messageBean = new WCMessageBean();
+        messageBean.setTitle(title);
+        messageBean.setContent(content);
+        messageBean.setIsDel(0);
+        messageBean.setType(1);
+        List<Long> msgUserId = new ArrayList<>();
+        msgUserId.add(studentBean.getStudentId());
+        mMessageService.publicMessage(messageBean, msgUserId);
+
+        if (messageBean.getMessageId() == 0) {
+            check.msg = "申请加入社团失败";
+            log.error("applyForClub：申请加入社团失败，message.getMessageId = 0");
+            return check;
+        }
+
+        WCApplyIntoClubMessageModel messageModel = new WCApplyIntoClubMessageModel();
+        messageModel.setTitle(title);
+        messageModel.setContent(content);
+        messageModel.setMessage_type("add_new_user");
+        messageModel.setUser_id(studentBean.getStudentId());
+        messageModel.setUser_name(!StringUtils.isEmpty(studentBean.getRealName()) ? studentBean.getRealName() : studentBean.getNickName());
+        messageModel.setUser_avatar(studentBean.getAvatarUrl());
+        messageModel.setUser_type("student");
+        WCApplyIntoClubMessageModel.ExtraBean extra = new WCApplyIntoClubMessageModel.ExtraBean();
+        extra.setClub_id(clubBean.getClubId());
+        extra.setStatus(0);
+        extra.setMessage_id(messageBean.getMessageId());
+        messageModel.setExtra(extra);
+        messageModel.setSponsor_date(System.currentTimeMillis());
+
+        messageBean.setData(messageModel.toString());
+        mMessageService.updateMsg(messageBean);
+
+        mRongCloudService.publicApplyClubMsg(messageModel);
+
+        check = WCHttpStatus.SUCCESS;
+        return check;
     }
 
     /**

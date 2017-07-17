@@ -2,6 +2,7 @@ package com.weclubs.application.rongcloud;
 
 import com.weclubs.bean.WCClubBean;
 import com.weclubs.bean.WCStudentBean;
+import com.weclubs.model.WCApplyIntoClubMessageModel;
 import com.weclubs.model.WCGroupChatListModel;
 import com.weclubs.util.WCHttpStatus;
 
@@ -134,4 +135,12 @@ public interface WCIRongCloudService {
      */
     WCHttpStatus publicDynamicCreatedMsg(WCClubBean clubBean, String attribution, String dynamicType,
                                          long dynamicId, long... receiverId);
+
+    /**
+     * 发送申请加入社团的系统通知
+     *
+     * @param messageModel  申请加入社团的消息
+     * @return  如果发送则返回 {@link WCHttpStatus#SUCCESS}
+     */
+    WCHttpStatus publicApplyClubMsg(WCApplyIntoClubMessageModel messageModel);
 }

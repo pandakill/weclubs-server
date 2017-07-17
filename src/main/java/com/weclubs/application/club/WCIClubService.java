@@ -114,4 +114,13 @@ public interface WCIClubService {
      * @return  返回热门社团的列表
      */
     List<HashMap<String, Object>> getHotClubBySchool(long schoolId);
+
+    /**
+     * 用户申请加入社团
+     *
+     * @param userId    申请的用户id
+     * @param clubId    社团id
+     * @return  如果申请成功返回 {@link WCHttpStatus#SUCCESS}
+     */
+    WCHttpStatus applyForClub(long userId, long clubId);
 }

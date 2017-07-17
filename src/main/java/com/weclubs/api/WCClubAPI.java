@@ -322,6 +322,33 @@ class WCClubAPI {
         return WCResultData.getSuccessData(result);
     }
 
+    @RequestMapping(value = "/apply_into_club", method = RequestMethod.POST)
+    public WCResultData d(@RequestBody WCRequestModel requestModel) {
+
+        WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        check = mSecurityService.checkTokenAvailable(requestModel);
+        if (check != WCHttpStatus.SUCCESS) {
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        HashMap<String, Object> requestData = WCRequestParamsUtil.getRequestParams(requestModel, HashMap.class);
+        if (requestData == null || requestData.size() == 0) {
+            check = WCHttpStatus.FAIL_REQUEST_NULL_PARAMS;
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
+        long userId = WCRequestParamsUtil.getUserId(requestModel);
+        long clubId = WCCommonUtil.getLongData(requestData.get("club_id"));
+
+        check = mClubService.applyForClub(userId, clubId);
+
+        return WCResultData.getHttpStatusData(check, null);
+    }
+
     private HashMap<String, Object> getClubBaseInfo(WCClubBean clubBean, HashMap<String, Object> result) {
         result.put("club_id", clubBean.getClubId());
         result.put("club_name", clubBean.getName());

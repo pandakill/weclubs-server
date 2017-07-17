@@ -14,6 +14,7 @@ public class WCMessageBean {
     private String content;
     private String data;
     private int isDel;
+    private int type;
 
     public long getMessageId() {
         return messageId;
@@ -53,6 +54,14 @@ public class WCMessageBean {
 
     public void setIsDel(int isDel) {
         this.isDel = isDel;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 
     @Override

@@ -9,6 +9,7 @@
         <result property="content" column="content" />
         <result property="data" column="data" />
         <result property="isDel" column="is_del" />
+        <result property="type" column="type" />
     </resultMap>
 
     <!-- 学生消息关系实体映射 map -->
@@ -79,6 +80,12 @@
         UPDATE `t_student_message_relation`
         SET `status` = #{status}
         WHERE `stu_msg_id` = #{stuMsgId}
+    </update>
+
+    <update id="updateMsg" parameterType="com.weclubs.bean.WCMessageBean">
+        UPDATE `t_message`
+        SET `data` = #{data}, `title` = #{title}, `content` = #{content}
+        WHERE `message_id` = #{messageId}
     </update>
 
 </mapper>

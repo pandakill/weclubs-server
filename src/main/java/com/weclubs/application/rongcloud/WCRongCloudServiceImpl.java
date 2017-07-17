@@ -7,11 +7,13 @@ import com.weclubs.bean.WCClubBean;
 import com.weclubs.bean.WCClubStudentBean;
 import com.weclubs.bean.WCStudentBean;
 import com.weclubs.mapper.WCClubMapper;
+import com.weclubs.model.WCApplyIntoClubMessageModel;
 import com.weclubs.model.WCMessageNotify;
 import com.weclubs.model.WCGroupChatListModel;
 import com.weclubs.util.Constants;
 import com.weclubs.util.WCHttpStatus;
 import io.rong.RongCloud;
+import io.rong.messages.WCMessageNotifyMessage;
 import io.rong.models.*;
 import io.rong.util.GsonUtil;
 import org.apache.log4j.Logger;
@@ -341,5 +343,40 @@ public class WCRongCloudServiceImpl implements WCIRongCloudService {
         }
 
         return WCHttpStatus.FAIL_REQUEST;
+    }
+
+    @Override
+    public WCHttpStatus publicApplyClubMsg(WCApplyIntoClubMessageModel messageModel) {
+        WCHttpStatus check = WCHttpStatus.FAIL_REQUEST;
+
+        if (messageModel == null) {
+            log.error("publicApplyClubMsg：消息不能为空");
+            return check;
+        }
+
+        WCMessageNotifyMessage message = new WCMessageNotifyMessage(messageModel);
+        String[] toUserId = new String[] {getRongUserId(message.getUser_id())};
+
+        try {
+            CodeSuccessResult result = RongCloud.getInstance(Constants.RONGCLOUD_APP_KEY, Constants.RONGCLOUD_SECRET_KEY)
+                    .message.publishPrivate("wc_system", toUserId, message, null, null, null, 0, 1, 1, 0);
+            log.info("publicApplyClubMsg：message = " + message.toString());
+            if (result != null) {
+                log.info("publicApplyClubMsg：result = " + result.toString());
+                if (result.getCode() == 200) {
+                    return WCHttpStatus.SUCCESS;
+                } else {
+                    WCHttpStatus fail = WCHttpStatus.FAIL_REQUEST;
+                    fail.code = result.getCode();
+                    fail.msg = result.getErrorMessage();
+                    return fail;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return WCHttpStatus.FAIL_REQUEST;
+        }
+
+        return check;
     }
 }

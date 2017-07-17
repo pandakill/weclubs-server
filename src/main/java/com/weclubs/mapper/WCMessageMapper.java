@@ -51,4 +51,11 @@ public interface WCMessageMapper {
      * @param relationBean  学生消息关系
      */
     void updateStudentRelation(WCStudentMessageRelationBean relationBean);
+
+    /**
+     * 更新消息
+     *
+     * @param msg   消息实体
+     */
+    void updateMsg(WCMessageBean msg);
 }
