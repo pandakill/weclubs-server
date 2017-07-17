@@ -345,7 +345,7 @@ public class WCUserSeriviceImpl implements WCIUserService {
 
         WCHttpStatus check = WCHttpStatus.FAIL_REQUEST;
 
-        long userId = WCCommonUtil.getLongData(certificationInfo);
+        long userId = WCCommonUtil.getLongData(certificationInfo.get("user_id"));
 
         WCStudentBean userBean = getUserInfoById(userId);
         if (userBean == null) {
@@ -374,7 +374,7 @@ public class WCUserSeriviceImpl implements WCIUserService {
         }
 
         int graduateYear = WCCommonUtil.getIntegerData(certificationInfo.get("graduate_year"));
-        if (graduateYear > 0) {
+        if (graduateYear <= 0) {
             check.msg = "入学年份不能为空！";
             return check;
         }
@@ -402,7 +402,8 @@ public class WCUserSeriviceImpl implements WCIUserService {
         String idCardNo = String.valueOf(certificationInfo.get("id_card_no"));
         if (StringUtils.isEmpty(idCardNo)
                 || !WCRegexUtils.isIDCard18(idCardNo)) {
-            check.msg = "身份证号码错误！";
+            check.msg = "身份证号码错误";
+            return check;
         }
 
         userBean.setRealName(realName);
