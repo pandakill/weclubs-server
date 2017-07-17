@@ -323,7 +323,7 @@ class WCClubAPI {
     }
 
     @RequestMapping(value = "/apply_into_club", method = RequestMethod.POST)
-    public WCResultData d(@RequestBody WCRequestModel requestModel) {
+    public WCResultData applyIntoClub(@RequestBody WCRequestModel requestModel) {
 
         WCHttpStatus check = mSecurityService.checkRequestParams(requestModel);
         if (check != WCHttpStatus.SUCCESS) {
