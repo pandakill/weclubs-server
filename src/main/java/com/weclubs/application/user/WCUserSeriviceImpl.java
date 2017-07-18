@@ -414,6 +414,7 @@ public class WCUserSeriviceImpl implements WCIUserService {
         userBean.setClassName(className);
         userBean.setIdCardNo(idCardNo);
         userBean.setGraduateYear(graduateYear);
+        userBean.setStatus(2);
 
         mStudentMapper.updateStudent(userBean);
 
