@@ -1,6 +1,7 @@
 package com.weclubs.application.club;
 
 import com.weclubs.bean.WCClubGraduateBean;
+import com.weclubs.bean.WCStudentBean;
 import com.weclubs.bean.WCStudentClubGraduateRelationBean;
 import com.weclubs.util.WCHttpStatus;
 

@@ -3,6 +3,7 @@ package com.weclubs.application.club;
 import com.weclubs.application.club_responsibility.WCIClubResponsibilityService;
 import com.weclubs.application.message.WCIMessageService;
 import com.weclubs.application.rongcloud.WCIRongCloudService;
+import com.weclubs.application.rongcloud.WCRongCloudServiceImpl;
 import com.weclubs.application.user.WCIUserService;
 import com.weclubs.bean.*;
 import com.weclubs.mapper.WCClubHonorMapper;
@@ -509,45 +510,147 @@ public class WCClubServiceImpl implements WCIClubService {
             return check;
         }
 
-        String title = "申请加入社团";
-        String content = clubBean.getName();
-
-        WCMessageBean messageBean = new WCMessageBean();
-        messageBean.setTitle(title);
-        messageBean.setContent(content);
-        messageBean.setIsDel(0);
-        messageBean.setType(1);
-        List<Long> msgUserId = new ArrayList<>();
-        msgUserId.add(studentBean.getStudentId());
-        mMessageService.publicMessage(messageBean, msgUserId);
-
-        if (messageBean.getMessageId() == 0) {
-            check.msg = "申请加入社团失败";
-            log.error("applyForClub：申请加入社团失败，message.getMessageId = 0");
+        List<WCClubStudentBean> students = getSAByCurrentGraduateClub(clubId);
+        if (students == null || students.size() == 0) {
+            check.msg = "该社团没有人可以负责成员审批";
             return check;
         }
 
-        WCApplyIntoClubMessageModel messageModel = new WCApplyIntoClubMessageModel();
-        messageModel.setTitle(title);
-        messageModel.setContent(content);
-        messageModel.setMessage_type("add_new_user");
-        messageModel.setUser_id(studentBean.getStudentId());
-        messageModel.setUser_name(!StringUtils.isEmpty(studentBean.getRealName()) ? studentBean.getRealName() : studentBean.getNickName());
-        messageModel.setUser_avatar(studentBean.getAvatarUrl());
-        messageModel.setUser_type("student");
-        WCApplyIntoClubMessageModel.ExtraBean extra = new WCApplyIntoClubMessageModel.ExtraBean();
-        extra.setClub_id(clubBean.getClubId());
-        extra.setStatus(0);
-        extra.setMessage_id(messageBean.getMessageId());
-        messageModel.setExtra(extra);
-        messageModel.setSponsor_date(System.currentTimeMillis());
+        WCApplyIntoClubMessageModel messageModel = getNotifyMsgBean("student", clubBean, studentBean, students, 0);
 
-        messageBean.setData(messageModel.toString());
-        mMessageService.updateMsg(messageBean);
+        String[] toUserIds = new String[students.size()];
+        for (int i = 0; i < students.size(); i++) {
+            toUserIds[i] = WCRongCloudServiceImpl.getRongUserId(students.get(i).getStudentId());
+        }
 
-        mRongCloudService.publicApplyClubMsg(messageModel);
+        mRongCloudService.publicApplyClubMsg(messageModel, toUserIds);
 
         check = WCHttpStatus.SUCCESS;
+        return check;
+    }
+
+    @Override
+    public WCHttpStatus resolveApply(long clubId, long studentId, long userId, long messageId, int opinion) {
+
+        WCHttpStatus check = WCHttpStatus.FAIL_REQUEST;
+
+        WCStudentMessageRelationBean messageRelationBean = mMessageService.getMsgDetailByMsgIdAndStuId(studentId, messageId);
+//        if (messageRelationBean == null) {
+//            check.msg = "找不到该申请消息";
+//            return check;
+//        }
+
+        if (messageRelationBean != null) {
+            messageRelationBean.setStatus(1);
+            // TODO: 2017/7/18 需要更新状态
+        }
+
+        WCStudentBean studentBean = mUserService.getUserInfoById(studentId);
+        if (studentBean == null) {
+            check.msg = "找不到该学生";
+            return check;
+        }
+
+        WCStudentBean userBean = mUserService.getUserInfoById(userId);
+        if (userBean == null) {
+            check.msg = "找不到该管理员";
+            return check;
+        }
+
+        WCClubBean clubBean = getClubInfoById(clubId);
+        if (clubBean == null) {
+            check.msg = "找不到该社团";
+            return check;
+        }
+
+        WCClubStudentBean adminUserBean = new WCClubStudentBean();
+        adminUserBean.setStudentId(userBean.getStudentId());
+        adminUserBean.setRealName(userBean.getRealName());
+        adminUserBean.setNickName(userBean.getNickName());
+        adminUserBean.setAvatarUrl(userBean.getAvatarUrl());
+        List<WCClubStudentBean> adminList = new ArrayList<>();
+        adminList.add(adminUserBean);
+
+        if (opinion == 1) {
+            check = addStudentIntoClub(studentId, clubId, userId);
+
+            if (check == WCHttpStatus.SUCCESS) {
+                /*
+                  发送系统通知给用户操作结果
+                */
+                String[] toUserIds = new String[] {WCRongCloudServiceImpl.getRongUserId(studentId)};
+                WCApplyIntoClubMessageModel messageModel = getNotifyMsgBean("club", clubBean, studentBean, adminList, opinion);
+                mRongCloudService.publicApplyClubMsg(messageModel, toUserIds);
+            }
+        } else {
+            /*
+              发送系统通知拒绝加入社团给用户操作结果
+            */
+            String[] toUserIds = new String[] {WCRongCloudServiceImpl.getRongUserId(studentId)};
+            WCApplyIntoClubMessageModel messageModel = getNotifyMsgBean("club", clubBean, studentBean, adminList, opinion);
+            mRongCloudService.publicApplyClubMsg(messageModel, toUserIds);
+        }
+
+        return check;
+    }
+
+    @Override
+    public List<WCClubStudentBean> getSAByCurrentGraduateClub(long clubId) {
+
+        WCClubBean clubBean = getClubInfoById(clubId);
+        if (clubBean == null) {
+            log.error("该社团不存在");
+            return null;
+        }
+
+        return mClubMapper.getCurrentGraduateGA(clubId);
+    }
+
+    @Override
+    public WCHttpStatus addStudentIntoClub(long studentId, long clubId, long userId) {
+
+        WCHttpStatus check = WCHttpStatus.FAIL_REQUEST;
+
+        WCClubBean clubBean = getClubInfoById(clubId);
+        if (clubBean == null) {
+            check.msg = "找不到该社团";
+            return check;
+        }
+
+        WCClubGraduateBean graduateBean = mClubGraduateService.getCurrentClubGraduate(clubId);
+        if (graduateBean == null) {
+            check.msg = "找不到当前届社团";
+            return check;
+        }
+
+        WCStudentBean studentBean = mUserService.getUserInfoById(studentId);
+        if (studentBean == null) {
+            check.msg = "找不到该学生";
+            return check;
+        }
+
+        WCStudentBean userBean = mUserService.getUserInfoById(userId);
+        if (userBean == null) {
+            check.msg = "找不到该管理员";
+            return check;
+        }
+
+        WCStudentClubGraduateRelationBean DBRelationBean
+                = mClubGraduateService.getStudentClubGraduationRelationByGraduateId(studentId, graduateBean.getClubGraduateId());
+        if (DBRelationBean == null) {
+            check.msg = "该学生已经加入该社团";
+            return check;
+        }
+
+        WCStudentClubGraduateRelationBean relationBean = new WCStudentClubGraduateRelationBean();
+        relationBean.setGraduateId(graduateBean.getClubGraduateId());
+        relationBean.setStatus(1);
+        relationBean.setStudentId(studentId);
+        relationBean.setIsDel(0);
+
+        mClubGraduateService.createStuCluGraduateRelation(relationBean);
+        check = WCHttpStatus.SUCCESS;
+
         return check;
     }
 
@@ -689,5 +792,84 @@ public class WCClubServiceImpl implements WCIClubService {
             }
         }
         return result;
+    }
+
+    /**
+     * 生成 "add_new_user" 的消息类型
+     *
+     * @param userType  用户类型，student、club两种，如果是申请加入社团，则为student类型；如果是审批申请的则为club类型
+     * @param clubBean  社团实体类
+     * @param studentBean   如果是student类型的话，该studentBean是用于显示的，如果是club类型的话，是用于接收消息的
+     * @param admins        如果是student类型的话，该admins是用于接收消息的，如果是club类型的的话，admins只有一个，且admins.get(0)是用于显示content的
+     * @param status        如果是student的话，status恒为0，如果是club类型的话，由外面传进来
+     * @return  生成消息类型
+     */
+    private WCApplyIntoClubMessageModel getNotifyMsgBean(String userType, WCClubBean clubBean, WCStudentBean studentBean,
+                                                         List<WCClubStudentBean> admins, int status) {
+
+        String title = "";
+        String content = "";
+        if ("student".equals(userType)) {
+            title = "申请加入社团";
+            content = clubBean.getName();
+        } else if ("club".equals(userType)) {
+            title = "申请加入社团批复";
+
+            String adminName = !StringUtils.isEmpty(admins.get(0).getRealName()) ? admins.get(0).getRealName() : admins.get(0).getNickName();
+            if (status == 0) {
+                content = "【" + adminName + "】拒绝您的申请";
+            } else if (status == 1) {
+                content = "【" + adminName + "】同意您的申请";
+            }
+        }
+
+        WCMessageBean messageBean = new WCMessageBean();
+        messageBean.setTitle(title);
+        messageBean.setContent(content);
+        messageBean.setIsDel(0);
+
+        List<Long> msgUserId = new ArrayList<>();
+        if ("student".equals(userType)) {
+            for (WCStudentBean student : admins) {
+                msgUserId.add(student.getStudentId());
+            }
+            messageBean.setType(1);
+        } else if ("club".equals(userType)) {
+            msgUserId.add(studentBean.getStudentId());
+            messageBean.setType(0);
+        }
+
+        mMessageService.publicMessage(messageBean, msgUserId);
+
+        if (messageBean.getMessageId() == 0) {
+            log.error("getNotifyMsgBean：message.getMessageId = 0");
+            return null;
+        }
+
+        WCApplyIntoClubMessageModel messageModel = new WCApplyIntoClubMessageModel();
+        messageModel.setTitle(title);
+        messageModel.setContent(content);
+        messageModel.setMessage_type("add_new_user");
+        if ("student".equals(userType)) {
+            messageModel.setUser_id(studentBean.getStudentId());
+            messageModel.setUser_name(!StringUtils.isEmpty(studentBean.getRealName()) ? studentBean.getRealName() : studentBean.getNickName());
+            messageModel.setUser_avatar(studentBean.getAvatarUrl());
+        } else if ("club".equals(userType)) {
+            messageModel.setUser_id(clubBean.getClubId());
+            messageModel.setUser_name(clubBean.getName());
+            messageModel.setUser_avatar(clubBean.getAvatarUrl());
+        }
+        messageModel.setUser_type(userType);
+        WCApplyIntoClubMessageModel.ExtraBean extra = new WCApplyIntoClubMessageModel.ExtraBean();
+        extra.setClub_id(clubBean.getClubId());
+        extra.setStatus(0);
+        extra.setMessage_id(messageBean.getMessageId());
+        messageModel.setExtra(extra);
+        messageModel.setSponsor_date(System.currentTimeMillis());
+
+        messageBean.setData(messageModel.toString());
+        mMessageService.updateMsg(messageBean);
+
+        return messageModel;
     }
 }

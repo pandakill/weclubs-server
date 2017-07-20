@@ -48,11 +48,11 @@ public class WCRongCloudServiceImpl implements WCIRongCloudService {
     @Autowired
     private WCClubMapper mClubMapper;
 
-    public String getSystemMsgId() {
-        return "weclubs_system_msg";
+    public static String getSystemMsgId() {
+        return "wc_system";
     }
 
-    public String getRongUserId(long userId) {
+    public static String getRongUserId(long userId) {
         return RONG_USER_ID_TAG + userId;
     }
 
@@ -346,7 +346,7 @@ public class WCRongCloudServiceImpl implements WCIRongCloudService {
     }
 
     @Override
-    public WCHttpStatus publicApplyClubMsg(WCApplyIntoClubMessageModel messageModel) {
+    public WCHttpStatus publicApplyClubMsg(WCApplyIntoClubMessageModel messageModel, String[] receiverId) {
         WCHttpStatus check = WCHttpStatus.FAIL_REQUEST;
 
         if (messageModel == null) {
@@ -355,11 +355,10 @@ public class WCRongCloudServiceImpl implements WCIRongCloudService {
         }
 
         WCMessageNotifyMessage message = new WCMessageNotifyMessage(messageModel);
-        String[] toUserId = new String[] {getRongUserId(message.getUser_id())};
 
         try {
             CodeSuccessResult result = RongCloud.getInstance(Constants.RONGCLOUD_APP_KEY, Constants.RONGCLOUD_SECRET_KEY)
-                    .message.publishPrivate("wc_system", toUserId, message, null, null, null, 0, 1, 1, 0);
+                    .message.publishPrivate(getSystemMsgId(), receiverId, message, null, null, null, 0, 1, 1, 0);
             log.info("publicApplyClubMsg：message = " + message.toString());
             if (result != null) {
                 log.info("publicApplyClubMsg：result = " + result.toString());

@@ -21,7 +21,7 @@ public interface WCIRongCloudService {
      *
      * @return  系统系统用户的id
      */
-    String getSystemMsgId();
+//    String getSystemMsgId();
 
     /**
      * 根据 weclubs 的用户 id 获取 im 的用户 id
@@ -30,7 +30,7 @@ public interface WCIRongCloudService {
      *
      * @return  im 服务器的用户 id
      */
-    String getRongUserId(long userId);
+//    String getRongUserId(long userId);
 
     /**
      * 根据融云的 userId 转换成服务器自己的用户 id
@@ -142,5 +142,5 @@ public interface WCIRongCloudService {
      * @param messageModel  申请加入社团的消息
      * @return  如果发送则返回 {@link WCHttpStatus#SUCCESS}
      */
-    WCHttpStatus publicApplyClubMsg(WCApplyIntoClubMessageModel messageModel);
+    WCHttpStatus publicApplyClubMsg(WCApplyIntoClubMessageModel messageModel, String[] receiverId);
 }

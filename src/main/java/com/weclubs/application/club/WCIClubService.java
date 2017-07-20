@@ -123,4 +123,34 @@ public interface WCIClubService {
      * @return  如果申请成功返回 {@link WCHttpStatus#SUCCESS}
      */
     WCHttpStatus applyForClub(long userId, long clubId);
+
+    /**
+     * 处理申请加入社团的操作
+     *
+     * @param clubId        社团id
+     * @param studentId     申请人id
+     * @param userId        操作者id
+     * @param messageId     消息id
+     * @param opinion       意见，0：反对，1：同意
+     * @return  如果操作成功则返回 {@link WCHttpStatus#SUCCESS}
+     */
+    WCHttpStatus resolveApply(long clubId, long studentId, long userId, long messageId, int opinion);
+
+    /**
+     * 根据社团id获取当前届的超级管理员
+     *
+     * @param clubId    社团id
+     * @return
+     */
+    List<WCClubStudentBean> getSAByCurrentGraduateClub(long clubId);
+
+    /**
+     * 将学生添加进当前届社团中
+     *
+     * @param studentId     加入社团的学生id
+     * @param clubId        社团id
+     * @param userId        操作的学生id
+     * @return  如果添加成功则返回 {@link WCHttpStatus#SUCCESS}
+     */
+    WCHttpStatus addStudentIntoClub(long studentId, long clubId, long userId);
 }

@@ -221,4 +221,23 @@
         AND club.`name` LIKE #{keyword}
     </select>
 
+    <!-- 根据社团 clubId 查找此社团当前届数的所有学生 -->
+    <select id="getCurrentGraduateGA" resultMap="clubStudentMap" resultType="List">
+        SELECT *
+        FROM `t_student` student, `t_club_graduate` club_graduate,
+        `t_student_club_graduate_relation` stu_clu_relation, `t_club_department` department, `t_club_job` job,
+        `t_school` school
+        WHERE stu_clu_relation.`student_id` = student.`student_id`
+        AND stu_clu_relation.`graduate_id` = club_graduate.`club_graduate_id`
+        AND club_graduate.`is_current` = 1
+        AND club_graduate.`club_id` = #{clubId}
+        AND stu_clu_relation.`department_id` = department.`department_id`
+        AND stu_clu_relation.`job_id` = job.`job_id`
+        AND student.`school_id` = school.`school_id`
+        AND department.`is_del` = 0
+        AND job.`is_del` = 0
+        AND school.`is_del` = 0
+        AND stu_clu_relation.`super_admin` = 1
+    </select>
+
 </mapper>

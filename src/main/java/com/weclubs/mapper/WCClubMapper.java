@@ -91,4 +91,12 @@ public interface WCClubMapper {
      * @return  社团列表
      */
     List<WCClubBean> searchClubListByKeyword(@Param("schoolId") long schoolId, @Param("keyword") String keyword);
+
+    /**
+     * 获取当前届社团的超级管理员
+     *
+     * @param clubId    社团id
+     * @return  超级管理员的成员
+     */
+    List<WCClubStudentBean> getCurrentGraduateGA(@Param("clubId") long clubId);
 }

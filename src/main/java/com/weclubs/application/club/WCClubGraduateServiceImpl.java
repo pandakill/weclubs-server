@@ -1,10 +1,7 @@
 package com.weclubs.application.club;
 
 import com.weclubs.application.club_responsibility.WCIClubResponsibilityService;
-import com.weclubs.bean.WCClubDepartmentBean;
-import com.weclubs.bean.WCClubGraduateBean;
-import com.weclubs.bean.WCClubJobBean;
-import com.weclubs.bean.WCStudentClubGraduateRelationBean;
+import com.weclubs.bean.*;
 import com.weclubs.mapper.WCClubGraduateMapper;
 import com.weclubs.util.WCHttpStatus;
 import org.apache.log4j.Logger;

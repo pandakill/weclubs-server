@@ -13,7 +13,7 @@
     </resultMap>
 
     <!-- 学生消息关系实体映射 map -->
-    <resultMap id="studentMsgMap" extends="messageMap" type="com.weclubs.bean.WCStudentMessageRelationBean">
+    <resultMap id="studentMsgMap" type="com.weclubs.bean.WCStudentMessageRelationBean">
         <id property="stuMsgId" column="stu_msg_id" />
         <result property="studentId" column="student_id" />
         <result property="messageId" column="message_id" />
@@ -31,7 +31,7 @@
             <result property="className" column="class_name" />
             <result property="graduateYear" column="graduate_year" />
             <result property="status" column="status" />
-            <result property="isDel" column="is_Del" />
+            <result property="isDel" column="is_del" />
             <result property="gender" column="gender" />
         </association>
 
@@ -41,6 +41,7 @@
             <result property="content" column="content" />
             <result property="data" column="data" />
             <result property="isDel" column="is_del" />
+            <result property="type" column="type" />
         </association>
     </resultMap>
 
@@ -62,8 +63,8 @@
     </select>
 
     <insert id="createMsg" useGeneratedKeys="true" keyProperty="messageId" parameterType="com.weclubs.bean.WCMessageBean">
-        INSERT INTO `t_message`(`title`, `content`, `data`, `is_del`)
-        VALUES (#{title}, #{content}, #{data}, #{isDel})
+        INSERT INTO `t_message`(`title`, `content`, `data`, `is_del`, `type`)
+        VALUES (#{title}, #{content}, #{data}, #{isDel}, #{type})
     </insert>
 
     <insert id="createStudentRelation" useGeneratedKeys="true" keyProperty="stuMsgId">

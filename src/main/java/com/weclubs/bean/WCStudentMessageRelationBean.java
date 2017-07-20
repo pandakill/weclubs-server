@@ -1,19 +1,21 @@
 package com.weclubs.bean;
 
+import java.io.Serializable;
+
 /**
  * 学生、消息之间的关系表
  *
  * Created by fangzanpan on 2017/6/12.
  */
-public class WCStudentMessageRelationBean {
+public class WCStudentMessageRelationBean implements Serializable {
 
     private long stuMsgId;
     private long studentId;
     private long messageId;
     private int status;
 
-    private WCStudentBean studentBean;
-    private WCMessageBean messageBean;
+    public WCStudentBean studentBean;
+    public WCMessageBean messageBean;
 
     public long getStuMsgId() {
         return stuMsgId;

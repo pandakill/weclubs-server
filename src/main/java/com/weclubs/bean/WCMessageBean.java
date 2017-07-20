@@ -2,12 +2,14 @@ package com.weclubs.bean;
 
 import com.alibaba.fastjson.JSON;
 
+import java.io.Serializable;
+
 /**
  * 推送消息实体，对应 t_message 表
  *
  * Created by fangzanpan on 2017/6/12.
  */
-public class WCMessageBean {
+public class WCMessageBean implements Serializable {
 
     private long messageId;
     private String title;
