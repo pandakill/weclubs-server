@@ -119,6 +119,11 @@ class WCManageClubAPI {
             return WCResultData.getHttpStatusData(check, null);
         }
 
+        if (studentBean.getStatus() != 1) {
+            check.msg = "您还未通过学生认证";
+            return WCResultData.getHttpStatusData(check, null);
+        }
+
         String clubName = (String) requestData.get("club_name");
         int level = 0;
         if (requestData.get("level") instanceof Integer) {
