@@ -13,6 +13,7 @@
         <result property="level" column="level" />
         <result property="status" column="status" />
         <result property="checkCount" column="check_count" />
+        <result property="slogan" column="slogan" />
     </resultMap>
 
     <!-- 社团实体映射 map，包含学校信息 -->
@@ -26,6 +27,7 @@
         <result property="level" column="level" />
         <result property="status" column="status" />
         <result property="checkCount" column="check_count" />
+        <result property="slogan" column="slogan" />
 
         <association property="schoolBean" javaType="com.weclubs.bean.WCSchoolBean">
             <id property="schoolId" column="school_id" />
