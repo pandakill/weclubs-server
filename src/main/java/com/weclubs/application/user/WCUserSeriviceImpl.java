@@ -431,4 +431,10 @@ public class WCUserSeriviceImpl implements WCIUserService {
         mStudentMapper.updateStudent(userInfo);
         return WCHttpStatus.SUCCESS;
     }
+
+    @Override
+    public WCHttpStatus createUser(WCStudentBean studentBean) {
+        mStudentMapper.createStudent(studentBean);
+        return null;
+    }
 }

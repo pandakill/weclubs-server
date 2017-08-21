@@ -86,6 +86,11 @@
         VALUES (#{mobile}, #{password})
     </insert>
 
+    <insert id="addStudent" useGeneratedKeys="true" keyProperty="studentId" parameterType="com.weclubs.bean.WCStudentBean">
+        INSERT INTO `t_student`(`mobile`, `nick_name`, `real_name`)
+        VALUES (#{mobile}, #{nickName}, #{realName})
+    </insert>
+
     <!-- 更新学生信息 -->
     <update id="updateStudent" parameterType="com.weclubs.bean.WCStudentBean">
         UPDATE `t_student`

@@ -80,4 +80,9 @@ public interface WCStudentMapper {
      * @param password  加密过的密码
      */
     void updateStudentPassword(@Param("studentId") long studentId,@Param("password") String password);
+
+    /**
+     * 仅限于测试
+     */
+    void addStudent(WCStudentBean studentBean);
 }

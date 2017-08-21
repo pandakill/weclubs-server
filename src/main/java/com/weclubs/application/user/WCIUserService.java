@@ -83,4 +83,6 @@ public interface WCIUserService {
      * @return  如果更新成功，则返回{@link WCHttpStatus#SUCCESS}
      */
     WCHttpStatus updateUserInfo(WCStudentBean userInfo);
+
+    WCHttpStatus createUser(WCStudentBean studentBean);
 }
